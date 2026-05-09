@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <PhysicalItems>
-
         <!-- Ores -->
         <PhysicalItem>
             <Id>
@@ -219,7 +218,6 @@
 				<Stat Name="BatteryCharge" Value="0.002" Time="6"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -252,7 +250,6 @@
 				<Stat Name="BatteryCharge" Value="0.002" Time="8"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -285,7 +282,6 @@
 				<Stat Name="BatteryCharge" Value="0.0025" Time="8"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -320,7 +316,6 @@
 				<Stat Name="BatteryCharge" Value="0.005" Time="12"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -353,7 +348,6 @@
 				<Stat Name="BatteryCharge" Value="0.006" Time="15"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -386,7 +380,6 @@
 				<Stat Name="BatteryCharge" Value="0.007" Time="18"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -419,12 +412,285 @@
 				<Stat Name="BatteryCharge" Value="0.010" Time="20"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
 			<CanPlayerOrder>false</CanPlayerOrder>
 		</PhysicalItem>
 		<!--End Seaweed Food-->
+		<!--Fish Food ingredients-->
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_Meat</SubtypeId>
+			</Id>
+			<DisplayName>Fish Meat</DisplayName>
+			<Description>
+				Base ingredient for food and predator bait.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.003" Time="4"/>
+				<Stat Name="Food" Value="0.008" Time="12"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_Oil</SubtypeId>
+			</Id>
+			<DisplayName>Fish Oil</DisplayName>
+			<Description>
+				Medical items, fuel additives, industrial chemicals.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.004" Time="5"/>
+				<Stat Name="Food" Value="0.005" Time="10"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_ProteinPaste</SubtypeId>
+			</Id>
+			<DisplayName>Fish Protein Paste</DisplayName>
+			<Description>
+				Protein Lure Canister crafting.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.005" Time="6"/>
+				<Stat Name="Food" Value="0.010" Time="15"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<!--End Fish Food ingredients-->
+		<!--Fish Food-->
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_ProteinRationPack</SubtypeId>
+			</Id>
+			<DisplayName>Protein Ration Pack</DisplayName>
+			<Description>
+				Compact processed nutrient meal for long-duration expeditions.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.008" Time="10"/>
+				<Stat Name="Food" Value="0.018" Time="25"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_FriedFishMeal</SubtypeId>
+			</Id>
+			<DisplayName>Fried Fish Meal</DisplayName>
+			<Description>
+				Pan-fried fish preserved in nutrient oil.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.010" Time="12"/>
+				<Stat Name="Food" Value="0.022" Time="28"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_NutrientPasteTube</SubtypeId>
+			</Id>
+			<DisplayName>Nutrient Paste Tube</DisplayName>
+			<Description>
+				Industrial-grade edible protein slurry.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.004" Time="6"/>
+				<Stat Name="Food" Value="0.010" Time="18"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_DeepwaterStew</SubtypeId>
+			</Id>
+			<DisplayName>Deepwater Stew</DisplayName>
+			<Description>
+				Rich nutrient-dense meal for deep ocean operations.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.014" Time="16"/>
+				<Stat Name="Food" Value="0.028" Time="35"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_OmegaNutrientBlock</SubtypeId>
+			</Id>
+			<DisplayName>Omega Nutrient Block</DisplayName>
+			<Description>
+				Military-grade compressed aquatic survival ration.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.018" Time="20"/>
+				<Stat Name="Food" Value="0.035" Time="45"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_FishOilMedicalGel</SubtypeId>
+			</Id>
+			<DisplayName>Fish Oil Medical Gel</DisplayName>
+			<Description>
+				Bioactive gel rich in restorative omega compounds.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="0.020" Time="8"/>
+				<Stat Name="Food" Value="0.006" Time="10"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<!--End Fish Food-->
     </PhysicalItems>
 </Definitions>

@@ -173,7 +173,7 @@
 				Low resource yield
 				Easy to produce
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -182,7 +182,7 @@
 			</Size>
 			<Mass>0.1</Mass>
 			<Volume>1</Volume>
-			<Model>Models\Items\AquaSaltPowderR.mwm</Model>
+			<Model>Models\Items\SeedPack_mushroom.mwm</Model>
 			<PhysicalMaterial>Metal</PhysicalMaterial>
 			<MaxIntegrity>30</MaxIntegrity>
 			<DropProbability>0.5</DropProbability>
@@ -201,7 +201,7 @@
 				Medium yield
 				Standard farming tier
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -210,7 +210,7 @@
 			</Size>
 			<Mass>0.1</Mass>
 			<Volume>1</Volume>
-			<Model>Models\Items\AquaSaltPowderR.mwm</Model>
+			<Model>Models\Items\SeedPack_mushroom.mwm</Model>
 			<PhysicalMaterial>Metal</PhysicalMaterial>
 			<MaxIntegrity>30</MaxIntegrity>
 			<DropProbability>0.5</DropProbability>
@@ -230,7 +230,7 @@
 				Rare + valuable
 				Requires deeper underwater base
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -239,7 +239,7 @@
 			</Size>
 			<Mass>0.1</Mass>
 			<Volume>1</Volume>
-			<Model>Models\Items\AquaSaltPowderR.mwm</Model>
+			<Model>Models\Items\SeedPack_mushroom.mwm</Model>
 			<PhysicalMaterial>Metal</PhysicalMaterial>
 			<MaxIntegrity>30</MaxIntegrity>
 			<DropProbability>0.5</DropProbability>
@@ -256,7 +256,8 @@
 			</Id>
 			<DisplayName>Hydroponic Feed Pellet</DisplayName>
 			<Description>
-				Later
+				Compressed algae-based nutrient pellets engineered for aquatic farming systems.
+				Effective at attracting small and passive fish species.
 			</Description>
 			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
 			<IconSymbol>BAIT</IconSymbol>
@@ -282,7 +283,8 @@
 			</Id>
 			<DisplayName>Protein Lure Canister</DisplayName>
 			<Description>
-				Later
+				Pressurized organic bait mixture made from processed fish proteins and oils.
+				Designed to attract aggressive predators and large carnivorous species.
 			</Description>
 			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
 			<IconSymbol>BAIT</IconSymbol>
@@ -308,7 +310,8 @@
 			</Id>
 			<DisplayName>Xenobiotic Lure Module</DisplayName>
 			<Description>
-				Later
+				Experimental bio-signal emitter infused with unstable xenobiotic compounds.
+				Capable of attracting rare, mutated and deepwater lifeforms.
 			</Description>
 			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
 			<IconSymbol>BAIT</IconSymbol>

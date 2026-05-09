@@ -23,13 +23,13 @@ namespace AquaExpansion.UnderwaterFishing
         protected override void LoadingUnderwaterFishingData()
         {
             base.LoadingUnderwaterFishingData();
-            base.LoadStats(UnderwaterFishingBlockKey);
+            LoadStats(UnderwaterFishingBlockKey);
         }
 
         protected override void SaveUnderwaterFishingData()
         {
             base.SaveUnderwaterFishingData();
-            base.SaveStats(UnderwaterFishingBlockKey);
+            SaveStats(UnderwaterFishingBlockKey);
         }
     }
 }

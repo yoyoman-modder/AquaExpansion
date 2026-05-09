@@ -28,7 +28,6 @@
 				<Stat Name="Food" Value="0.025" Time="18"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -60,7 +59,6 @@
 				<Stat Name="Food" Value="0.010" Time="12"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -92,7 +90,6 @@
 				<Stat Name="Food" Value="0.015" Time="40"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -124,7 +121,6 @@
 				<Stat Name="Food" Value="0.008" Time="10"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -156,7 +152,6 @@
 				<Stat Name="Food" Value="0.060" Time="22"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -188,7 +183,6 @@
 				<Stat Name="Food" Value="0.015" Time="10"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -220,7 +214,6 @@
 				<Stat Name="Food" Value="0.120" Time="30"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -252,7 +245,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -284,7 +276,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -316,7 +307,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -348,7 +338,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -380,7 +369,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -412,7 +400,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -444,7 +431,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -476,7 +462,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -508,7 +493,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -540,7 +524,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -572,7 +555,6 @@
 				<Stat Name="Food" Value="0.012" Time="14"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -604,7 +586,6 @@
 				<Stat Name="Food" Value="0.020" Time="35"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -636,7 +617,6 @@
 				<Stat Name="Food" Value="0.006" Time="8"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -668,7 +648,6 @@
 				<Stat Name="Food" Value="0.000" Time="60"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>
@@ -700,7 +679,6 @@
 				<Stat Name="Food" Value="0.011" Time="12"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
-			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>

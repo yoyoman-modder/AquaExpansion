@@ -32,6 +32,33 @@
 			<InputConstraintDescription>ToolTipItemFilter_RefineryInput</InputConstraintDescription>
 			<OutputConstraintDescription>ToolTipItemFilter_GenericProductionBlockOutput</OutputConstraintDescription>
 		</Class>
+		<!-- Food Processor -->
+		<Class>
+			<Id>
+				<TypeId>BlueprintClassDefinition</TypeId>
+				<SubtypeId>AquaFishing</SubtypeId>
+			</Id>
+			<DisplayName>Fishing</DisplayName>
+			<Description>Fishing</Description>
+			<Icon>Textures\GUI\Icons\buttons\equipment.dds</Icon>
+			<HighlightIcon>Textures\GUI\Icons\buttons\equipment.dds</HighlightIcon>
+			<FocusIcon>Textures\GUI\Icons\buttons\equipmentfocus.dds</FocusIcon>
+			<InputConstraintIcon>Textures\GUI\Icons\buttons\equipment.dds</InputConstraintIcon>
+			<OutputConstraintIcon>Textures\GUI\Icons\buttons\equipment.dds</OutputConstraintIcon>
+		</Class>
+		<Class>
+			<Id>
+				<TypeId>BlueprintClassDefinition</TypeId>
+				<SubtypeId>AquaFishProcessing</SubtypeId>
+			</Id>
+			<DisplayName>Fish Processing</DisplayName>
+			<Description>Fish Processing</Description>
+			<Icon>Textures\GUI\Icons\buttons\Food.dds</Icon>
+			<HighlightIcon>Textures\GUI\Icons\buttons\Food.dds</HighlightIcon>
+			<FocusIcon>Textures\GUI\Icons\buttons\FoodFocus.dds</FocusIcon>
+			<InputConstraintIcon>Textures\GUI\Icons\filter_foodcontainer.dds</InputConstraintIcon>
+			<OutputConstraintIcon>Textures\GUI\Icons\filter_foodcontainer.dds</OutputConstraintIcon>
+		</Class>
 	</BlueprintClasses>
 
     <BlueprintClassEntries>
@@ -61,5 +88,35 @@
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_SeaweedRation" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_KelpNutrientPaste" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_RedAlgaeExtract" />
+		<!--New Food Processor -->
+		<Entry Class="AquaFishing" BlueprintSubtypeId="Aqua_BaitT1" />
+		<Entry Class="AquaFishing" BlueprintSubtypeId="Aqua_BaitT2" />
+		<Entry Class="AquaFishing" BlueprintSubtypeId="Aqua_BaitT3" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Barracuda" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_BlueTang" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ClownFish" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_GiantGrouper" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_LionFish" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishA" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishB" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishC" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishD" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishE" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishF" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishG" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishH" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishI" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishJ" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishK" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_TinyYellowFish" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_YellowTang" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishFluid_Oil" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Protein_Paste" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Protein_Ration_Pack" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Fried_Fish_Meal" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Nutrient_Paste_Tube" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Deepwater_Stew" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Omega_Nutrient_Block" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Oil_Medical_Gel" />
     </BlueprintClassEntries>
 </Definitions>

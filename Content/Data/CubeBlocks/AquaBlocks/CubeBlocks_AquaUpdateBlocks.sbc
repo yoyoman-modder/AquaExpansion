@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<CubeBlocks>
+		<!-- Region AquaExpansion Updated vanilla blocks-->
+		<Definition xsi:type="MyObjectBuilder_AssemblerDefinition">
+			<Id>
+				<TypeId>Assembler</TypeId>
+				<SubtypeId>FoodProcessor</SubtypeId>
+			</Id>
+			<DisplayName>DisplayName_Block_FoodProcessor</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\food_processor.dds</Icon>
+			<Description>Description_FoodProcessor</Description>
+			<CubeSize>Large</CubeSize>
+			<GuiVisible>false</GuiVisible>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="1" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\Large\FoodProcessor.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="20" />
+				<Component Subtype="Construction" Count="40" />
+				<Component Subtype="Motor" Count="4" />
+				<Component Subtype="Display" Count="2" />
+				<Component Subtype="Computer" Count="20" />
+				<Component Subtype="BulletproofGlass" Count="10" />
+				<Component Subtype="SteelPlate" Count="10" />
+			</Components>
+			<CriticalComponent Subtype="Computer" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Front" StartX="0" StartY="0" EndX="0.1" EndY="1" />
+				<MountPoint Side="Front" StartX="0.1" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Back" StartX="0" StartY="0" EndX="0.9" EndY="1" />
+				<MountPoint Side="Back" StartX="0.9" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Bottom" StartX="0" StartY="0" EndX="1" EndY="1" Default="true" />
+				<MountPoint Side="Top" StartX="0" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Left" StartX="0" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Right" StartX="0" StartY="0" EndX="1" EndY="0.3" />
+				<MountPoint Side="Right" StartX="0" StartY="0.9" EndX="1" EndY="1" />
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\FoodProcessorConstruction1.mwm" />
+				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\FoodProcessorConstruction2.mwm" />
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\FoodProcessorConstruction3.mwm" />
+			</BuildProgressModels>
+			<BlockPairName>FoodProcessor</BlockPairName>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>30</BuildTimeSeconds>
+			<ResourceSinkGroup>Factory</ResourceSinkGroup>
+			<InventoryMaxVolume>1</InventoryMaxVolume>
+			<InventorySize>
+				<X>1</X>
+				<Y>1</Y>
+				<Z>1</Z>
+			</InventorySize>
+			<StandbyPowerConsumption>0.004</StandbyPowerConsumption>
+			<OperationalPowerConsumption>0.18</OperationalPowerConsumption>
+			<BlueprintClasses>
+				<Class>FoodProcessorRations</Class>
+				<Class>FoodProcessorSeeds</Class>
+				<Class>AquaFishing</Class>
+				<Class>AquaFishProcessing</Class>
+			</BlueprintClasses>
+			<AssemblySpeed>1</AssemblySpeed>
+			<ScreenAreas>
+				<ScreenArea Name="CockpitScreen_01" DisplayName="DisplayName_Screen_Large" TextureResolution="256" ScreenWidth="7" ScreenHeight="6" />
+			</ScreenAreas>
+			<DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
+			<DamagedSound>ParticleHeavyMech</DamagedSound>
+			<PrimarySound>BlockAssembler</PrimarySound>
+			<ActionSound>BlockAssemblerProcess</ActionSound>
+			<DestroyEffect>Explosion_Missile</DestroyEffect>
+			<DestroySound>WepSmallMissileExpl</DestroySound>
+			<PCU>40</PCU>
+			<MirroringY>X</MirroringY>
+			<MirroringX>Y</MirroringX>
+			<TieredUpdateTimes>
+				<unsignedInt>60</unsignedInt>
+				<unsignedInt>120</unsignedInt>
+				<unsignedInt>240</unsignedInt>
+			</TieredUpdateTimes>
+			<IgnoreEfficiencyMultiplier>true</IgnoreEfficiencyMultiplier>
+			<EnableDisassembly>false</EnableDisassembly>
+			<EnableCooperativeMode>false</EnableCooperativeMode>
+			<AllowSelfPulling>true</AllowSelfPulling>
+		</Definition>
+		<!--End Region AquaExpansion Updated vanilla blocks-->
+	</CubeBlocks>
+</Definitions>

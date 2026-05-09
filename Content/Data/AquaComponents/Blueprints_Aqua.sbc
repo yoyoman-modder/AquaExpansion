@@ -63,7 +63,7 @@
 				<SubtypeId>Aqua_SeaweedSpores_Green</SubtypeId>
 			</Id>
 			<DisplayName>Green Seaweed Spores</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Prerequisites>
@@ -81,7 +81,7 @@
 				<SubtypeId>Aqua_SeaweedSpores_Brown</SubtypeId>
 			</Id>
 			<DisplayName>Brown Seaweed Spores</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Prerequisites>
@@ -99,7 +99,7 @@
 				<SubtypeId>Aqua_SeaweedSpores_Red</SubtypeId>
 			</Id>
 			<DisplayName>Red Seaweed Spores</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Prerequisites>
@@ -342,6 +342,520 @@
 			<BaseProductionTimeInSeconds>15</BaseProductionTimeInSeconds>
 		</Blueprint>
 		<!--End Seaweed Food-->
+		<!--Baits-->
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_BaitT1</SubtypeId>
+			</Id>
+			<DisplayName>Hydroponic Feed Pellet</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="Component" SubtypeId="SteelPlate" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaSeaweedRaw_Green" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaSeaweedRaw_Brown" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="Component" SubtypeId="AquaFishBait_HydroFeed" />
+			</Results>
+			<BaseProductionTimeInSeconds>2</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_BaitT2</SubtypeId>
+			</Id>
+			<DisplayName>Protein Lure Canister</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="Component" SubtypeId="SteelPlate" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="Component" SubtypeId="AquaFishBait_ProteinLure" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_BaitT3</SubtypeId>
+			</Id>
+			<DisplayName>Xenobiotic Lure Module (Salt Powered)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="Component" SubtypeId="SteelPlate" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaSeaweedRedExtract" />
+				<Item Amount="1" TypeId="Component" SubtypeId="Computer" />
+				<Item Amount="1" TypeId="Component" SubtypeId="SaltPowerCell" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="Component" SubtypeId="AquaFishBait_XenoLure" />
+			</Results>
+			<BaseProductionTimeInSeconds>8</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<!--End Baits-->
+		<!--Fish Food Standart-->
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Barracuda</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Barracuda)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_barracuda" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_BlueTang</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Blue Tang)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_blueTang" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ClownFish</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Clown Fish)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_clownFish" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_GiantGrouper</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Giant Grouper)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_giantGrouper" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_LionFish</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Lion Fish)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_lionFish" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishA</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish A)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish0" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishB</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish B)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish3" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishC</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish C)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish4" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishD</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish D)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish5" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishE</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish E)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish7" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishF</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish F)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish8" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishG</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish G)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish12" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishH</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish H)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish14" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishI</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish I)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish16" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishJ</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish J)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish17" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_ReefFishK</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Reef Fish K)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_reefFish20" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_TinyYellowFish</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Tiny Yellow Fish)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_tinyYellowFish" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_YellowTang</SubtypeId>
+			</Id>
+			<DisplayName>Fish meat (Yellow Tang)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_yellowTang" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+			</Results>
+			<BaseProductionTimeInSeconds>3</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishFluid_Oil</SubtypeId>
+			</Id>
+			<DisplayName>Fish Oil</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="1" TypeId="Ore" SubtypeId="Ice" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Protein_Paste</SubtypeId>
+			</Id>
+			<DisplayName>Fish Protein Paste</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinPaste" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Protein_Ration_Pack</SubtypeId>
+			</Id>
+			<DisplayName>Protein Ration Pack</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinPaste" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinRationPack" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Fried_Fish_Meal</SubtypeId>
+			</Id>
+			<DisplayName>Fried Fish Meal</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_FriedFishMeal" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Nutrient_Paste_Tube</SubtypeId>
+			</Id>
+			<DisplayName>Nutrient Paste Tube</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinPaste" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_NutrientPasteTube" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Deepwater_Stew</SubtypeId>
+			</Id>
+			<DisplayName>Deepwater Stew</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinPaste" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_DeepwaterStew" />
+			</Results>
+			<BaseProductionTimeInSeconds>6</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Omega_Nutrient_Block</SubtypeId>
+			</Id>
+			<DisplayName>Omega Nutrient Block</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinPaste" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_OmegaNutrientBlock" />
+			</Results>
+			<BaseProductionTimeInSeconds>6</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Fish_Oil_Medical_Gel</SubtypeId>
+			</Id>
+			<DisplayName>Fish Oil Medical Gel</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_ProteinPaste" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_FishOilMedicalGel" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<!-- End Fish Food Standart-->
 		<!-- End Aqua -->
     </Blueprints>
 </Definitions>

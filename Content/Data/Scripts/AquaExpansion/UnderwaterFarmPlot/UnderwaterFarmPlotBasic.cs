@@ -1,4 +1,5 @@
 ﻿using System;
+using AquaExpansion.Core;
 using VRage.Game;
 using VRage.Game.Components;
 using VRage.ObjectBuilders;
@@ -13,7 +14,7 @@ namespace AquaExpansion.UnderwaterFarmPlot
         {
             HasModStorage = true;
             HaseInventory = true;
-            FarmBlockType = Core.AquaFarmingBlockType.UnderwaterFarmPlot;
+            FarmBlockType = AquaFarmingBlockType.UnderwaterFarmPlot;
             base.Init(objectBuilder);
         }
 
