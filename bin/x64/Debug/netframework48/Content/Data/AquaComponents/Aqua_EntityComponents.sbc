@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <EntityComponents>
+		<!-- Region Inventory-->
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>UnderwaterFarmPlot</SubtypeId>
+			</Id>
+			<Size x="0.5" y="0.5" z="0.5" />
+			<Volume>0.5</Volume>
+			<InputConstraint Whitelist="true" Description="Seaweed" Icon="Textures\GUI\Icons\Cubes\FarmPlot.dds">
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaSeaweedSpores_Green</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaSeaweedSpores_Brown</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaSeaweedSpores_Red</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaSeaweedRaw_Green</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaSeaweedRaw_Brown</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaSeaweedRaw_Red</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>UnderwaterFishingBlock</SubtypeId>
+			</Id>
+			<Size x="0.5" y="0.5" z="0.5" />
+			<Volume>0.5</Volume>
+			<InputConstraint Whitelist="true" Description="FishingItems" Icon="Textures\GUI\Icons\Cubes\UnderwaterFishingBlock.dds">
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaFishBait_HydroFeed</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaFishBait_ProteinLure</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaFishBait_XenoLure</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_barracuda</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_blueTang</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_clownFish</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_giantGrouper</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_lionFish</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish0</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish3</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish4</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish5</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish7</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish8</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish12</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish14</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish16</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish17</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_reefFish20</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_yellowTang</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_tinyYellowFish</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
+		<!-- End Region Inventory-->
+		<!-- Region Mod Storage-->
+		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
+			<Id>
+				<TypeId>ModStorageComponent</TypeId>
+				<SubtypeId>UnderwaterFarmPlot</SubtypeId>
+			</Id>
+			<RegisteredStorageGuids>
+				<guid>4F12FFB0-2FE7-4510-AB7B-F2190DC584B4</guid>
+			</RegisteredStorageGuids>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
+			<Id>
+				<TypeId>ModStorageComponent</TypeId>
+				<SubtypeId>UnderwaterFishingBlock</SubtypeId>
+			</Id>
+			<RegisteredStorageGuids>
+				<guid>2673ED55-DB43-4849-BBA7-5120CFEE1B8F</guid>
+			</RegisteredStorageGuids>
+		</EntityComponent>
+		<!-- End Region Mod Storage-->
+		<!-- Region Cnoveoir-->
+		<EntityComponent xsi:type="MyObjectBuilder_ConveyorEndpointComponentDefinition">
+			<Id>
+				<TypeId>ConveyorEndpointComponent</TypeId>
+				<SubtypeId>UnderwaterFarmPlot</SubtypeId>
+			</Id>
+			<PullConstraint Whitelist="true" Description="Seaweed" Icon="Textures\GUI\Icons\Cubes\FarmPlot.dds">
+				<Entry Type="Component" Subtype="AquaSeaweedSpores_Green" />
+				<Entry Type="Component" Subtype="AquaSeaweedSpores_Brown" />
+				<Entry Type="Component" Subtype="AquaSeaweedSpores_Red" />
+			</PullConstraint>
+			<PushConstraint Whitelist="true" Description="Seaweed" Icon="Textures\GUI\Icons\Cubes\FarmPlot.dds">
+				<Entry Type="ConsumableItem" Subtype="AquaSeaweedRaw_Green" />
+				<Entry Type="ConsumableItem" Subtype="AquaSeaweedRaw_Brown" />
+				<Entry Type="ConsumableItem" Subtype="AquaSeaweedRaw_Red" />
+			</PushConstraint>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_ConveyorEndpointComponentDefinition">
+			<Id>
+				<TypeId>ConveyorEndpointComponent</TypeId>
+				<SubtypeId>UnderwaterFishingBlock</SubtypeId>
+			</Id>
+			<PullConstraint Whitelist="true" Description="FishingItems" Icon="Textures\GUI\Icons\Cubes\UnderwaterFishingBlock.dds">
+				<Entry Type="Component" Subtype="AquaFishBait_HydroFeed" />
+				<Entry Type="Component" Subtype="AquaFishBait_ProteinLure" />
+				<Entry Type="Component" Subtype="AquaFishBait_XenoLure" />
+			</PullConstraint>
+			<PushConstraint Whitelist="true" Description="FishingItems" Icon="Textures\GUI\Icons\Cubes\UnderwaterFishingBlock.dds">
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_barracuda" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_blueTang" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_clownFish" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_giantGrouper" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_lionFish" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish0" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish3" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish4" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish5" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish7" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish8" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish12" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish14" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish16" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish17" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish20" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_yellowTang" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_tinyYellowFish" />
+			</PushConstraint>
+		</EntityComponent>
+		<!--End Region Cnoveoir-->
+    </EntityComponents>
+</Definitions>

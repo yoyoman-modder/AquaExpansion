@@ -1,0 +1,713 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <PhysicalItems>
+		<!--Fish Raw-->
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_barracuda</SubtypeId>
+			</Id>
+			<DisplayName>Barracuda</DisplayName>
+			<Description>
+				Fast predator with dense muscle tissue.
+				Raw meat carries parasite risk.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_Barracuda.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>3.5</Mass>
+			<Volume>5</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_Barracuda.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.015" Time="18"/>
+				<Stat Name="Food" Value="0.025" Time="18"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_blueTang</SubtypeId>
+			</Id>
+			<DisplayName>Blue Tang</DisplayName>
+			<Description>
+				Agile reef swimmer with mild natural toxins.
+				Raw consumption may cause minor sickness.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_BlueTang.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.50</Mass>
+			<Volume>0.70</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_BlueTang.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="12"/>
+				<Stat Name="Food" Value="0.010" Time="12"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_bottlenoseDolphin</SubtypeId>
+			</Id>
+			<DisplayName>Bottlenose Dolphin</DisplayName>
+			<Description>
+				Intelligent marine mammal, not suitable as food.
+				Causes severe negative biological effects.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_BottlenoseDolphin.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>180</Mass>
+			<Volume>900</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_BottlenoseDolphin.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.060" Time="40"/>
+				<Stat Name="Food" Value="0.015" Time="40"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_clownFish</SubtypeId>
+			</Id>
+			<DisplayName>Clown Fish</DisplayName>
+			<Description>
+				Bright reef fish commonly found near corals.
+				Slightly safer raw but still not recommended.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ClownFish.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.30</Mass>
+			<Volume>0.45</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ClownFish.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.003" Time="10"/>
+				<Stat Name="Food" Value="0.008" Time="10"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_giantGrouper</SubtypeId>
+			</Id>
+			<DisplayName>Giant Grouper</DisplayName>
+			<Description>
+				Massive reef fish with high meat yield.
+				Relatively safe but inefficient raw.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_GiantGrouper.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>8.0</Mass>
+			<Volume>11.0</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_GiantGrouper.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.010" Time="22"/>
+				<Stat Name="Food" Value="0.060" Time="22"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_lionFish</SubtypeId>
+			</Id>
+			<DisplayName>Lion Fish</DisplayName>
+			<Description>
+				Venomous fish with dangerous spines.
+				Eating raw causes sharp poisoning effects.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_LionFish.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>1.2</Mass>
+			<Volume>1.8</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_LionFish.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.035" Time="10"/>
+				<Stat Name="Food" Value="0.015" Time="10"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_nurseShark</SubtypeId>
+			</Id>
+			<DisplayName>Nurse Shark</DisplayName>
+			<Description>
+				Large slow-moving predator with thick meat.
+				Raw consumption is highly unsafe.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_NurseShark.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>25.0</Mass>
+			<Volume>40.0</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_NurseShark.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.025" Time="30"/>
+				<Stat Name="Food" Value="0.120" Time="30"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish0</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish A</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish0.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish0.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish3</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish B</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish3.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish3.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish4</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish C</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish4.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish4.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish5</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish D</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish5.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish5.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish7</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish E</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish7.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish7.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish8</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish F</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish8.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish8.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish12</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish G</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish12.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish12.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish14</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish H</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish14.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish14.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish16</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish I</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish16.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish16.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish17</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish J</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish17.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish17.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_reefFish20</SubtypeId>
+			</Id>
+			<DisplayName>Reef Fish K</DisplayName>
+			<Description>
+				Generic reef species with balanced meat yield.
+				Common catch, useful for early survival.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_ReefFish20.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.8</Mass>
+			<Volume>1.1</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_ReefFish20.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="14"/>
+				<Stat Name="Food" Value="0.012" Time="14"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_seaTurtle</SubtypeId>
+			</Id>
+			<DisplayName>Sea Turtle</DisplayName>
+			<Description>
+				Protected marine creature with dense body mass.
+				Consumption is harmful and discouraged.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_SeaTurtle.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>120</Mass>
+			<Volume>600</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_SeaTurtle.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.050" Time="35"/>
+				<Stat Name="Food" Value="0.020" Time="35"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_tinyYellowFish</SubtypeId>
+			</Id>
+			<DisplayName>Tiny Yellow Fish</DisplayName>
+			<Description>
+				A tiny reef dweller with minimal meat yield.
+				Often eaten raw in desperation, but provides little energy.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_TinyYellowFish.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.25</Mass>
+			<Volume>0.35</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_TinyYellowFish.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.002" Time="8"/>
+				<Stat Name="Food" Value="0.006" Time="8"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_whaleShark</SubtypeId>
+			</Id>
+			<DisplayName>Whale Shark</DisplayName>
+			<Description>
+				Enormous ocean giant not meant for direct consumption.
+				Eating raw flesh causes extreme systemic failure.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_WhaleShark.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>15000</Mass>
+			<Volume>20000</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_WhaleShark.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.90" Time="60"/>
+				<Stat Name="Food" Value="0.000" Time="60"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFishdRaw_yellowTang</SubtypeId>
+			</Id>
+			<DisplayName>Yellow Tang</DisplayName>
+			<Description>
+				Herbivorous reef fish with stable meat quality.
+				Considered one of the safer raw options.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Fish_YellowTang.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>0.55</Mass>
+			<Volume>0.75</Volume>
+			<Model>..\2200451495\Models\Cubes\large\Fish_YellowTang.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.004" Time="12"/>
+				<Stat Name="Food" Value="0.011" Time="12"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<ExtraInventoryTooltipLineId>Later</ExtraInventoryTooltipLineId>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<!--End Fish Raw-->
+		<!--Fish Food-->
+		<!--End Fish Food-->
+    </PhysicalItems>
+</Definitions>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <BlockVariantGroups>
+        <BlockVariantGroup>
+            <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaSaltBatteryGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\BatteryReskin.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+            <DisplayName>Salt Battery</DisplayName>
+            <Description>Salt Battery</Description>
+            <Blocks>
+				<Block Type="MyObjectBuilder_BatteryBlock" Subtype="SmallBlockSaltBatteryMicro" />
+                <Block Type="MyObjectBuilder_BatteryBlock" Subtype="SmallBlockSaltBattery" />
+                <Block Type="MyObjectBuilder_BatteryBlock" Subtype="LargeBlockSaltBattery" />
+            </Blocks>
+        </BlockVariantGroup>
+
+        <BlockVariantGroup>
+            <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterTurbineGroup" />
+            <Icon>Textures\GUI\Icons\Cubes\WindTurbine.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+            <DisplayName>Underwater Turbine</DisplayName>
+            <Description>Underwater Turbine</Description>
+            <Blocks>
+                <Block Type="MyObjectBuilder_FunctionalBlock" Subtype="LargeBlockUnderWaterTurbneB" />
+                <Block Type="MyObjectBuilder_FunctionalBlock" Subtype="LargeBlockUnderWaterTurbneS" />
+            </Blocks>
+        </BlockVariantGroup>
+
+        <BlockVariantGroup>
+            <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterEnginesBasicSGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\AtmosphericThrusterSmall.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+            <DisplayName>UnderWater Rotor  Engine Basic Small</DisplayName>
+            <Description>UnderWater Rotor  Engine Basic Small</Description>
+            <Blocks>
+                <Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicS" />
+                <Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicSL" />
+            </Blocks>
+        </BlockVariantGroup>
+
+		<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterEnginesBasicLGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\AtmosphericThrusterSmall.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<DisplayName>UnderWater Rotor  Engine Basic Large</DisplayName>
+			<Description>UnderWater Rotor  Engine Basic Large</Description>
+			<Blocks>
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicLS" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicL" />
+			</Blocks>
+		</BlockVariantGroup>
+
+		<!--<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaSubmarineBallastTankGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\Transponder.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<DisplayName>Submarine Ballast Tank</DisplayName>
+			<Description>Submarine Ballast Tank</Description>
+			<Blocks>
+				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="LargeBlockSubmarineBallastTank" />
+				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="SmallBlockSubmarineBallastTank" />
+			</Blocks>
+		</BlockVariantGroup>-->
+
+		<!--<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaSubmarineControllerGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\EventController_large.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<DisplayName>Submarine Controller</DisplayName>
+			<Description>Submarine Controller</Description>
+			<Blocks>
+				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="SubmarineControllerL" />
+				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="SubmarineControllerS" />
+			</Blocks>
+		</BlockVariantGroup>-->
+    </BlockVariantGroups>
+</Definitions>

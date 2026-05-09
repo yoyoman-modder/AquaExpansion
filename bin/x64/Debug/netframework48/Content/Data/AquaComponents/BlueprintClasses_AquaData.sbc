@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <BlueprintClasses>
+
+		<!-- Salt Generator -->
+        <Class>
+            <Id>
+                <TypeId>BlueprintClassDefinition</TypeId>
+                <SubtypeId>SaltGenerator</SubtypeId>
+            </Id>
+            <DisplayName>Salt processing</DisplayName>
+            <Description>vapour salt from water/Ice</Description>
+			<Icon>Textures\GUI\Icons\ingot\ingot_class.dds</Icon>
+			<HighlightIcon>Textures\GUI\Icons\ingot\ingot_class.dds</HighlightIcon>
+			<InputConstraintIcon>Textures\GUI\Icons\filter_ore.dds</InputConstraintIcon>
+			<OutputConstraintIcon>Textures\GUI\Icons\filter_ingot.dds</OutputConstraintIcon>
+			<InputConstraintDescription>ToolTipItemFilter_RefineryInput</InputConstraintDescription>
+			<OutputConstraintDescription>ToolTipItemFilter_GenericProductionBlockOutput</OutputConstraintDescription>
+        </Class>
+		<!-- Soil Generator -->
+		<Class>
+			<Id>
+				<TypeId>BlueprintClassDefinition</TypeId>
+				<SubtypeId>SoilGenerator</SubtypeId>
+			</Id>
+			<DisplayName>Soil processing</DisplayName>
+			<Description>process soil from water/Ice and Stone</Description>
+			<Icon>Textures\GUI\Icons\ingot\ingot_class.dds</Icon>
+			<HighlightIcon>Textures\GUI\Icons\ingot\ingot_class.dds</HighlightIcon>
+			<InputConstraintIcon>Textures\GUI\Icons\filter_ore.dds</InputConstraintIcon>
+			<OutputConstraintIcon>Textures\GUI\Icons\filter_ore.dds</OutputConstraintIcon>
+			<InputConstraintDescription>ToolTipItemFilter_RefineryInput</InputConstraintDescription>
+			<OutputConstraintDescription>ToolTipItemFilter_GenericProductionBlockOutput</OutputConstraintDescription>
+		</Class>
+	</BlueprintClasses>
+
+    <BlueprintClassEntries>
+		<!-- Salt Generator -->
+        <Entry Class="SaltGenerator" BlueprintSubtypeId="Aqua_SaltPowder_Ice_LS" />
+		<!-- Soil Generator -->
+		<Entry Class="SoilGenerator" BlueprintSubtypeId="Aqua_SeaSoilOre" />
+		<!-- Patch Basic Assembler -->
+		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_SaltPowder_Refined" />
+		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_SaltPowerCell" />
+		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_WaterFilter" />
+		<Entry Class="SimpleEquipment" BlueprintSubtypeId="Aqua_DiveGearT1" />
+		<!--Patch Assembler -->
+		<Entry Class="Components" BlueprintSubtypeId="Aqua_SaltPowder_Refined" />
+		<Entry Class="Components" BlueprintSubtypeId="Aqua_SaltPowerCell" />
+		<Entry Class="Components" BlueprintSubtypeId="Aqua_WaterFilter" />
+		<Entry Class="Components" BlueprintSubtypeId="Aqua_ElectrolysisCore" />
+		<Entry Class="Components" BlueprintSubtypeId="Aqua_StabilizedCircuit" />
+		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_DiveGearT1" />
+		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_DiveGearT2" />
+		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_DiveGearT3" />
+		<!--Patch Food Processor -->
+		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Green" />
+		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Brown" />
+		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Red" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_SeaweedDried" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_SeaweedRation" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_KelpNutrientPaste" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_RedAlgaeExtract" />
+    </BlueprintClassEntries>
+</Definitions>

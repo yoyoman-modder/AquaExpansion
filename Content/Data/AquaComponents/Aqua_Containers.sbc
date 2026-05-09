@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <EntityContainers>
+		<Container>
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>UnderwaterFarmPlot</SubtypeId>
+			</Id>
+			<DefaultComponents>
+				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="UnderwaterFarmPlot" ForceCreate="true"/>
+				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFarmPlot" ForceCreate="true"/>
+			</DefaultComponents>
+		</Container>
+		<Container>
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>UnderwaterFishingBlock</SubtypeId>
+			</Id>
+			<DefaultComponents>
+				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="UnderwaterFishingBlock" ForceCreate="true"/>
+				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFishingBlockt" ForceCreate="true"/>
+			</DefaultComponents>
+		</Container>
+    </EntityContainers>
+</Definitions>
