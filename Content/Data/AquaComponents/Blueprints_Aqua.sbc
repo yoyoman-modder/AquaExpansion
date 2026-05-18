@@ -712,6 +712,24 @@
 		<Blueprint>
 			<Id>
 				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Big_Fish_Pieces</SubtypeId>
+			</Id>
+			<DisplayName>Big Fish Pieces Cut</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="5" TypeId="ConsumableItem" SubtypeId="AquaFish_Meat" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>6</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
 				<SubtypeId>Aqua_FishFluid_Oil</SubtypeId>
 			</Id>
 			<DisplayName>Fish Oil</DisplayName>
@@ -856,6 +874,80 @@
 			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
 		</Blueprint>
 		<!-- End Fish Food Standart-->
+		<!-- Fish Food Big Fish-->
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Nurse_Shark</SubtypeId>
+			</Id>
+			<DisplayName>Big Fish Pieces (Nurse Shark)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_nurseShark" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>6</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Sea_Turtle</SubtypeId>
+			</Id>
+			<DisplayName>Big Fish Pieces (Sea Turtle)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_seaTurtle" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>5</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Bottlenose_Dolphin</SubtypeId>
+			</Id>
+			<DisplayName>Big Fish Pieces (Bottlenose Dolphin)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_bottlenoseDolphin" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="4" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+				<Item Amount="2" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>8</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Whale_Shark</SubtypeId>
+			</Id>
+			<DisplayName>Big Fish Pieces (Whale Shark)</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaFishdRaw_whaleShark" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="8" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+				<Item Amount="4" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>15</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<!--End Fish Food Big Fish-->
 		<!-- End Aqua -->
     </Blueprints>
 </Definitions>

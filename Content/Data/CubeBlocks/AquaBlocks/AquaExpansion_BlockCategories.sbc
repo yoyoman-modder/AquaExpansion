@@ -23,6 +23,8 @@
 				<string>FunctionalBlock/UnderwaterFarmPlot</string>
 				<string>Refinery/SoilExtractor</string>
 				<string>FunctionalBlock/UnderwaterFishingBlock</string>
+				<string>UpgradeModule/AquaCargoUpgradeModule</string>
+				<string>FunctionalBlock/UnderwaterFishingStation</string>
 				<!--<string>FunctionalBlock/LargeBlockSubmarineBallastTank</string>-->
 				<!--<string>FunctionalBlock/SmallBlockSubmarineBallastTank</string>-->
 				<!--<string>FunctionalBlock/SubmarineControllerL</string>-->

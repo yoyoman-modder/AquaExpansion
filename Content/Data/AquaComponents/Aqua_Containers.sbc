@@ -21,5 +21,15 @@
 				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFishingBlockt" ForceCreate="true"/>
 			</DefaultComponents>
 		</Container>
+		<Container>
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>UnderwaterFishingStation</SubtypeId>
+			</Id>
+			<DefaultComponents>
+				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="UnderwaterFishingStation" ForceCreate="true"/>
+				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFishingStation" ForceCreate="true"/>
+			</DefaultComponents>
+		</Container>
     </EntityContainers>
 </Definitions>

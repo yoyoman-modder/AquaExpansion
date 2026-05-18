@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Threading;
 using VRage;
 using VRage.Game;
 using VRage.Game.Entity;

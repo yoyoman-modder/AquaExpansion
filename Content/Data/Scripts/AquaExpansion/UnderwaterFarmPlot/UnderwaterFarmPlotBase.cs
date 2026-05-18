@@ -68,8 +68,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             originalGridId = grid.EntityId;
             entity = block;
             utils = new AquaExpansionUtils();
-            ModStorageHandler();
-            InventoryHandler();
             SetSink();
             //AquaExpansionSession.Insance.Log(true,$"Underwater FarmPlot initialized for block: {block.EntityId}");
             NeedsUpdate = MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME | MyEntityUpdateEnum.EACH_FRAME;
@@ -123,6 +121,8 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 return;
             if (!grid.IsStatic)
                 return;
+            ModStorageHandler();
+            InventoryHandler();
             block.AppendingCustomInfo += AppendCustomInfo;
             UnderwaterFarmPlotUI.Instance.ConnectToBlock(block);
             UnderwaterFarmPlotUI.Instance.BlockSaveRequest += OnSessionSave;
@@ -155,12 +155,12 @@ namespace AquaExpansion.UnderwaterFarmPlot
         {
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
-            if (grid == null || grid.Closed || grid.MarkedForClose)
-                return;
+            //if (grid == null || grid.Closed || grid.MarkedForClose)
+                //return;
             if (grid.Physics == null)
                 return;
-            if (!grid.IsStatic)
-                return;
+            //if (!grid.IsStatic)
+                //return;
             if (!HasPower())
                 block.Enabled = false;
             UnderwaterRules();
@@ -427,7 +427,7 @@ namespace AquaExpansion.UnderwaterFarmPlot
 
         private bool HasPower()
         {
-            if (block == null || block.Closed || !block.Enabled || !block.IsFunctional)
+            if (block == null || block.Closed || !block.Enabled || !block.IsFunctional || grid == null || grid.Closed || !grid.IsStatic)
                 return false;
             return sink.IsPoweredByType(MyResourceDistributorComponent.ElectricityId);
         }

@@ -156,11 +156,11 @@ namespace AquaExpansion.UndewaterEngines
         {
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
-            if (grid == null || grid.Closed || grid.MarkedForClose)
-                return;
+            //if (grid == null || grid.Closed || grid.MarkedForClose)
+                //return;
             if (grid.Physics == null)
                 return;
-            if (!WaterModAPI.IsUnderwater(block.GetPosition()) || !block.IsWorking)
+            if (!WaterModAPI.IsUnderwater(block.GetPosition()) || !block.IsWorking || grid == null || grid.Closed || grid.MarkedForClose)
             {
                 if(block.Enabled)
                 block.Enabled = false;

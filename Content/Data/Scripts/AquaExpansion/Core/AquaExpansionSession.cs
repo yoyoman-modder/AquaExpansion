@@ -125,9 +125,9 @@ namespace AquaExpansion.Core
             TextAPI = new HudAPIv2(onRegisteredCallback);
             MyAPIGateway.Entities.OnEntityAdd += OnEntityAdd;
             MyAPIGateway.Entities.OnEntityRemove += OnEntityRemove;
-            LoadWaterConfig();
-            AutoDisableWaterConfig();
             GetMods();
+            //LoadWaterConfig();
+            //AutoDisableWaterConfig();
             base.LoadData();
         }
 
@@ -675,8 +675,8 @@ namespace AquaExpansion.Core
             base.Init(sessionComponent);
             LineAnimationManager.Init(ticksPerUpdate);
             Log(true, $"Welcome back!");
-            LoadWaterConfig();
-            FirstReminder();
+            //LoadWaterConfig();
+            //FirstReminder();
             EnviromentHighlightControll();
         }
 
@@ -707,7 +707,7 @@ namespace AquaExpansion.Core
                 {
                     waterSettings.ShowDepth = false;
                 }
-                if (waterSettings.Silent)
+                if (!waterSettings.Silent)
                 {
                     waterSettings.Silent = true;
                 }
@@ -731,7 +731,7 @@ namespace AquaExpansion.Core
             LineAnimationManager.Update();
             UpdateAll();
             latentScheduler.Update();
-            Reminder();
+            //Reminder();
             SetDephbasedColor();
             base.UpdateBeforeSimulation();
         }
@@ -789,7 +789,7 @@ namespace AquaExpansion.Core
             }
         }
 
-        Vector4 RGBtoXYZW(Color color)
+        private Vector4 RGBtoXYZW(Color color)
         {
             float r = color.R * (1f / 255f);
             float g = color.G * (1f / 255f);

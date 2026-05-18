@@ -83,7 +83,7 @@ namespace AquaExpansion.UnderwaterFishing
                 if (logic == null)
                     return;
                 IEnumerable<AquaFishingRecipe> enumerator = null;
-                if (logic.usebigfishdata)
+                if (logic.isUseBigFishData)
                 {
                     enumerator = AquaFishingRecipeDatabase.GetAllBigFish();
                 }

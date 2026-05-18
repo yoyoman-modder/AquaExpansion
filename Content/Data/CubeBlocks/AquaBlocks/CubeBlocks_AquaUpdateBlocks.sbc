@@ -15,7 +15,7 @@
 			<BlockTopology>TriangleMesh</BlockTopology>
 			<Size x="1" y="1" z="1" />
 			<ModelOffset x="0" y="0" z="0" />
-			<Model>Models\Cubes\Large\FoodProcessor.mwm</Model>
+			<Model>Models\Cubes\large\FoodProcessor.mwm</Model>
 			<Components>
 				<Component Subtype="SteelPlate" Count="20" />
 				<Component Subtype="Construction" Count="40" />
@@ -27,20 +27,17 @@
 			</Components>
 			<CriticalComponent Subtype="Computer" Index="0" />
 			<MountPoints>
-				<MountPoint Side="Front" StartX="0" StartY="0" EndX="0.1" EndY="1" />
-				<MountPoint Side="Front" StartX="0.1" StartY="0" EndX="1" EndY="1" />
-				<MountPoint Side="Back" StartX="0" StartY="0" EndX="0.9" EndY="1" />
-				<MountPoint Side="Back" StartX="0.9" StartY="0" EndX="1" EndY="1" />
-				<MountPoint Side="Bottom" StartX="0" StartY="0" EndX="1" EndY="1" Default="true" />
-				<MountPoint Side="Top" StartX="0" StartY="0" EndX="1" EndY="1" />
-				<MountPoint Side="Left" StartX="0" StartY="0" EndX="1" EndY="1" />
-				<MountPoint Side="Right" StartX="0" StartY="0" EndX="1" EndY="0.3" />
-				<MountPoint Side="Right" StartX="0" StartY="0.9" EndX="1" EndY="1" />
+				<MountPoint Side="Front" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Left" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Top" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
 			</MountPoints>
 			<BuildProgressModels>
-				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\FoodProcessorConstruction1.mwm" />
-				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\FoodProcessorConstruction2.mwm" />
-				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\FoodProcessorConstruction3.mwm" />
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\large\FoodProcessor_BS1.mwm"/>
+				<Model BuildPercentUpperBound="0.67" File="Models\Cubes\large\FoodProcessor_BS2.mwm"/>
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\large\FoodProcessor_BS3.mwm"/>
 			</BuildProgressModels>
 			<BlockPairName>FoodProcessor</BlockPairName>
 			<EdgeType>Light</EdgeType>
@@ -71,8 +68,6 @@
 			<DestroyEffect>Explosion_Missile</DestroyEffect>
 			<DestroySound>WepSmallMissileExpl</DestroySound>
 			<PCU>40</PCU>
-			<MirroringY>X</MirroringY>
-			<MirroringX>Y</MirroringX>
 			<TieredUpdateTimes>
 				<unsignedInt>60</unsignedInt>
 				<unsignedInt>120</unsignedInt>

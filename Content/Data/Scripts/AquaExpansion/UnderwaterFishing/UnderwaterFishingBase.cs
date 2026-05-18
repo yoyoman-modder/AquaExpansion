@@ -15,14 +15,13 @@ using VRageMath;
 
 namespace AquaExpansion.UnderwaterFishing
 {
-
     public abstract class UnderwaterFishingBase : MyGameLogicComponent
     {
         private IMyFunctionalBlock block;
         private IMyCubeGrid grid;
         private IMyEntity entity;
         public AquaExpansionUtils utils;
-        private string Ttitle = "Underwater Fishing Trap";
+        protected string Ttitle = "Underwater Fishing Trap";
         private string TError = "ERROR";
         private float WaterDepth;
         private float saltLevel = 0f;
@@ -52,7 +51,7 @@ namespace AquaExpansion.UnderwaterFishing
         private AquaFishInstance ActiveFish;
         private float CatchingProbability;
         private bool ready;
-        public bool usebigfishdata = false;
+        protected bool usebigfishdata = false;
         private MyEntity Bait;
         protected Matrix BaitMatrix = Matrix.CreateTranslation(0f, 2f, 0f);
         private int baitstage = 0;
@@ -61,13 +60,17 @@ namespace AquaExpansion.UnderwaterFishing
         protected Matrix FishMatrix = Matrix.CreateTranslation(0f, 2f, 0f);
         private int fishstage = 0;
         private int fishlastStage = -1;
-        private float fishAngle;
+        protected float fishAngle;
+        protected float invfishangle;
         private float showfishtimer;
         private int showfishstage = 0;
         private int showfishlaststage = -2;
         private MyEntity InventoryFish;
         protected Matrix InventoryFishMatrix = Matrix.CreateTranslation(0f, 0f, 0f);
-
+        protected float fishRadius = 1f;
+        protected float inventoryfishRadius = 0.8f;
+        protected float fishoffcet = 2.5f;
+        public bool isUseBigFishData => usebigfishdata;
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -75,10 +78,10 @@ namespace AquaExpansion.UnderwaterFishing
             if (block == null)
                 return;
             grid = block.CubeGrid;
+            if (grid == null)
+            { block.Enabled = false; }            
             entity = block;
             utils = new AquaExpansionUtils();
-            ModStorageHandler();
-            InventoryHandler();
             SetSink();
             //AquaExpansionSession.Insance.Log(true, $"Underwater fising block initialized for block: {block.EntityId}");
             NeedsUpdate = MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME | MyEntityUpdateEnum.EACH_FRAME;
@@ -94,6 +97,8 @@ namespace AquaExpansion.UnderwaterFishing
                 return;
             if (!grid.IsStatic)
                 return;
+            ModStorageHandler();
+            InventoryHandler();
             block.AppendingCustomInfo += AppendCustomInfo;
             UnderwaterFishingUI.Instance.ConnectToBlock(block);
             UnderwaterFishingUI.Instance.BlockSaveRequest += OnSessionSave;
@@ -185,12 +190,12 @@ namespace AquaExpansion.UnderwaterFishing
         {
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
-            if (grid == null || grid.Closed || grid.MarkedForClose)
-                return;
+            //if (grid == null || grid.Closed || grid.MarkedForClose)
+                //return;
             if (grid.Physics == null)
                 return;
-            if (!grid.IsStatic)
-                return;
+            //if (!grid.IsStatic)
+                //return;
             if (!HasPower())
             { block.Enabled = false; utils.OnModelStageChanged(0); utils.OnFishModelStageChanged(0); }
             UnderwaterRules();
@@ -331,8 +336,10 @@ namespace AquaExpansion.UnderwaterFishing
 
         private bool HasPower()
         {
-            if (block == null || block.Closed || !block.Enabled || !block.IsFunctional)
-                return false;
+            if (block == null || block.Closed || !block.Enabled || !block.IsFunctional || grid == null || grid.Closed || !grid.IsStatic)
+            { //AquaExpansionSession.Insance.Log(true, "block not powered");
+              return false;
+            }
             return sink.IsPoweredByType(MyResourceDistributorComponent.ElectricityId);
         }
 
@@ -450,7 +457,15 @@ namespace AquaExpansion.UnderwaterFishing
         private void ToLoad(AquaFishingSaveData data)
         {
             // rebuild recipe
-            ActiveFishingRecipe = AquaFishingRecipeDatabase.Get(data.RecipeId);
+            switch (FarmBlockType)
+            {
+                case AquaFarmingBlockType.FishingBlock:
+                    ActiveFishingRecipe = AquaFishingRecipeDatabase.Get(data.RecipeId);
+                    break;
+                case AquaFarmingBlockType.FishingBlockAdvance:
+                    ActiveFishingRecipe = AquaFishingRecipeDatabase.GetBigFish(data.RecipeId);
+                    break;
+            }
             baitstage = data.BaitModelStageId;
             fishstage = data.FishModelStageId;
             // rebuild fish instance
@@ -632,7 +647,7 @@ namespace AquaExpansion.UnderwaterFishing
              if(Fish == null || block == null || block.Closed || block.MarkedForClose)
                 return;
             float currentYaw = 0f;
-            Vector3 previousLocalPos = new Vector3(0f, 2f, 0f);
+            Vector3 previousLocalPos = new Vector3(0f, fishoffcet, 0f);
             if (fishstage == 0)
             {
                 MatrixD worldIdle = FishMatrix * block.WorldMatrix;
@@ -641,12 +656,12 @@ namespace AquaExpansion.UnderwaterFishing
             else
             {
                 fishAngle += 0.01f;
-                float radius = 1f;
+                //float radius = 1f;
                 // orbit position
                 Vector3 localOffset = new Vector3(
-                    (float)Math.Cos(fishAngle) * radius,
-                    2.5f + (float)Math.Sin(fishAngle * 2f) * 0.2f,
-                    (float)Math.Sin(fishAngle) * radius
+                    (float)Math.Cos(fishAngle) * fishRadius,
+                    fishoffcet + (float)Math.Sin(fishAngle * 2f) * 0.2f,
+                    (float)Math.Sin(fishAngle) * fishRadius
                 );
                 // movement direction
                 Vector3 moveDir = localOffset - previousLocalPos;
@@ -684,13 +699,13 @@ namespace AquaExpansion.UnderwaterFishing
             }
             else
             {
-                fishAngle += 0.01f;
-                float radius = 0.8f;
+                invfishangle += 0.01f;
+                //float radius = inventoryfishRadius;
                 // orbit position
                 Vector3 localOffset = new Vector3(
-                    (float)Math.Cos(fishAngle) * radius,
-                    0f + (float)Math.Sin(fishAngle * 0.5f) * 0.2f,
-                    (float)Math.Sin(fishAngle) * radius
+                    (float)Math.Cos(invfishangle) * inventoryfishRadius,
+                    0f + (float)Math.Sin(invfishangle * 0.5f) * 0.2f,
+                    (float)Math.Sin(invfishangle) * inventoryfishRadius
                 );
                 // movement direction
                 Vector3 moveDir = localOffset - previousLocalPos;

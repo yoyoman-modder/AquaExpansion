@@ -5,6 +5,7 @@ using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
 using VRage.Game;
+using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.Input;
 using VRage.Utils;
@@ -71,26 +72,26 @@ namespace AquaExpansion.Core
         {
                 {
                  MyStringHash.GetOrCompute("NoGear"),
-                 new DivingGearData{ Level = 0, 
-                     GearmaxSpeed = 4f, 
-                     GearBoost = 1f, 
-                     GearO2MaxRefillDepth = 0f, 
-                     GearO2RefillRate = 0.5f, 
+                 new DivingGearData{ Level = 0,
+                     GearmaxSpeed = 4f,
+                     GearBoost = 1f,
+                     GearO2MaxRefillDepth = 0f,
+                     GearO2RefillRate = 0.5f,
                      GearSaltFilterLevel = 0f,
                      HoverCenterDepth = 0.0f,
                      HoverStrength = 0.0f   ,
                      HoverRange = 0.0f,
                      SinkBias = 6.0f,
                      HoverMinDepth = 0.0f,
-                     HoverMaxDepth = 0.0f}  
+                     HoverMaxDepth = 0.0f}
                 },
                 {
                 MyStringHash.GetOrCompute("AquaDiveGearT1"),
-                new DivingGearData { Level = 1, 
-                    GearmaxSpeed = 6f, 
-                    GearBoost = 1.1f, 
-                    GearO2MaxRefillDepth = 30f, 
-                    GearO2RefillRate = 0.5f, 
+                new DivingGearData { Level = 1,
+                    GearmaxSpeed = 6f,
+                    GearBoost = 1.1f,
+                    GearO2MaxRefillDepth = 30f,
+                    GearO2RefillRate = 0.5f,
                     GearSaltFilterLevel = 0.3f,
                     HoverCenterDepth = -15,
                     HoverStrength = 2,
@@ -101,11 +102,11 @@ namespace AquaExpansion.Core
                 },
                 {
                 MyStringHash.GetOrCompute("AquaDiveGearT2"),
-                new DivingGearData { Level = 2, 
-                    GearmaxSpeed = 8f, 
-                    GearBoost = 1.25f, 
-                    GearO2MaxRefillDepth = 60f, 
-                    GearO2RefillRate = 0.9f, 
+                new DivingGearData { Level = 2,
+                    GearmaxSpeed = 8f,
+                    GearBoost = 1.25f,
+                    GearO2MaxRefillDepth = 60f,
+                    GearO2RefillRate = 0.9f,
                     GearSaltFilterLevel = 0.5f,
                     HoverCenterDepth = -25,
                     HoverStrength = 3.5,
@@ -116,11 +117,11 @@ namespace AquaExpansion.Core
                 },
                 {
                 MyStringHash.GetOrCompute("AquaDiveGearT3"),
-                new DivingGearData { Level = 3, 
-                    GearmaxSpeed = 11f, 
-                    GearBoost = 1.50f, 
-                    GearO2MaxRefillDepth = 100f, 
-                    GearO2RefillRate = 1.2f, 
+                new DivingGearData { Level = 3,
+                    GearmaxSpeed = 11f,
+                    GearBoost = 1.50f,
+                    GearO2MaxRefillDepth = 100f,
+                    GearO2RefillRate = 1.2f,
                     GearSaltFilterLevel = 0.7f,
                     HoverCenterDepth = -50,
                     HoverStrength = 5,
@@ -133,7 +134,7 @@ namespace AquaExpansion.Core
         private double? TargetDepth = null; //autodepth
         public int PlayerGearlevelIndx = 0;
         public bool PlayerOxygenRefillActive = false;
-
+        //private UnderwaterBuoyancyPID PID = new UnderwaterBuoyancyPID();
         public void GetDiverGearLevel(IMyCharacter character, out int gearlevel)
         {
             gearlevel = 0;
@@ -312,7 +313,7 @@ namespace AquaExpansion.Core
             double currentVertical = Vector3D.Dot(vel, upDir);
             // smooth response
             double vt = 1.0 - Math.Exp(-8.0 * deltaTime);
-            verticalVel = MathHelper.Lerp(currentVertical,targetVertical,vt);
+            verticalVel = MathHelper.Lerp(currentVertical, targetVertical, vt);
             // final
             Vector3D finalVel = horizontalVel + upDir * verticalVel;
             // safety clamp
@@ -332,6 +333,7 @@ namespace AquaExpansion.Core
                 $"\nhVel {horizontalVel.Length():0.00}" +
                 $"\nvVel {verticalVel:0.00}" +
                 $"\nfinal {finalVel.Length():0.00}");*/
+            //double targetSinkSpeed = 0.2;
         }
 
         private void RefillOxygen(IMyCharacter character, float deltaTime, float depth, long ID, float salt, int glevel)
@@ -414,7 +416,7 @@ namespace AquaExpansion.Core
             MyVisualScriptLogicProvider.SetPlayersOxygenLevel(ID, targetO2);
         }
 
-        public void UpdateSeabedMovement(IMyCharacter character, long ID)
+        private void UpdateSeabedMovement(IMyCharacter character, long ID)
         {
             if (character == null || character.Closed || character.IsDead)
                 return;
@@ -444,7 +446,7 @@ namespace AquaExpansion.Core
             }
         }
 
-        Vector3D GetInputDirection()
+        private Vector3D GetInputDirection()
         {
             var ctrl = MyAPIGateway.Input;
             Vector3D dir = Vector3D.Zero;
@@ -454,6 +456,161 @@ namespace AquaExpansion.Core
             if (ctrl.IsKeyPress(MyKeys.D)) dir += Vector3D.Right;
             return dir;
         }
-    }
 
+        public  class UnderwaterBuoyancyPID
+        {
+            private Vector3D position;
+            private Vector3D gravity;
+            private double mass;
+            private Vector3D gravityDir;
+            private Vector3D velocity;
+            private double integral;
+            private double lastError;
+            private bool ready;
+            public double MaxIntegral = 10.0;
+            public double VerticalDamping = 0.8;
+            private double verticalSpeed;
+            private double overload;
+            private double efficiency;
+            private Vector3D baseBuoyancy;
+            private double correction;
+            private Vector3D correctionForce;
+            private Vector3D dampingForce;
+            private Vector3D finalForce;
+
+            public  void Reset()
+            {
+                integral = 0;
+                lastError = 0;
+                correction = 0;
+                correctionForce = Vector3D.Zero;
+                dampingForce = Vector3D.Zero;
+                finalForce = Vector3D.Zero;
+                efficiency = 0;
+                baseBuoyancy = Vector3D.Zero;
+                ready = false;
+            }
+
+            public void Update(IMyCharacter character, float deltaTime, double depth, double targetSinkSpeed, int gearLevel, double VertSpeeed)
+            {
+                if (character == null || character.Closed || character.IsDead)
+                    return;
+                if (!WaterModAPI.IsUnderwater(character.GetPosition()))
+                { Reset(); return; }
+                if (deltaTime <= 0f)
+                    return;
+                var physics = character.Physics;
+                if (physics == null)
+                    return;
+                position = character.GetPosition();
+                float interference;
+                gravity = MyAPIGateway.Physics.CalculateNaturalGravityAt(position, out interference);
+                if (gravity.LengthSquared() < 0.000001)
+                    return;
+                mass = physics.Mass;
+                gravityDir = Vector3D.Normalize(gravity);
+                velocity = physics.LinearVelocity;
+                // positive = sinking
+                verticalSpeed = Vector3D.Dot(velocity, gravityDir);
+                //double verticalSpeed = VertSpeeed;
+                double buoyancyFactor = 0.0;
+                double Kp = 0.0;
+                double Ki = 0.0;
+                double Kd = 0.0;
+                double maxCorrection = 0.0;
+                // Max depth where gear can hover efficiently
+                // deeper = reduced buoyancy
+                double maxHoverDepth = 0.0;
+                switch (gearLevel)
+                {
+                    default:
+                    case 0:
+                        buoyancyFactor = 0.20;
+                        Kp = 0.4;
+                        Ki = 0.01;
+                        Kd = 0.2;
+                        maxCorrection = 0.25;
+                        maxHoverDepth = 5.0;
+                        break;
+                    case 1:
+                        buoyancyFactor = 0.65;
+                        Kp = 1.1;
+                        Ki = 0.03;
+                        Kd = 0.6;
+                        maxCorrection = 0.8;
+                        maxHoverDepth = 40.0;
+                        break;
+
+                    case 2:
+                        buoyancyFactor = 0.95;
+                        Kp = 1.9;
+                        Ki = 0.06;
+                        Kd = 1.0;
+                        maxCorrection = 1.2;
+                        maxHoverDepth = 120.0;
+                        break;
+
+                    case 3:
+                        buoyancyFactor = 0.4;
+                        Kp = 0.5;
+                        Ki = 0.01;
+                        Kd = 0.2;
+                        maxCorrection = 0.25;
+                        maxHoverDepth = 40.0;
+                        break;
+                }
+                // Beyond max hover depth
+                // gear starts losing efficiency
+                double depthAbs = Math.Abs(depth);
+                if (depthAbs > maxHoverDepth)
+                {
+                    overload = (depthAbs - maxHoverDepth) /maxHoverDepth;
+                    overload = MathHelper.Clamp((float)overload,0f,0.85f);
+                    efficiency = 1.0 - overload;
+                    buoyancyFactor *= efficiency;
+                    maxCorrection *= efficiency;
+                }
+                baseBuoyancy = -gravity * mass * buoyancyFactor;
+                // PID ERROR
+                double error = targetSinkSpeed - verticalSpeed;
+                // Integral
+                integral += error * deltaTime;
+                integral = MathHelper.Clamp((float)integral,(float)-MaxIntegral,(float)MaxIntegral);
+                // Derivative
+                double derivative = 0.0;
+                if (ready)
+                {
+                    derivative =(error - lastError) / deltaTime;
+                }
+                lastError = error;
+                ready = true;
+                // PID output
+                correction = (Kp * error) + (Ki * integral) + (Kd * derivative);
+                correction = MathHelper.Clamp((float)correction,(float)-maxCorrection,(float)maxCorrection);
+                // PID FORCE
+                correctionForce = -gravityDir * correction * mass * 9.81;
+                // VERTICAL DAMPING
+                dampingForce = -gravityDir * verticalSpeed * mass * VerticalDamping;
+                // FINAL FORCE
+                finalForce = baseBuoyancy + correctionForce + dampingForce;
+                physics.AddForce(MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,finalForce, position,null);
+                //debug
+                AquaExpansionSession.Insance.Log(true,
+                    $"vertSpeed {verticalSpeed}" +
+                    $"\ndepthABS {depthAbs}" +
+                    $"\noverload {overload}" +
+                    $"\nefficiency {efficiency}" +
+                    $"\nbuoynancyFactor {buoyancyFactor}" +
+                    $"\nmaxCorrection {maxCorrection}" +
+                    $"\nbasebuoynancy {baseBuoyancy}" +
+                    $"\nI {integral}" +
+                    $"\nError {error}" +
+                    $"\nD {derivative}" +
+                    $"\nCorrection {correction}" +
+                    $"\nCorrectionForce {correctionForce}" +
+                    $"\nDampingForce {dampingForce}" +
+                    $"\nfinal {finalForce.Length():0.00}");
+            }
+        }
+    }
 }

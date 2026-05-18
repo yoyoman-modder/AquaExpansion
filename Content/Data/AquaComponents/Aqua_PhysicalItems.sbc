@@ -509,6 +509,36 @@
 			<MaximumOfferAmount>0</MaximumOfferAmount>
 			<CanPlayerOrder>false</CanPlayerOrder>
 		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaFish_BigFishPieces</SubtypeId>
+			</Id>
+			<DisplayName>Big Fish Pieces</DisplayName>
+			<Description>
+				Large untreated chunks of aquatic creature flesh rich in nutrients, but unsafe for long-term human consumption.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<IconSymbol>FISH</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>5</Mass>
+			<Volume>5</Volume>
+			<Model>Models\Items\Aqua_MealPack_generic.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.002" Time="15"/>
+				<Stat Name="Food" Value="0.016" Time="12"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
 		<!--End Fish Food ingredients-->
 		<!--Fish Food-->
 		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">

@@ -131,6 +131,44 @@
 				</Entry>
 			</InputConstraint>
 		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>UnderwaterFishingStation</SubtypeId>
+			</Id>
+			<Size x="5" y="5" z="5" />
+			<Volume>5</Volume>
+			<InputConstraint Whitelist="true" Description="FishingItems" Icon="Textures\GUI\Icons\Cubes\UnderwaterFishingStation.dds">
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaFishBait_HydroFeed</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaFishBait_ProteinLure</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaFishBait_XenoLure</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_bottlenoseDolphin</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_nurseShark</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_seaTurtle</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>ConsumableItem</TypeId>
+					<SubtypeId>AquaFishdRaw_whaleShark</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
 		<!-- End Region Inventory-->
 		<!-- Region Mod Storage-->
 		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
@@ -149,6 +187,15 @@
 			</Id>
 			<RegisteredStorageGuids>
 				<guid>2673ED55-DB43-4849-BBA7-5120CFEE1B8F</guid>
+			</RegisteredStorageGuids>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
+			<Id>
+				<TypeId>ModStorageComponent</TypeId>
+				<SubtypeId>UnderwaterFishingStation</SubtypeId>
+			</Id>
+			<RegisteredStorageGuids>
+				<guid>4C6CC8D7-D511-440B-A45A-7F40940900E4</guid>
 			</RegisteredStorageGuids>
 		</EntityComponent>
 		<!-- End Region Mod Storage-->
@@ -198,6 +245,23 @@
 				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_reefFish20" />
 				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_yellowTang" />
 				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_tinyYellowFish" />
+			</PushConstraint>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_ConveyorEndpointComponentDefinition">
+			<Id>
+				<TypeId>ConveyorEndpointComponent</TypeId>
+				<SubtypeId>UnderwaterFishingStation</SubtypeId>
+			</Id>
+			<PullConstraint Whitelist="true" Description="FishingItems" Icon="Textures\GUI\Icons\Cubes\UnderwaterFishingStation.dds">
+				<Entry Type="Component" Subtype="AquaFishBait_HydroFeed" />
+				<Entry Type="Component" Subtype="AquaFishBait_ProteinLure" />
+				<Entry Type="Component" Subtype="AquaFishBait_XenoLure" />
+			</PullConstraint>
+			<PushConstraint Whitelist="true" Description="FishingItems" Icon="Textures\GUI\Icons\Cubes\UnderwaterFishingStation.dds">
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_bottlenoseDolphin" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_nurseShark" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_seaTurtle" />
+				<Entry Type="ConsumableItem" Subtype="AquaFishdRaw_whaleShark" />
 			</PushConstraint>
 		</EntityComponent>
 		<!--End Region Cnoveoir-->

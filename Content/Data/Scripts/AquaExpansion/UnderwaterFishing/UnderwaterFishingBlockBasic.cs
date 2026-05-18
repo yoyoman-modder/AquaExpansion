@@ -17,7 +17,6 @@ namespace AquaExpansion.UnderwaterFishing
             HasModStorage = true;
             usebigfishdata = false;
             base.Init(objectBuilder);
-           
         }
 
         protected override void LoadingUnderwaterFishingData()

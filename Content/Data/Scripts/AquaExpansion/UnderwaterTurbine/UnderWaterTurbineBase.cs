@@ -106,13 +106,13 @@ namespace AquaExpansion.UnderwaterTurbine
         {
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
-            if (grid == null || grid.Closed || grid.MarkedForClose)
-                return;
+            //if (grid == null || grid.Closed || grid.MarkedForClose)
+                //return;
             if (grid.Physics == null)
                 return;
-            if (!grid.IsStatic)
-                return;
-            if (!WaterModAPI.IsUnderwater(block.GetPosition()))
+            //if (!grid.IsStatic)
+                //return;
+            if (!WaterModAPI.IsUnderwater(block.GetPosition()) || !grid.IsStatic || grid == null || grid.Closed || grid.MarkedForClose)
                 block.Enabled = false;
             UpdateTurbineBlades();
             base.UpdateBeforeSimulation();

@@ -822,7 +822,10 @@
 				<SubtypeId>UnderwaterFarmPlot</SubtypeId>
 			</Id>
 			<DisplayName>Underwater Farm Plot</DisplayName>
-			<Description>Underwater Farm Plot</Description>
+			<Description>
+				A reinforced underwater cultivation plot engineered for growing aquatic plants and ocean crops beneath the surface.
+				Provides a stable environment for hydroponic farming in deep-sea colonies and submerged industrial bases.
+			</Description>
 			<Icon>Textures\GUI\Icons\Cubes\FarmPlot.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<CubeSize>Large</CubeSize>
@@ -952,7 +955,10 @@
 				<SubtypeId>UnderwaterFishingBlock</SubtypeId>
 			</Id>
 			<DisplayName>Underwater Fishing  Trap</DisplayName>
-			<Description>Underwater Fishing  Trap</Description>
+			<Description>
+				An automated underwater fishing platform designed to attract and harvest marine life in deep ocean environments.
+				Uses advanced technology to passively collect fish over time while operating fully submerged.
+			</Description>
 			<Icon>Textures\GUI\Icons\Cubes\UnderwaterFishingBlock.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<CubeSize>Large</CubeSize>
@@ -964,12 +970,19 @@
 			<ModelOffset x="0" y="0" z="0" />
 			<Model>Models\Cubes\large\UnderwaterFishingBlock.mwm</Model>
 			<Components>
-				<Component Subtype="InteriorPlate" Count="20" />
-				<Component Subtype="Construction" Count="20" />
-				<Component Subtype="SmallTube" Count="10" />
-				<Component Subtype="Construction" Count="20" />
-				<Component Subtype="InteriorPlate" Count="20" />
-				<Component Subtype="Computer" Count="2" />
+				<Component Subtype="SteelPlate" Count="90" />
+				<Component Subtype="InteriorPlate" Count="45" />
+				<Component Subtype="Construction" Count="70" />
+				<Component Subtype="SmallTube" Count="35" />
+				<Component Subtype="LargeTube" Count="12" />
+				<Component Subtype="Motor" Count="16" />
+				<Component Subtype="Computer" Count="12" />
+				<Component Subtype="Display" Count="4" />
+				<Component Subtype="MetalGrid" Count="28" />
+				<Component Subtype="Girder" Count="12" />
+				<Component Subtype="SaltPowerCell" Count="4" />
+				<Component Subtype="Detector" Count="2" />
+				<Component Subtype="RadioCommunication" Count="2" />
 			</Components>
 			<CriticalComponent Subtype="Computer" Index="0" />
 			<MountPoints>
@@ -1004,7 +1017,134 @@
 			<RequiredPowerInput>0.0005</RequiredPowerInput>
 			<PCU>55</PCU>
 		</Definition>
+		<Definition xsi:type="MyObjectBuilder_FunctionalBlockDefinition">
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>UnderwaterFishingStation</SubtypeId>
+			</Id>
+			<DisplayName>Underwater Fishing  Station</DisplayName>
+			<Description>
+				An automated underwater fishing platform designed to attract and harvest marine life in deep ocean environments.
+				Uses advanced technology to passively collect fish over time while operating fully submerged.
+			</Description>
+			<Icon>Textures\GUI\Icons\Cubes\UnderwaterFishingStation.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<CubeSize>Large</CubeSize>
+			<GuiVisible>false</GuiVisible>
+			<PlaceDecals>false</PlaceDecals>
+			<ResearchCost>5</ResearchCost>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="6" y="4" z="8" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\large\UnderwaterFishingStation.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="180" />
+				<Component Subtype="InteriorPlate" Count="120" />
+				<Component Subtype="Construction" Count="140" />
+				<Component Subtype="LargeTube" Count="40" />
+				<Component Subtype="SmallTube" Count="80" />
+				<Component Subtype="Motor" Count="35" />
+				<Component Subtype="Computer" Count="45" />
+				<Component Subtype="Display" Count="12" />
+				<Component Subtype="Girder" Count="30" />
+				<Component Subtype="MetalGrid" Count="60" />
+				<Component Subtype="SaltPowerCell" Count="20" />
+				<Component Subtype="Detector" Count="10" />
+				<Component Subtype="RadioCommunication" Count="6" />
+			</Components>
+			<CriticalComponent Subtype="Computer" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Front" StartX="0.00" StartY="0.00" EndX="6.00" EndY="4.00"/>
+				<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="6.00" EndY="4.00"/>
+				<MountPoint Side="Left" StartX="0.00" StartY="0.00" EndX="8.00" EndY="4.00"/>
+				<MountPoint Side="Right" StartX="0.00" StartY="0.00" EndX="8.00" EndY="4.00"/>
+				<MountPoint Side="Bottom" StartX="0.00" StartY="0.00" EndX="6.00" EndY="8.00"/>
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\large\UnderwaterFishingStation_BS1.mwm"/>
+				<Model BuildPercentUpperBound="0.67" File="Models\Cubes\large\UnderwaterFishingStation_BS2.mwm"/>
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\large\UnderwaterFishingStation_BS3.mwm"/>
+			</BuildProgressModels>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>30</BuildTimeSeconds>
+			<DamageEffectId>214</DamageEffectId>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<DestroySound>ParticleWeapExpl</DestroySound>
+			<EmissiveColorPreset>Default</EmissiveColorPreset>
+			<IsAirTight>false</IsAirTight>
+			<VoxelPlacement>
+				<StaticMode>
+					<PlacementMode>OutsideVoxel</PlacementMode>
+				</StaticMode>
+				<DynamicMode>
+					<PlacementMode>OutsideVoxel</PlacementMode>
+				</DynamicMode>
+			</VoxelPlacement>
+			<ResourceSinkGroup>Utility</ResourceSinkGroup>
+			<RequiredPowerInput>0.0005</RequiredPowerInput>
+			<PCU>55</PCU>
+		</Definition>
 		<!--End Region AquaExpansion Farming blocks-->
+		<!--Region Special blocks-->
+		<Definition xsi:type="MyObjectBuilder_UpgradeModuleDefinition">
+			<Id>
+				<TypeId>UpgradeModule</TypeId>
+				<SubtypeId>AquaCargoUpgradeModule</SubtypeId>
+			</Id>
+			<DisplayName>Cargo Upgrade Module</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\AquaCargoUpgradeModule.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<Description>
+				Enhances connected industrial blocks with expanded internal cargo capacity.
+				Optimized storage compression systems allow processors to handle larger material volumes efficiently.
+			</Description>
+			<CubeSize>Large</CubeSize>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="3" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\large\AquaCargoUpgradeModule.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="80" />
+				<Component Subtype="Construction" Count="40" />
+				<Component Subtype="SmallTube" Count="20" />
+				<Component Subtype="Computer" Count="60" />
+				<Component Subtype="Motor" Count="4" />
+				<Component Subtype="SteelPlate" Count="20" />
+			</Components>
+			<CriticalComponent Subtype="Motor" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Front" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+				<MountPoint Side="Left" StartX="1.00" StartY="0.00" EndX="2.00" EndY="1.00"/>
+				<MountPoint Side="Right" StartX="1.00" StartY="0.00" EndX="2.00" EndY="1.00"/>
+				<MountPoint Side="Top" StartX="0.00" StartY="1.00" EndX="1.00" EndY="2.00"/>
+				<MountPoint Side="Bottom" StartX="0.00" StartY="1.00" EndX="1.00" EndY="2.00"/>
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\large\AquaCargoUpgradeModule_BS1.mwm"/>
+				<Model BuildPercentUpperBound="0.67" File="Models\Cubes\large\AquaCargoUpgradeModule_BS2.mwm"/>
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\large\AquaCargoUpgradeModule_BS3.mwm"/>
+			</BuildProgressModels>
+			<BlockPairName>AquaCargoUpgradeModule</BlockPairName>
+			<EdgeType>Light</EdgeType>
+			<Upgrades>
+				<MyUpgradeModuleInfo>
+					<UpgradeType>Cargo</UpgradeType>
+					<Modifier>20.5</Modifier>
+					<ModifierType>Additive</ModifierType>
+				</MyUpgradeModuleInfo>
+			</Upgrades>
+			<PrimarySound>BlockModuleProductivity</PrimarySound>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<EmissiveColorPreset>Default</EmissiveColorPreset>
+			<DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
+			<DestroySound>WepSmallWarheadExpl</DestroySound>
+			<PCU>1</PCU>
+			<IsAirTight>false</IsAirTight>
+		</Definition>
+		<!--End Region Special blocks-->
 		<!--Region AquaExpansion Submarine blocks-->
 		<!--<Definition xsi:type="MyObjectBuilder_FunctionalBlockDefinition">
 			<Id>
@@ -1017,7 +1157,7 @@
 			<Description>Submarine Ballast Tank</Description>
 			<CubeSize>Large</CubeSize>
 			<BlockTopology>TriangleMesh</BlockTopology>
-			<Size x="1" y="1" z="1" />
+			<Size x="6" y="4" z="8" />
 			<ModelOffset x="0" y="0" z="0" />
 			<Model>Models\Cubes\Large\Transponder.mwm</Model>
 			<Components>
@@ -1065,7 +1205,7 @@
 			<CubeSize>Small</CubeSize>
 			<GuiVisible>false</GuiVisible>
 			<BlockTopology>TriangleMesh</BlockTopology>
-			<Size x="1" y="1" z="1" />
+			<Size x="6" y="4" z="8" />
 			<ModelOffset x="0" y="0" z="0" />
 			<Model>Models\Cubes\Small\Transponder.mwm</Model>
 			<Components>
@@ -1112,7 +1252,7 @@
 			<CubeSize>Large</CubeSize>
 			<YesNoToolbarBackground>true</YesNoToolbarBackground>
 			<BlockTopology>TriangleMesh</BlockTopology>
-			<Size x="1" y="1" z="1" />
+			<Size x="6" y="4" z="8" />
 			<ModelOffset x="0" y="0" z="0" />
 			<Model>Models\Cubes\Large\EventController.mwm</Model>
 			<Components>
@@ -1152,7 +1292,7 @@
 			<YesNoToolbarBackground>true</YesNoToolbarBackground>
 			<CubeSize>Small</CubeSize>
 			<BlockTopology>TriangleMesh</BlockTopology>
-			<Size x="1" y="1" z="1" />
+			<Size x="6" y="4" z="8" />
 			<ModelOffset x="0" y="0" z="0" />
 			<Model>Models\Cubes\Small\EventController.mwm</Model>
 			<Components>

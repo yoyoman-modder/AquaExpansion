@@ -88,6 +88,11 @@
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_SeaweedRation" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_KelpNutrientPaste" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_RedAlgaeExtract" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_Fish_Protein_Ration_Pack" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_Fish_Fried_Fish_Meal" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_Fish_Nutrient_Paste_Tube" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_Fish_Deepwater_Stew" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_Fish_Omega_Nutrient_Block" />
 		<!--New Food Processor -->
 		<Entry Class="AquaFishing" BlueprintSubtypeId="Aqua_BaitT1" />
 		<Entry Class="AquaFishing" BlueprintSubtypeId="Aqua_BaitT2" />
@@ -110,13 +115,13 @@
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_ReefFishK" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_TinyYellowFish" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_YellowTang" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Big_Fish_Pieces" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishFluid_Oil" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Protein_Paste" />
-		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Protein_Ration_Pack" />
-		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Fried_Fish_Meal" />
-		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Nutrient_Paste_Tube" />
-		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Deepwater_Stew" />
-		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Omega_Nutrient_Block" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_Fish_Oil_Medical_Gel" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Nurse_Shark" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Sea_Turtle" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Bottlenose_Dolphin" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Whale_Shark" />
     </BlueprintClassEntries>
 </Definitions>
