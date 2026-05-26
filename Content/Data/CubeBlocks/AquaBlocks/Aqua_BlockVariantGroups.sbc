@@ -50,28 +50,52 @@
 			</Blocks>
 		</BlockVariantGroup>
 
-		<!--<BlockVariantGroup>
-			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaSubmarineBallastTankGroup" />
-			<Icon>Textures\GUI\Icons\Cubes\Transponder.dds</Icon>
+		<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterEnginesBasicFlatSmallGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\LargeFlatAtmosphericThrusterSmall.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
-			<DisplayName>Submarine Ballast Tank</DisplayName>
-			<Description>Submarine Ballast Tank</Description>
+			<DisplayName>UnderWater Rotor  Engine Basic Flat Small</DisplayName>
+			<Description>UnderWater Rotor  Engine Basic Flat Small</Description>
 			<Blocks>
-				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="LargeBlockSubmarineBallastTank" />
-				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="SmallBlockSubmarineBallastTank" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicFlatSmall" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicDFlatSmall" />
 			</Blocks>
-		</BlockVariantGroup>-->
+		</BlockVariantGroup>
 
-		<!--<BlockVariantGroup>
-			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaSubmarineControllerGroup" />
-			<Icon>Textures\GUI\Icons\Cubes\EventController_large.dds</Icon>
+		<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterEnginesBasicFlatMediumGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\SmallFlatAtmosphericThrusterDShapeLarge.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
-			<DisplayName>Submarine Controller</DisplayName>
-			<Description>Submarine Controller</Description>
+			<DisplayName>UnderWater Rotor  Engine Basic Flat Medium</DisplayName>
+			<Description>UnderWater Rotor  Engine Basic Flat Medium</Description>
 			<Blocks>
-				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="SubmarineControllerL" />
-				<Block Type="MyObjectBuilder_FunctionalBlock" Subtype="SubmarineControllerS" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicFlatMedium" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicDFlatMedium" />
 			</Blocks>
-		</BlockVariantGroup>-->
+		</BlockVariantGroup>
+
+		<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterEnginesBasicFlatLargeGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\LargeFlatAtmosphericThrusterSmall.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<DisplayName>UnderWater Rotor  Engine Basic Flat Large</DisplayName>
+			<Description>UnderWater Rotor  Engine Basic Flat Large</Description>
+			<Blocks>
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicFlatLarge" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicDFlatLarge" />
+			</Blocks>
+		</BlockVariantGroup>
+
+		<BlockVariantGroup>
+			<Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterEnginesBasicFlatXLargeGroup" />
+			<Icon>Textures\GUI\Icons\Cubes\LargeFlatAtmosphericThrusterLarge.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<DisplayName>UnderWater Rotor  Engine Basic Flat X Large</DisplayName>
+			<Description>UnderWater Rotor  Engine Basic Flat X Large</Description>
+			<Blocks>
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicFlatXLarge" />
+				<Block Type="MyObjectBuilder_Thrust" Subtype="UnderwaterEngineBasicDFlatXLarge" />
+			</Blocks>
+		</BlockVariantGroup>
     </BlockVariantGroups>
 </Definitions>

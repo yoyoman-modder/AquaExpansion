@@ -12,6 +12,7 @@ using VRage.Utils;
 using VRageMath;
 
 
+
 namespace AquaExpansion.Core
 {
     public struct DivingGearData
@@ -22,12 +23,16 @@ namespace AquaExpansion.Core
         public float GearO2MaxRefillDepth;
         public float GearO2RefillRate;
         public float GearSaltFilterLevel;
-        public double HoverCenterDepth;    // min hover
-        public double HoverStrength;      // max hover
-        public double HoverRange; // hover range
-        public float SinkBias;     // natural sinking
+        public double SurfaceFloatingMin;    // min surface
+        public double SurfaceFloatingMax;      // max surface
+        public double MaxSinkSpeed; 
+        public float SinkBias;
         public double HoverMinDepth;
-        public double HoverMaxDepth;    
+        public double HoverMaxDepth;
+        public double BuoyancyFactor;
+        public double SwimForce;
+        public double MaxseabedSpeed;
+
         public DivingGearData(
         int level,
         float maxSpeed,
@@ -35,12 +40,15 @@ namespace AquaExpansion.Core
         float maxRefillDepth,
         float refillRate,
         float saltFilter,
-        double hoverCenterDepth,
-        double hoverStrength,
-        double hoverRange,
-         double hoverMinDepth,
-         double hoverMaxDepth,
-        float sinkBias)
+        double surfaceFloatingMin,
+        double surfaceFloatingMax,
+        double maxSinkSpeed,
+        double hoverMinDepth,
+        double hoverMaxDepth,
+        double buoyancyFactor,
+        double swimForce,
+        float sinkBias,
+        double maxSeabedSpeed)
 
         {
             Level = level;
@@ -49,12 +57,15 @@ namespace AquaExpansion.Core
             GearO2MaxRefillDepth = maxRefillDepth;
             GearO2RefillRate = refillRate;
             GearSaltFilterLevel = saltFilter;
-            HoverCenterDepth = hoverCenterDepth;
-            HoverStrength = hoverStrength;
-            HoverRange = hoverRange;
+            SurfaceFloatingMin = surfaceFloatingMin;
+            SurfaceFloatingMax = surfaceFloatingMax;
+            MaxSinkSpeed = maxSinkSpeed;
             SinkBias = sinkBias;
             HoverMinDepth = hoverMinDepth;
             HoverMaxDepth = hoverMaxDepth;
+            BuoyancyFactor = buoyancyFactor;
+            SwimForce = swimForce;
+            MaxseabedSpeed = maxSeabedSpeed;
         }
     }
 
@@ -78,12 +89,16 @@ namespace AquaExpansion.Core
                      GearO2MaxRefillDepth = 0f,
                      GearO2RefillRate = 0.5f,
                      GearSaltFilterLevel = 0f,
-                     HoverCenterDepth = 0.0f,
-                     HoverStrength = 0.0f   ,
-                     HoverRange = 0.0f,
+                     SurfaceFloatingMin = 0.0,
+                     SurfaceFloatingMax = 2.0,
+                     MaxSinkSpeed = 4.0,
                      SinkBias = 6.0f,
-                     HoverMinDepth = 0.0f,
-                     HoverMaxDepth = 0.0f}
+                     HoverMinDepth = 0.0,
+                     HoverMaxDepth = 2.0,
+                     BuoyancyFactor = 0.02,
+                     SwimForce = -0.9,
+                     MaxseabedSpeed = 2.0
+                 }
                 },
                 {
                 MyStringHash.GetOrCompute("AquaDiveGearT1"),
@@ -93,12 +108,16 @@ namespace AquaExpansion.Core
                     GearO2MaxRefillDepth = 30f,
                     GearO2RefillRate = 0.5f,
                     GearSaltFilterLevel = 0.3f,
-                    HoverCenterDepth = -15,
-                    HoverStrength = 2,
-                    HoverRange = 8,
+                    SurfaceFloatingMin = 0.0,
+                    SurfaceFloatingMax = 2.0,
+                    MaxSinkSpeed = 3.0,
                     SinkBias = 3.5f,
-                    HoverMinDepth = -20,
-                    HoverMaxDepth = -10}
+                    HoverMinDepth = 2.0,
+                    HoverMaxDepth = 15.0,
+                    BuoyancyFactor = 0.05,
+                    SwimForce = -0.5,
+                    MaxseabedSpeed = 3.0
+                }
                 },
                 {
                 MyStringHash.GetOrCompute("AquaDiveGearT2"),
@@ -108,12 +127,16 @@ namespace AquaExpansion.Core
                     GearO2MaxRefillDepth = 60f,
                     GearO2RefillRate = 0.9f,
                     GearSaltFilterLevel = 0.5f,
-                    HoverCenterDepth = -25,
-                    HoverStrength = 3.5,
-                    HoverRange = 15,
+                    SurfaceFloatingMin = 0.0,
+                    SurfaceFloatingMax = 2.0,
+                    MaxSinkSpeed = 2.5,
                     SinkBias = 1.5f,
-                    HoverMinDepth = -30,
-                    HoverMaxDepth = -20}
+                    HoverMinDepth = 15.0,
+                    HoverMaxDepth = 40.0,
+                    BuoyancyFactor = 0.08,
+                    SwimForce = -0.25,
+                    MaxseabedSpeed = 4.0
+                }
                 },
                 {
                 MyStringHash.GetOrCompute("AquaDiveGearT3"),
@@ -123,18 +146,24 @@ namespace AquaExpansion.Core
                     GearO2MaxRefillDepth = 100f,
                     GearO2RefillRate = 1.2f,
                     GearSaltFilterLevel = 0.7f,
-                    HoverCenterDepth = -50,
-                    HoverStrength = 5,
-                    HoverRange = 30,
+                    SurfaceFloatingMin = 0.0,
+                    SurfaceFloatingMax = 2.0,
+                    MaxSinkSpeed = 1.5,
                     SinkBias = -0.5f,
-                    HoverMinDepth = -50,
-                    HoverMaxDepth = -30}
+                    HoverMinDepth = 20.0,
+                    HoverMaxDepth = 300.0,
+                    BuoyancyFactor = 0.1,
+                    SwimForce = -0.1,
+                    MaxseabedSpeed = 5.0
+                }
                 }
         };
-        private double? TargetDepth = null; //autodepth
         public int PlayerGearlevelIndx = 0;
         public bool PlayerOxygenRefillActive = false;
-        //private UnderwaterBuoyancyPID PID = new UnderwaterBuoyancyPID();
+        private UnderwaterBuoyancyPID PID;
+        private Dictionary<long, UnderwaterBuoyancyPID> playerPID = new Dictionary<long, UnderwaterBuoyancyPID>();
+        private int loadGraceTicks = 0;
+        private bool wasNearSeabed = false;
         public void GetDiverGearLevel(IMyCharacter character, out int gearlevel)
         {
             gearlevel = 0;
@@ -168,6 +197,7 @@ namespace AquaExpansion.Core
                 return;
             float delta = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS; // changed
             bool underwater = WaterModAPI.IsUnderwater(character.GetPosition());
+
             if (!underwater)
                 return;
             var depth = AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character);
@@ -180,11 +210,11 @@ namespace AquaExpansion.Core
             }
             else
             {
-                UpdateSeabedMovement(character, ID);
-                if (tick % 20 != 0) // every ~0.3 sec
+                UpdateSeabedMovement(character, ID, depth);
+                if (tick % 10 != 0) // every ~0.3 sec
                     return;
                 PlayerOxygenRefillActive = false;
-                UpdateUnderwaterMovement(character, delta, depth, salt, 0);
+                UpdateUnderwaterMovement(character, delta, depth, salt, 0, ID);
             }
             PlayerGearlevelIndx = gearlevel;
         }
@@ -201,19 +231,34 @@ namespace AquaExpansion.Core
                 return;
             float depth = AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character);
             float salt = AquaExpansionSession.Insance.GetSaltlevelbyPlayer(character, depth);
-            UpdateSeabedMovement(character, ID);
-            if (tick % 20 != 0) // every ~0.3 sec
+            UpdateSeabedMovement(character, ID, depth);
+            if (tick % 10 != 0) // every ~0.3 sec
                 return;
-            UpdateUnderwaterMovement(character, deltaTime, depth, salt, glevel);
+            UpdateUnderwaterMovement(character, deltaTime, depth, salt, glevel, ID);
             RefillOxygen(character, deltaTime, depth, ID, salt, glevel);
         }
 
-        private void UpdateUnderwaterMovement(IMyCharacter character, float deltaTime, float depth, float saltLevel, int glevel)
+        private void UpdateUnderwaterMovement(IMyCharacter character, float deltaTime, float depth, float saltLevel, int glevel, long ID)
         {
             if (character == null || character.IsDead || character.Closed)
+            {
+                RemovePID(ID);
                 return;
+            }
             if (!WaterModAPI.IsUnderwater(character.GetPosition()))
+            {
+                RemovePID(ID);
                 return;
+            }
+            var eox = MyAPIGateway.Session.OxygenProviderSystem.GetOxygenInPoint(character.GetPosition());
+            float ingridox;
+            AquaExpansionSession.Insance.GetInAirtightGrid(character, out ingridox);
+            if (eox > AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL || ingridox > AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL 
+                || AquaExpansionSession.Insance.IsPlayerProtected(MyAPIGateway.Session?.Player))
+            {
+                RemovePID(ID);
+                return;
+            }
             // Get live jetpack component
             var j = character.Components.Get<MyCharacterJetpackComponent>();
             if (j != null)
@@ -255,11 +300,7 @@ namespace AquaExpansion.Core
                     GearSaltFilterLevel = 0f,
                     GearO2RefillRate = OxygenRefillRate,
                     GearO2MaxRefillDepth = MaxDepthForRefill,
-                    HoverCenterDepth = -30,
-                    HoverRange = 20,
                     SinkBias = 2.0f,
-                    HoverMinDepth = -30,
-                    HoverMaxDepth = -10
                 };
             }
             //salt penalty
@@ -321,19 +362,11 @@ namespace AquaExpansion.Core
             double fLenSq = finalVel.LengthSquared();
             if (fLenSq > hardCap * hardCap)
             {
-                finalVel = finalVel / Math.Sqrt(fLenSq) * hardCap;
+               finalVel = finalVel / Math.Sqrt(fLenSq) * hardCap;
             }
             physics.LinearVelocity = finalVel;
-            //debug
-            /*AquaExpansionSession.Insance.Log(true,
-                $"vel {vel.Length():0.00}" +
-                $"\nmax {maxSpeed:0.00}" +
-                $"\nsaltPenalty {saltPenalty:0.00}" +
-                $"\ndepthFactor {depthFactor:0.00}" +
-                $"\nhVel {horizontalVel.Length():0.00}" +
-                $"\nvVel {verticalVel:0.00}" +
-                $"\nfinal {finalVel.Length():0.00}");*/
-            //double targetSinkSpeed = 0.2;
+            double targetSinkSpeed = 0.5f;
+            PID.Update(character, deltaTime, depth, targetSinkSpeed, glevel, verticalVel, gear);
         }
 
         private void RefillOxygen(IMyCharacter character, float deltaTime, float depth, long ID, float salt, int glevel)
@@ -351,9 +384,6 @@ namespace AquaExpansion.Core
                 PlayerOxygenRefillActive = false;
                 return;
             }
-
-
-
             float currentO2 = MyVisualScriptLogicProvider.GetPlayersOxygenLevel(ID);
             if (currentO2 >= 99.5f)
             {
@@ -416,34 +446,64 @@ namespace AquaExpansion.Core
             MyVisualScriptLogicProvider.SetPlayersOxygenLevel(ID, targetO2);
         }
 
-        private void UpdateSeabedMovement(IMyCharacter character, long ID)
+        private void UpdateSeabedMovement(IMyCharacter character, long ID, float depth)
         {
-            if (character == null || character.Closed || character.IsDead)
+            if (character == null || character.IsDead || character.Closed)
                 return;
-            Vector3D pos = character.GetPosition();
-            var underwater = WaterModAPI.IsUnderwater(pos);
-            var fullyUnderwater = AquaExpansionSession.Insance.GetUnderWaterPercent(character);
-            if (!underwater || fullyUnderwater < 1f)
-            {
-                character.CanSprint = true;
-                return;
-            }
             var physics = character.Physics;
             if (physics == null)
                 return;
-            var state = character.CurrentMovementState;
-            string stateName = state.ToString();
-            // Check if player is walking/running on seabed (horizontal movement)
-
-            bool nearSeabed = stateName.Contains("Walking") || stateName.Contains("Running") || stateName.Contains("Crouch") || stateName.Contains("Back");
+            Vector3D pos = character.GetPosition();
+            bool underwater = WaterModAPI.IsUnderwater(pos);
+            float fullyUnderwater = AquaExpansionSession.Insance.GetUnderWaterPercent(character);
+            var eox = MyAPIGateway.Session.OxygenProviderSystem.GetOxygenInPoint(character.GetPosition());
+            float ingridox;
+            AquaExpansionSession.Insance.GetInAirtightGrid(character, out ingridox);
+            if (!underwater || fullyUnderwater < 1f || eox > AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL || 
+                ingridox > AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL ||
+                AquaExpansionSession.Insance.IsPlayerProtected(MyAPIGateway.Session?.Player))
+            {
+                character.CanSprint = true;
+                wasNearSeabed = false;
+                return;
+            }
+            if (loadGraceTicks < 10)
+            {
+                loadGraceTicks++;
+                return;
+            }
+            Vector3D from = pos;
+            Vector3D to = pos + character.WorldMatrix.Down * 1.5;
+            IHitInfo hit;
+            bool grounded = MyAPIGateway.Physics.CastRay(from, to, out hit);
+            Vector3D vel = physics.LinearVelocity;
+            Vector3D horizontalVel = Vector3D.Reject(vel, character.WorldMatrix.Up);
+            double horizontalSpeed = horizontalVel.Length();
+            bool nearSeabed = grounded;
             if (nearSeabed)
             {
                 character.CanSprint = false;
+                if (!wasNearSeabed)
+                    PID.Reset();
+                wasNearSeabed = true;
+                double maxSpeed = 2.5;
+
+                if (horizontalSpeed > maxSpeed)
+                {
+                    horizontalVel = Vector3D.Normalize(horizontalVel) * maxSpeed;
+                    var v = character.WorldMatrix.Up;
+                    vel *= 0.98;
+                    physics.LinearVelocity = horizontalVel + Vector3D.ProjectOnVector(ref vel,ref v);
+                }
+               
+                //AquaExpansionSession.Insance.Log(true, $"depth {depth:F1} maxSpeed {maxSpeed:F2} vel {vel.Length()}");
             }
             else
             {
                 character.CanSprint = true;
+                wasNearSeabed = false;
             }
+           
         }
 
         private Vector3D GetInputDirection()
@@ -457,159 +517,195 @@ namespace AquaExpansion.Core
             return dir;
         }
 
+        public void AddPID(long id)
+        {
+            if (!playerPID.TryGetValue(id, out PID))
+            {
+                PID = new UnderwaterBuoyancyPID();
+                playerPID[id] = PID;
+            }
+        }
+
+        private void RemovePID(long id)
+        {
+            if (playerPID.TryGetValue(id, out PID))
+            {
+                PID.Reset();
+                playerPID.Remove(id);
+            }
+        }
+
         public  class UnderwaterBuoyancyPID
         {
             private Vector3D position;
             private Vector3D gravity;
+            private float interference;
             private double mass;
             private Vector3D gravityDir;
             private Vector3D velocity;
-            private double integral;
-            private double lastError;
-            private bool ready;
-            public double MaxIntegral = 10.0;
-            public double VerticalDamping = 0.8;
             private double verticalSpeed;
-            private double overload;
-            private double efficiency;
-            private Vector3D baseBuoyancy;
-            private double correction;
-            private Vector3D correctionForce;
-            private Vector3D dampingForce;
-            private Vector3D finalForce;
-
+            private Vector3D counterForce;
+            private Vector3D buoyancyForce;
+            private bool initializedVelocity;
             public  void Reset()
             {
-                integral = 0;
-                lastError = 0;
-                correction = 0;
-                correctionForce = Vector3D.Zero;
-                dampingForce = Vector3D.Zero;
-                finalForce = Vector3D.Zero;
-                efficiency = 0;
-                baseBuoyancy = Vector3D.Zero;
-                ready = false;
+                buoyancyForce = Vector3D.Zero;
+                counterForce = Vector3D.Zero;
             }
 
-            public void Update(IMyCharacter character, float deltaTime, double depth, double targetSinkSpeed, int gearLevel, double VertSpeeed)
+            private void Stabilize(IMyCharacter character)
+            {
+                if (!initializedVelocity)
+                {
+                    Reset();
+                    var physics = character.Physics;
+                    if (physics == null)
+                        return;
+                    Vector3D vel = physics.LinearVelocity;
+                    physics.LinearVelocity = Vector3D.Zero;
+                    physics.AngularVelocity = Vector3D.Zero;
+                    double vertical = Vector3D.Dot(vel, gravityDir);
+                    if (Math.Abs(vertical) < 0.15)
+                    {
+                        vel -= gravityDir * vertical;
+                        physics.LinearVelocity = vel;
+                    }
+                    initializedVelocity = true;
+                }
+            }
+
+            public void Update(IMyCharacter character, float deltaTime, double depth, double targetSinkSpeed, int gearLevel, double VertSpeeed, DivingGearData gearData)
             {
                 if (character == null || character.Closed || character.IsDead)
+                {
+                    Reset();
                     return;
+                }
                 if (!WaterModAPI.IsUnderwater(character.GetPosition()))
-                { Reset(); return; }
+                {
+                    Reset();
+                    return;
+                }
                 if (deltaTime <= 0f)
                     return;
                 var physics = character.Physics;
                 if (physics == null)
                     return;
                 position = character.GetPosition();
-                float interference;
                 gravity = MyAPIGateway.Physics.CalculateNaturalGravityAt(position, out interference);
                 if (gravity.LengthSquared() < 0.000001)
                     return;
-                mass = physics.Mass;
                 gravityDir = Vector3D.Normalize(gravity);
                 velocity = physics.LinearVelocity;
-                // positive = sinking
+                mass = physics.Mass;
                 verticalSpeed = Vector3D.Dot(velocity, gravityDir);
-                //double verticalSpeed = VertSpeeed;
                 double buoyancyFactor = 0.0;
-                double Kp = 0.0;
-                double Ki = 0.0;
-                double Kd = 0.0;
-                double maxCorrection = 0.0;
-                // Max depth where gear can hover efficiently
-                // deeper = reduced buoyancy
+                double maxSinkSpeed = 4.0;
+                double swimForce = 0.0;
+                double minHoverDepth = 0.0;
                 double maxHoverDepth = 0.0;
                 switch (gearLevel)
                 {
                     default:
                     case 0:
-                        buoyancyFactor = 0.20;
-                        Kp = 0.4;
-                        Ki = 0.01;
-                        Kd = 0.2;
-                        maxCorrection = 0.25;
-                        maxHoverDepth = 5.0;
+                        buoyancyFactor = gearData.BuoyancyFactor;
+                        maxSinkSpeed = gearData.MaxSinkSpeed;
+                        swimForce = gearData.SwimForce;
+                        minHoverDepth = gearData.HoverMinDepth;
+                        maxHoverDepth = gearData.HoverMaxDepth;
                         break;
+
                     case 1:
-                        buoyancyFactor = 0.65;
-                        Kp = 1.1;
-                        Ki = 0.03;
-                        Kd = 0.6;
-                        maxCorrection = 0.8;
-                        maxHoverDepth = 40.0;
+                        buoyancyFactor = gearData.BuoyancyFactor;
+                        maxSinkSpeed = gearData.MaxSinkSpeed;
+                        swimForce = gearData.SwimForce;
+                        minHoverDepth = gearData.HoverMinDepth;
+                        maxHoverDepth = gearData.HoverMaxDepth;
                         break;
 
                     case 2:
-                        buoyancyFactor = 0.95;
-                        Kp = 1.9;
-                        Ki = 0.06;
-                        Kd = 1.0;
-                        maxCorrection = 1.2;
-                        maxHoverDepth = 120.0;
+                        buoyancyFactor = gearData.BuoyancyFactor;
+                        maxSinkSpeed = gearData.MaxSinkSpeed;
+                        swimForce = gearData.SwimForce;
+                        minHoverDepth = gearData.HoverMinDepth;
+                        maxHoverDepth = gearData.HoverMaxDepth;
                         break;
 
                     case 3:
-                        buoyancyFactor = 0.4;
-                        Kp = 0.5;
-                        Ki = 0.01;
-                        Kd = 0.2;
-                        maxCorrection = 0.25;
-                        maxHoverDepth = 40.0;
+                        buoyancyFactor = gearData.BuoyancyFactor;
+                        maxSinkSpeed = gearData.MaxSinkSpeed;
+                        swimForce = gearData.SwimForce;
+                        minHoverDepth = gearData.HoverMinDepth;
+                        maxHoverDepth = gearData.HoverMaxDepth;
                         break;
                 }
-                // Beyond max hover depth
-                // gear starts losing efficiency
                 double depthAbs = Math.Abs(depth);
-                if (depthAbs > maxHoverDepth)
+                bool insideHoverRange = depthAbs >= minHoverDepth && depthAbs <= maxHoverDepth;
+                if (depthAbs < minHoverDepth)
+                    insideHoverRange = false;
+                // Outside supported depth
+                // increase sink speed
+                if (!insideHoverRange)
                 {
-                    overload = (depthAbs - maxHoverDepth) /maxHoverDepth;
-                    overload = MathHelper.Clamp((float)overload,0f,0.85f);
-                    efficiency = 1.0 - overload;
-                    buoyancyFactor *= efficiency;
-                    maxCorrection *= efficiency;
+                    maxSinkSpeed *= 2.0;
+                    Reset();
                 }
-                baseBuoyancy = -gravity * mass * buoyancyFactor;
-                // PID ERROR
-                double error = targetSinkSpeed - verticalSpeed;
-                // Integral
-                integral += error * deltaTime;
-                integral = MathHelper.Clamp((float)integral,(float)-MaxIntegral,(float)MaxIntegral);
-                // Derivative
-                double derivative = 0.0;
-                if (ready)
+                buoyancyForce = -gravity * mass * buoyancyFactor;
+                physics.AddForce(
+                    MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,
+                    buoyancyForce,
+                    position,
+                    null);
+                if (verticalSpeed > maxSinkSpeed)
                 {
-                    derivative =(error - lastError) / deltaTime;
+                    double excess = verticalSpeed - maxSinkSpeed;
+                    counterForce =
+                        -gravityDir *
+                        excess *
+                        mass *
+                        1.5;
+                    physics.AddForce(
+                        MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,
+                        counterForce,
+                        position,
+                        null);
                 }
-                lastError = error;
-                ready = true;
-                // PID output
-                correction = (Kp * error) + (Ki * integral) + (Kd * derivative);
-                correction = MathHelper.Clamp((float)correction,(float)-maxCorrection,(float)maxCorrection);
-                // PID FORCE
-                correctionForce = -gravityDir * correction * mass * 9.81;
-                // VERTICAL DAMPING
-                dampingForce = -gravityDir * verticalSpeed * mass * VerticalDamping;
-                // FINAL FORCE
-                finalForce = baseBuoyancy + correctionForce + dampingForce;
-                physics.AddForce(MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,finalForce, position,null);
+                // UP
+                if (MyAPIGateway.Input.IsGameControlPressed(MyControlsSpace.JUMP))
+                {
+                    Vector3D upwardForce =
+                        -gravityDir *
+                        mass *
+                        swimForce;
+                    physics.AddForce(
+                        MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,
+                        upwardForce,
+                        position,
+                        null);
+                }
+
+                // DOWN
+                if (MyAPIGateway.Input.IsGameControlPressed(
+                    MyControlsSpace.CROUCH))
+                {
+                    Vector3D downwardForce =
+                        gravityDir *
+                        mass *
+                        swimForce *
+                        0.6;
+
+                    physics.AddForce(
+                        MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,
+                        downwardForce,
+                        position,
+                        null);
+                }
+
                 //debug
-                AquaExpansionSession.Insance.Log(true,
-                    $"vertSpeed {verticalSpeed}" +
-                    $"\ndepthABS {depthAbs}" +
-                    $"\noverload {overload}" +
-                    $"\nefficiency {efficiency}" +
-                    $"\nbuoynancyFactor {buoyancyFactor}" +
-                    $"\nmaxCorrection {maxCorrection}" +
-                    $"\nbasebuoynancy {baseBuoyancy}" +
-                    $"\nI {integral}" +
-                    $"\nError {error}" +
-                    $"\nD {derivative}" +
-                    $"\nCorrection {correction}" +
-                    $"\nCorrectionForce {correctionForce}" +
-                    $"\nDampingForce {dampingForce}" +
-                    $"\nfinal {finalForce.Length():0.00}");
+                /*AquaExpansionSession.Insance.Log(true,
+                   $"Depth {depthAbs:0.0} HoverRange {minHoverDepth}-{maxHoverDepth} InsideRange {insideHoverRange}" +
+                   $"\nVertSpeed {verticalSpeed:0.00} MaxSink {maxSinkSpeed:0.00}" +
+                   $"\nBuoyancy {buoyancyFactor:0.00}  counterForce {counterForce}");*/
             }
         }
     }

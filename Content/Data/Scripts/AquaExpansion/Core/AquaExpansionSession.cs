@@ -1,5 +1,4 @@
-﻿using AquaExpansion.SubmarineBallastTank;
-using AquaExpansion.UndewaterEngines;
+﻿using AquaExpansion.UndewaterEngines;
 using Draygo.API;
 using Jakaria.API;
 using ProtoBuf;
@@ -66,25 +65,49 @@ namespace AquaExpansion.Core
                     "IddleSmall", "AquaEngineBubbles02Small"
                 },
                 {
+                    "IddleFlatSmall", "AquaEngineBubbles02SmallFlat"
+                },
+                {
                      "IddleMedium", "AquaEngineBubbles02Medium"
+                },
+                {
+                     "IddleFlatMedium", "AquaEngineBubbles02MediumFlat"
                 },
                 {
                      "IddleLarge", "AquaEngineBubbles02Large"
                 },
                 {
+                     "IddleFlatLarge", "AquaEngineBubbles02LargeFlat"
+                },
+                {
                      "IddleXLarge", "AquaEngineBubbles02XLarge"
+                },
+                {
+                     "IddleFlatXLarge", "AquaEngineBubbles02XLargeFlat"
                 },
                 {
                      "RunSmall", "AquaEngineBubbles02Small"
                 },
                 {
+                     "RunFlatSmall", "AquaEngineBubbles02SmallFlat"
+                },
+                {
                      "RunMedium", "AquaEngineBubbles02Medium"
+                },
+                {
+                     "RunFlatMedium", "AquaEngineBubbles02MediumFlat"
                 },
                 {
                      "RunLarge", "AquaEngineBubbles02Large"
                 },
                 {
+                     "RunFlatLarge", "AquaEngineBubbles02LargeFlat"
+                },
+                {
                      "RunXLarge", "AquaEngineBubbles02XLarge"
+                },
+                {
+                     "RunFlatXLarge", "AquaEngineBubbles02XLargeFlat"
                 }
             };
         private float effectLod1disSq = 30f;
@@ -103,8 +126,7 @@ namespace AquaExpansion.Core
         private HudAPIv2.HUDMessage compassBar;
         private HudAPIv2.HUDMessage geardepthmeter;
         public bool Heartbeat => TextAPI.Heartbeat && hudConnected;
-        //submarine 
-        public Dictionary<long, List<SubmarineBallastTankBase>> GridTanks = new Dictionary<long, List<SubmarineBallastTankBase>>();
+       
         public readonly float MIN_ENVOXYGENLEVEL = 0.20f;
         private int ticksPerUpdate = 30; // ~1 second if 60 ticks/sec
         public float ApexFarmMaxworkDepth = 8f;
@@ -126,8 +148,6 @@ namespace AquaExpansion.Core
             MyAPIGateway.Entities.OnEntityAdd += OnEntityAdd;
             MyAPIGateway.Entities.OnEntityRemove += OnEntityRemove;
             GetMods();
-            //LoadWaterConfig();
-            //AutoDisableWaterConfig();
             base.LoadData();
         }
 
@@ -661,6 +681,14 @@ namespace AquaExpansion.Core
                 return isRunning ? "RunSmall" : "IddleSmall";
             if (subtype.EndsWith("L"))
                 return isRunning ? "RunXLarge" : "IddleXLarge";
+            if (subtype.EndsWith("FlatSmall"))
+                return isRunning ? "RunFlatSmall" : "IddleFlatSmall";
+            if (subtype.EndsWith("FlatMedium"))
+                return isRunning ? "RunFlatMedium" : "IddleFlatMedium";
+            if (subtype.EndsWith("FlatLarge"))
+                return isRunning ? "RunFlatLarge" : "IddleFlatLarge";
+            if (subtype.EndsWith("FlatXLarge"))
+                return isRunning ? "RunFlatXLarge" : "IddleFlatXLarge";
             return "Default";
         }
         private void OnEntityAdd(IMyEntity entity)
@@ -675,8 +703,6 @@ namespace AquaExpansion.Core
             base.Init(sessionComponent);
             LineAnimationManager.Init(ticksPerUpdate);
             Log(true, $"Welcome back!");
-            //LoadWaterConfig();
-            //FirstReminder();
             EnviromentHighlightControll();
         }
 
@@ -728,12 +754,16 @@ namespace AquaExpansion.Core
             FilterAlgaeFarms();
             UpdateEngineBlocks();
             UpdateTrackedAlgaeFarms();
-            LineAnimationManager.Update();
-            UpdateAll();
             latentScheduler.Update();
-            //Reminder();
             SetDephbasedColor();
             base.UpdateBeforeSimulation();
+        }
+
+        public override void UpdateAfterSimulation()
+        {
+            LineAnimationManager.Update();
+            UpdateAll();
+            base.UpdateAfterSimulation();
         }
 
         private void Reminder()
@@ -1082,7 +1112,10 @@ namespace AquaExpansion.Core
         {
             foreach (var player in GetPlayersWithCharacters())
             {
+                if (player == null || player.Character == null || player.Character.Closed || player.Character.IsDead)
+                    continue;
                 JetpackUnderWaterSystem.SetDiverMode(player.Character, player.IdentityId, tick);
+                JetpackUnderWaterSystem.AddPID(player.IdentityId);
             }
         }
 
@@ -1090,7 +1123,6 @@ namespace AquaExpansion.Core
         {
             if (!Heartbeat)
                 return;
-
             var player = MyAPIGateway.Session?.Player;
             var character = player?.Character;
             if (character == null || character.Closed || character.IsDead)
@@ -1393,6 +1425,8 @@ namespace AquaExpansion.Core
 
         public bool IsPlayerProtected(IMyPlayer player)
         {
+            if (player == null || player.Character == null || player.Character.Closed || player.Character.IsDead)
+                return false;
             var seat = player.Controller?.ControlledEntity?.Entity as IMyShipController;
             if (seat != null)
             {
@@ -1468,7 +1502,6 @@ namespace AquaExpansion.Core
             TerminalTracedBlocks.Clear();
             TrackedThrusters.Clear();
             TrackedGrids.Clear();
-            GridTanks.Clear();
             BannedThrusters.Clear();
             BannedTurbines.Clear();
             BannedSolars.Clear();

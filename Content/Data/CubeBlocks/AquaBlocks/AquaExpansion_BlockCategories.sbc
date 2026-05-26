@@ -25,10 +25,14 @@
 				<string>FunctionalBlock/UnderwaterFishingBlock</string>
 				<string>UpgradeModule/AquaCargoUpgradeModule</string>
 				<string>FunctionalBlock/UnderwaterFishingStation</string>
-				<!--<string>FunctionalBlock/LargeBlockSubmarineBallastTank</string>-->
-				<!--<string>FunctionalBlock/SmallBlockSubmarineBallastTank</string>-->
-				<!--<string>FunctionalBlock/SubmarineControllerL</string>-->
-				<!--<string>FunctionalBlock/SubmarineControllerS</string>-->
+				<string>Thrust/UnderwaterEngineBasicFlatSmall</string>
+				<string>Thrust/UnderwaterEngineBasicDFlatSmall</string>
+				<string>Thrust/UnderwaterEngineBasicFlatMedium</string>
+				<string>Thrust/UnderwaterEngineBasicDFlatMedium</string>
+				<string>Thrust/UnderwaterEngineBasicFlatLarge</string>
+				<string>Thrust/UnderwaterEngineBasicDFlatLarge</string>
+				<string>Thrust/UnderwaterEngineBasicFlatXLarge</string>
+				<string>Thrust/UnderwaterEngineBasicDFlatXLarge</string>
             </ItemIds>
         </Category>
     </CategoryClasses>

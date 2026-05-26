@@ -10,6 +10,18 @@
 	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicSL" Volume="5.63" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicL" Volume="147.26" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicLS" Volume="46.88" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="FunctionalBlock" SubtypeId="UnderwaterFishingBlock" Volume="15.63" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="FunctionalBlock" SubtypeId="UnderwaterFishingStation" Volume="265.09" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="FunctionalBlock" SubtypeId="UnderwaterFarmPlot" Volume="15.01" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Refinery" SubtypeId="SoilExtractor" Volume="24.54" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicFlatSmall" Volume="0.10" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicDFlatSmall" Volume="0.10" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicFlatMedium" Volume="1.18" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicDFlatMedium" Volume="1.18" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicFlatLarge" Volume="12.27" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicDFlatLarge" Volume="12.27" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicFlatXLarge" Volume="147.26" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicDFlatXLarge" Volume="147.26" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
 	  <!--End Aqua Blocks -->
 	  <!-- Vanilla Blocks -->
 	  <BlockConfig TypeId="WindTurbine" SubtypeId="LargeBlockWindTurbine" Volume="15.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
@@ -59,7 +71,5 @@
   <PlanetConfigs>
   </PlanetConfigs>
   <CharacterConfigs>
-	  <CharacterConfig SubtypeId="Default_Astronaut" Volume="0.1" SwimForce="40" CanBreathUnderwater="False" MaximumPressure="3000" />
-	  <CharacterConfig SubtypeId="Default_Astronaut_Female" Volume="0.1" SwimForce="40" CanBreathUnderwater="False" MaximumPressure="3000" />
   </CharacterConfigs>
 </WaterConfig>
