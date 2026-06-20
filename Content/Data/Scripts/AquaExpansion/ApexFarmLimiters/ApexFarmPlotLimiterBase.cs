@@ -25,7 +25,6 @@ namespace AquaExpansion.ApexFarmLimiters
             }
             NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME| MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block?.CubeGrid?.Physics == null) // ignore projected and other non-physical grids
@@ -33,7 +32,6 @@ namespace AquaExpansion.ApexFarmLimiters
             //AquaExpansionSession.Insance.Log(true, $"FarmPlot limiter initialized for block: {block.EntityId}");
             base.UpdateOnceBeforeFrame();
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose || grid == null || grid.Closed || grid.Physics == null)
@@ -41,7 +39,6 @@ namespace AquaExpansion.ApexFarmLimiters
             AquaExpansionSession.Insance.CheckUnderwaterBlockRules(block, true);
             base.UpdateBeforeSimulation();
         }
-
         public override void Close()
         {
             grid = null;

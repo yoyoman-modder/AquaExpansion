@@ -722,5 +722,40 @@
 			<CanPlayerOrder>false</CanPlayerOrder>
 		</PhysicalItem>
 		<!--End Fish Food-->
+		<!--Drinks-->
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaPureWater</SubtypeId>
+			</Id>
+			<DisplayName>Purified Water</DisplayName>
+			<Description>
+				Advanced filtration removes contaminants and salt, producing safe drinking water.
+				Restores hydration efficiently and supports long-term survival operations.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\PurifiedWater.dds</Icon>
+			<IconSymbol>DRINK</IconSymbol>
+			<Size>
+				<X>0.14</X>
+				<Y>0.14</Y>
+				<Z>0.14</Z>
+			</Size>
+			<Mass>1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\PurifiedWater.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value ="0.01" Time="4"/>
+				<Stat Name="Food" Value ="0.001" Time="8"/>
+			</Stats>
+			<UseSound>ArcPlayDrink</UseSound>
+			<MinimalPricePerUnit>100</MinimalPricePerUnit>
+			<MinimumOfferAmount>1000</MinimumOfferAmount>
+			<MaximumOfferAmount>10000</MaximumOfferAmount>
+			<DepositAllEnabled>false</DepositAllEnabled>
+			<CanPlayerOrder>false</CanPlayerOrder>
+			<CanPlayerOffer>false</CanPlayerOffer>
+		</PhysicalItem>
+		<!--End Drinks-->
     </PhysicalItems>
 </Definitions>

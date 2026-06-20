@@ -7,7 +7,6 @@ namespace AquaExpansion.Core
     public class LatentScheduler
     {
         double deltaTime = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
-       
         private class LatentEntry
         {
             public Action Action;
@@ -23,9 +22,7 @@ namespace AquaExpansion.Core
                 Interval = interval;
             }
         }
-
         private readonly List<LatentEntry> latentActions = new List<LatentEntry>();
-
         /// <summary>
         /// Schedule a one-off action after N seconds
         /// </summary>
@@ -36,7 +33,6 @@ namespace AquaExpansion.Core
 
             latentActions.Add(new LatentEntry(action, seconds, repeat, interval));
         }
-
         /// <summary>
         /// Call this every tick, pass delta time in seconds
         /// </summary>
@@ -61,7 +57,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         public void Cancel(Action action)
         {
             if (action == null)
@@ -69,7 +64,6 @@ namespace AquaExpansion.Core
 
             latentActions.RemoveAll(e => e.Action == action);
         }
-
         public void Clear()
         {
             latentActions.Clear();

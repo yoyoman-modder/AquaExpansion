@@ -16,15 +16,10 @@ using VRageMath;
 namespace AquaExpansion.Core
 {
     public enum AquaFarmBlockStage { Iddle, Planting, Growing, Harvestable, Full }
-
     public enum AquaFarmingBlockType { UnderwaterFarmPlot, FishingBlock, FishingBlockAdvance }
-
     public enum AquaFishBlockStage { Idlle, Atracting, Catching, CatchResult, Full };
-
     public enum AquaOceanLayer { Surface, Shallow, Mid, Deep, Abyss};
-
     public enum AquaDefinitionOB { Component, ConsumableItem };
-
     /// <summary>
     /// Main utilite class
     /// </summary>
@@ -54,7 +49,6 @@ namespace AquaExpansion.Core
         {
             ModelStageChanged?.Invoke(stage);
         }
-
         /// <summary>
         /// Change fish model event
         /// </summary>
@@ -63,7 +57,6 @@ namespace AquaExpansion.Core
         {
             FishModelStageChanged?.Invoke(stage);
         }
-
         /// <summary>
         /// Change inventory fish model event
         /// </summary>
@@ -72,7 +65,6 @@ namespace AquaExpansion.Core
         {
             InventoryFishShow?.Invoke(stage);
         }
-
         /// <summary>
         /// Model optimization
         /// </summary>
@@ -97,7 +89,6 @@ namespace AquaExpansion.Core
             if (entity.Render.Visible != shouldBeVisible)
                 entity.Render.Visible = shouldBeVisible;
         }
-
         /// <summary>
         /// Show inventory fish model
         /// </summary>
@@ -121,7 +112,6 @@ namespace AquaExpansion.Core
                 OnInventoryFishShowStageChanged(randIndex);
             }
         }
-
         /// <summary>
         /// Add model to list and hashset
         /// </summary>
@@ -136,7 +126,6 @@ namespace AquaExpansion.Core
             inventorymodelpathsList.Add(model);
             return true;
         }
-
         private string GetModel(int index)
         {
             if (index == -1)
@@ -146,7 +135,6 @@ namespace AquaExpansion.Core
 
             return inventorymodelpathsList[index];
         }
-
         /// <summary>
         /// Get Color by Status
         /// </summary>
@@ -175,7 +163,6 @@ namespace AquaExpansion.Core
             }
             return statusColor;
         }
-
         /// <summary>
         /// Get Color by Fishing block status
         /// </summary>
@@ -204,7 +191,6 @@ namespace AquaExpansion.Core
             }
             return statusColor;
         }
-
         /// <summary>
         /// Set Emissive by Status
         /// </summary>
@@ -217,7 +203,6 @@ namespace AquaExpansion.Core
                 return;
             block.SetEmissiveParts("Emissive", GeStatusColor(stage), emissivity);
         }
-
         /// <summary>
         /// Get emissive depth factor
         /// </summary>
@@ -227,7 +212,6 @@ namespace AquaExpansion.Core
         {
             return MathHelper.Clamp(1f - depth * 0.08f, 0.05f, 1f);
         }
-
         /// <summary>
         /// Get wave emissive factor
         /// </summary>
@@ -242,7 +226,6 @@ namespace AquaExpansion.Core
 
             return (w * 0.5f + 0.5f);
         }
-
         /// <summary>
         /// Get eff emissive power
         /// </summary>
@@ -253,7 +236,6 @@ namespace AquaExpansion.Core
             eff = MathHelper.Clamp(eff, 0f, 1f);
             return 0.2f + eff * 1.6f + eff * eff * 0.6f;
         }
-
         /// <summary>
         /// get emissive pulse
         /// </summary>
@@ -273,7 +255,6 @@ namespace AquaExpansion.Core
 
             return (p * 0.5f + 0.5f);
         }
-
         /// <summary>
         /// Set emissiive enviromental color
         /// </summary>
@@ -302,7 +283,6 @@ namespace AquaExpansion.Core
             col += new Vector3(instability * 0.05f);
             return new Color(col);
         }
-
         /// <summary>
         /// Set emissive by enviroment
         /// </summary>
@@ -331,7 +311,6 @@ namespace AquaExpansion.Core
             Color finalColor = ApplyStageEnvironmentColor(stageColor, eff, depth, wave, stageFactor);
             block.SetEmissiveParts("Emissive", finalColor, intensity);
         }
-
         /// <summary>
         /// Set emissive by fish block enviroment
         /// </summary>
@@ -396,7 +375,6 @@ namespace AquaExpansion.Core
             }
             info.AppendLine($"Status:{status}");
         }
-
         /// <summary>
         /// Get fish block status info
         /// </summary>
@@ -435,7 +413,6 @@ namespace AquaExpansion.Core
             }
             info.AppendLine($"Status:{status}");
         }
-
         /// <summary>
         /// Get Current Plant
         /// </summary>
@@ -464,7 +441,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Get Current Catching Fish
         /// </summary>
@@ -489,7 +465,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Grow Line
         /// </summary>
@@ -513,7 +488,6 @@ namespace AquaExpansion.Core
                 else { info.AppendLine($"Progress: {zeroed} %"); }
             }
         }
-
         /// <summary>
         /// ProgressLine
         /// </summary>
@@ -538,7 +512,6 @@ namespace AquaExpansion.Core
                 else { info.AppendLine($"Progress: {zeroed} %"); }
             }
         }
-
         /// <summary>
         /// Get Storage
         /// </summary>
@@ -561,7 +534,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Get fish block storage
         /// </summary>
@@ -580,7 +552,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Count Storage
         /// </summary>
@@ -611,7 +582,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Count fish block storage
         /// </summary>
@@ -645,7 +615,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Get Growth % Line
         /// </summary>
@@ -657,7 +626,6 @@ namespace AquaExpansion.Core
                 return 0;
             return (int)MathHelper.Clamp(plant.Growth * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Get Attract % line
         /// </summary>
@@ -669,7 +637,6 @@ namespace AquaExpansion.Core
                 return 0;
             return (int)MathHelper.Clamp(fish.Attract * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Get Catch % line
         /// </summary>
@@ -681,7 +648,6 @@ namespace AquaExpansion.Core
                 return 0;
             return (int)MathHelper.Clamp(fish.Catch * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Get catchResult % line
         /// </summary>
@@ -704,7 +670,6 @@ namespace AquaExpansion.Core
                 return 0;
             return (int)MathHelper.Clamp(plant.Planting * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Get Harvesting % Line
         /// </summary>
@@ -716,7 +681,6 @@ namespace AquaExpansion.Core
                 return 0;
             return (int)MathHelper.Clamp(plant.Harvesting * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Get Efficiency % Line
         /// </summary>
@@ -729,7 +693,6 @@ namespace AquaExpansion.Core
                 return 0;
             return (int)MathHelper.Clamp(eff * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Fish catch probability
         /// </summary>
@@ -753,7 +716,6 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
         /// <summary>
         /// Get Efficiency with % New
         /// </summary>
@@ -791,7 +753,6 @@ namespace AquaExpansion.Core
 
             return (int)MathHelper.Clamp((total / 2f) * 100f, 0f, 100f);
         }
-
         /// <summary>
         /// Counts items in inventory
         /// </summary>
@@ -3855,7 +3816,6 @@ namespace AquaExpansion.Core
             }
         }
     }
-
     /// <summary>
     /// FishItems Database
     /// </summary>
@@ -3865,7 +3825,6 @@ namespace AquaExpansion.Core
         private static readonly Dictionary<string, int> BaitItemsbyName = new Dictionary<string, int>();
         private static readonly Dictionary<int, string> FishItemsbyID = new Dictionary<int, string>();
         private static readonly Dictionary<string, int> FishItemsbyName = new Dictionary<string, int>();
-
         /// <summary>
         /// Init
         /// </summary>
@@ -3897,7 +3856,6 @@ namespace AquaExpansion.Core
             RegisterFish(21, "AquaFishdRaw_yellowTang");
             RegisterFish(22, "AquaFishdRaw_whaleShark");
         }
-
         /// <summary>
         /// Register bait
         /// </summary>
@@ -3908,7 +3866,6 @@ namespace AquaExpansion.Core
             BaitItemsbyID[id] = subtype;
             BaitItemsbyName[subtype] = id;
         }
-
         /// <summary>
         /// Register Fish
         /// </summary>
@@ -3919,7 +3876,6 @@ namespace AquaExpansion.Core
             FishItemsbyID[id] = subtype;
             FishItemsbyName[subtype] = id;
         }
-
         /// <summary>
         /// Get bait by ID
         /// </summary>
@@ -3933,7 +3889,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Bait NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get bait by name
         /// </summary>
@@ -3958,7 +3913,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Bait NOT FOUND: '{name}'");
             return -1;
         }
-
         /// <summary>
         /// Get fish by ID
         /// </summary>
@@ -3972,7 +3926,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Fish NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get fish by name
         /// </summary>
@@ -3997,7 +3950,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Fish NOT FOUND: '{name}'");
             return -1;
         }
-
         /// <summary>
         /// Get all baits
         /// </summary>
@@ -4006,7 +3958,6 @@ namespace AquaExpansion.Core
         {
             return BaitItemsbyID.Values;
         }
-
         /// <summary>
         /// Get all fishes
         /// </summary>
@@ -4015,21 +3966,18 @@ namespace AquaExpansion.Core
         {
             return FishItemsbyID.Values;
         }
-
         /// <summary>
         /// is this subtype are Bait?
         /// </summary>
         /// <param name="subtype"></param>
         /// <returns></returns>
         public static bool IsBait(string subtype) => BaitItemsbyName.ContainsKey(subtype);
-
         /// <summary>
         /// is this subtype are Fish?
         /// </summary>
         /// <param name="subtype"></param>
         /// <returns></returns>
         public static bool IsFish(string subtype) => FishItemsbyName.ContainsKey(subtype);
-
         /// <summary>
         /// Validate
         /// </summary>

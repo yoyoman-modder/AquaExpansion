@@ -66,6 +66,8 @@
         <Entry Class="SaltGenerator" BlueprintSubtypeId="Aqua_SaltPowder_Ice_LS" />
 		<!-- Soil Generator -->
 		<Entry Class="SoilGenerator" BlueprintSubtypeId="Aqua_SeaSoilOre" />
+		<!-- Patch Survival Kit -->
+		<Entry Class="BasicFoodProcessorRations" BlueprintSubtypeId="Aqua_Drink_PureWater" />
 		<!-- Patch Basic Assembler -->
 		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_SaltPowder_Refined" />
 		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_SaltPowerCell" />
@@ -84,6 +86,7 @@
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Green" />
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Brown" />
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Red" />
+		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_Drink_PureWater" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_SeaweedDried" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_SeaweedRation" />
 		<Entry Class="FoodProcessorRations" BlueprintSubtypeId="Aqua_KelpNutrientPaste" />

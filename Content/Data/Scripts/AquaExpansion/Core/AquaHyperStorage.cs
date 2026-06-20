@@ -6,7 +6,6 @@ namespace AquaExpansion.Core
 {
     public static class AquaHyperStorage
     {
-
         public static void AquaHyperSave(AquaWaterSettings settings, string FileName)
         {
             try
@@ -24,7 +23,6 @@ namespace AquaExpansion.Core
                 AquaExpansionSession.Insance.Log(true, $"Error saving: {exept.Message}");
             }
         }
-
         public static AquaWaterSettings AquaHyperLoad(string FileName)
         {
             AquaWaterSettings Settings = new AquaWaterSettings();

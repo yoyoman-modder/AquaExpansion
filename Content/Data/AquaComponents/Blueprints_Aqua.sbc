@@ -948,6 +948,26 @@
 			<BaseProductionTimeInSeconds>15</BaseProductionTimeInSeconds>
 		</Blueprint>
 		<!--End Fish Food Big Fish-->
+		<!--Drinks-->
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_Drink_PureWater</SubtypeId>
+			</Id>
+			<DisplayName>Purified Water</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\PurifiedWater.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="Component" SubtypeId="SteelPlate" />
+				<Item Amount="2" TypeId="Ore" SubtypeId="Ice" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="4" TypeId="ConsumableItem" SubtypeId="AquaPureWater" />
+			</Results>
+			<BaseProductionTimeInSeconds>2</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<!--End Drinks-->
 		<!-- End Aqua -->
     </Blueprints>
 </Definitions>

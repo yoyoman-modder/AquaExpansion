@@ -13,8 +13,6 @@ namespace AquaExpansion.Core
         Harvest,
         Remind
     }
-
-    // Serializable task entry
     [ProtoContract]
     public class AquaLatentEntry
     {
@@ -22,9 +20,6 @@ namespace AquaExpansion.Core
         [ProtoMember(2)] public int ExecuteAtTick;
         [ProtoMember(3)] public string Tag;
     }
-
-
-    // Save container
     [ProtoContract]
     public class AquaSchedulerSaveData
     {
@@ -37,12 +32,10 @@ namespace AquaExpansion.Core
     public class AquaLatentTaskTree
     {
         private List<AquaLatentEntry> entries = new List<AquaLatentEntry>();
-        
         private int GetTick()
         {
             return MyAPIGateway.Session.GameplayFrameCounter;
         }
-        // Schedule action
         public void Schedule(AquaTaskType type, int delayTicks, string tag = null)
         {
             if (delayTicks <= 0)
@@ -55,8 +48,6 @@ namespace AquaExpansion.Core
                 Tag = tag
             });
         }
-
-        // Update
         public void Update(Action<AquaTaskType> executor)
         {
             int now = GetTick();
@@ -72,22 +63,16 @@ namespace AquaExpansion.Core
                 }
             }
         }
-
-        // Cancel by tag
         public void Cancel(string tag)
         {
             if (string.IsNullOrEmpty(tag))
                 return;
             entries.RemoveAll(e => e.Tag == tag);
         }
-
-        //Clear all
         public void Clear()
         {
             entries.Clear();
         }
-
-        // 🔹 Save state
         public string Save()
         {
             var data = new AquaSchedulerSaveData
@@ -97,8 +82,6 @@ namespace AquaExpansion.Core
             var bytes = MyAPIGateway.Utilities.SerializeToBinary(data);
             return Convert.ToBase64String(bytes);
         }
-
-        //Load state
         public void Load(string raw)
         {
             if (string.IsNullOrEmpty(raw))

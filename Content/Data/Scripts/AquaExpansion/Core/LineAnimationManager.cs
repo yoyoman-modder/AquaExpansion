@@ -121,7 +121,6 @@ namespace AquaExpansion.Core
             // ----- Procedural vertical animation -----
             animations["bouncer"] = new VerticalAnimation(8, "█", 7);
         }
-
         /// <summary>
         /// Updates all registered animations. Call once per game tick.
         /// </summary>
@@ -131,7 +130,6 @@ namespace AquaExpansion.Core
             foreach (var anim in animations.Values)
                 anim.Update();
         }
-
         /// <summary>
         /// Returns the current frame of the animation by key.
         /// </summary>
@@ -142,7 +140,6 @@ namespace AquaExpansion.Core
             return animations.TryGetValue(key, out anim) ? anim.CurrentFrame : "[ANIM?]";
         }
     }
-
     /// <summary>
     /// Common interface for all animation types.
     /// </summary>
@@ -153,7 +150,6 @@ namespace AquaExpansion.Core
         string CurrentFrame { get; }
         void Reset();
     }
-
     /// <summary>
     /// Frame-based animation (your original Animation class).
     /// </summary>
@@ -164,7 +160,6 @@ namespace AquaExpansion.Core
         private readonly int ticksPerFrame;
         private int tick;
         private int index;
-
         public Animation(string[] frames, int ticksPerFrame = 7)
         {
             this.frames = frames ?? new[] { "[EMPTY]" };
@@ -172,7 +167,6 @@ namespace AquaExpansion.Core
             tick = 0;
             index = 0;
         }
-
         public void Update()
         {
             tick++;
@@ -182,19 +176,16 @@ namespace AquaExpansion.Core
                 index = (index + 1) % frames.Length;
             }
         }
-
         public string CurrentFrame
         {
             get { return frames[index]; }
         }
-
         public void Reset()
         {
             tick = 0;
             index = 0;
         }
     }
-
     /// <summary>
     /// Procedural vertical bouncing animation.
     /// </summary>
@@ -207,7 +198,6 @@ namespace AquaExpansion.Core
         private int tick;
         private int pos;
         private int dir = 1;
-
         public VerticalAnimation(int rows = 12, string marker = "█", int ticksPerStep = 6)
         {
             this.rows = Math.Max(3, rows);
@@ -216,7 +206,6 @@ namespace AquaExpansion.Core
             tick = 0;
             pos = 0;
         }
-
         public void Update()
         {
             tick++;
@@ -228,7 +217,6 @@ namespace AquaExpansion.Core
                 else if (pos <= 0) { pos = 0; dir = 1; }
             }
         }
-
         public string CurrentFrame
         {
             get
@@ -244,7 +232,6 @@ namespace AquaExpansion.Core
                 return sb.ToString();
             }
         }
-
         public void Reset()
         {
             tick = 0;
