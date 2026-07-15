@@ -39,7 +39,7 @@ namespace AquaExpansion.SaltBattery
         private float baseChargeRate = -1f;
         private float baseOutput = -1f;
         private IMyEntity e;
-        
+        public AquaExpansionUtils utils;
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -60,9 +60,9 @@ namespace AquaExpansion.SaltBattery
                     
                 }
             }
+            utils = new AquaExpansionUtils();
             NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -80,7 +80,6 @@ namespace AquaExpansion.SaltBattery
             }
            
         }
-
         private void SetInfo(StringBuilder info)
         {
             if (grid == null || grid.Closed)
@@ -100,7 +99,6 @@ namespace AquaExpansion.SaltBattery
                 info.AppendLine($"{Tsalt} {(float)Math.Round(saltP)}%");
             }
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -109,10 +107,12 @@ namespace AquaExpansion.SaltBattery
                 return;
             if (grid.Physics == null)
                 return;
+            utils.SetupHelp();
             block.AppendingCustomInfo += AppendCustomInfo;
+            SaltBatteryUI.instance.ConnectToBlock(block);
+            SaltBatteryUI.instance.RunControlls();
             base.UpdateOnceBeforeFrame();
         }
-
         private void GetBatteryComponents()
         {
             if (block == null || block.Closed)
@@ -125,7 +125,6 @@ namespace AquaExpansion.SaltBattery
                 //AquaExpansionSession.Insance.Log(Log, "Components ERROR");
             }
         }
-
         public override void UpdateAfterSimulation10()
         {
             base.UpdateAfterSimulation10();
@@ -139,7 +138,6 @@ namespace AquaExpansion.SaltBattery
             UpdateBatteryOutput();
             AquaExpansionSession.Insance.UpdateTerminal(block);
         }
-
         private void GetCurrentWaterData()
         {
             if (block != null && block.Enabled && block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()))
@@ -153,7 +151,6 @@ namespace AquaExpansion.SaltBattery
                 }
             }
         }
-
         private float CalculateBoostEffect()
         {
             var boost = 0f;
@@ -171,7 +168,6 @@ namespace AquaExpansion.SaltBattery
             boost = MathHelper.Clamp(boost, 1f, (1f+(depthBoost + saltBoost)));
             return boost;
         }
-
         private void UpdateBatteryOutput()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || source == null || sink == null || block.Closed)
@@ -189,7 +185,6 @@ namespace AquaExpansion.SaltBattery
             sink.SetMaxRequiredInputByType(MyResourceDistributorComponent.ElectricityId, finalCharge);
             source.SetMaxOutputByType(MyResourceDistributorComponent.ElectricityId, finalOutput);
         }
-
         private void InitBaseoutput()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || source == null || sink == null || block.Closed)
@@ -199,7 +194,6 @@ namespace AquaExpansion.SaltBattery
             baseChargeRate = sink.MaxRequiredInputByType(MyResourceDistributorComponent.ElectricityId); ;
             baseOutput = source.MaxOutputByType(MyResourceDistributorComponent.ElectricityId);
         }
-
         private void Clear()
         {
             if (block?.CubeGrid?.Physics != null)
@@ -207,10 +201,10 @@ namespace AquaExpansion.SaltBattery
                 block.AppendingCustomInfo -= AppendCustomInfo;
             }
         }
-
         public override void Close()
         {
             Clear();
+            utils = null;
             grid = null;
             block = null;
             base.Close();

@@ -1,6 +1,7 @@
 ﻿using ProtoBuf;
 using Sandbox.Definitions;
 using Sandbox.Game;
+using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,13 @@ using System.IO;
 using System.Text;
 using VRage;
 using VRage.Game;
+using VRage.Game.Components;
 using VRage.Game.Entity;
+using VRage.Game.ModAPI;
 using VRage.ObjectBuilders;
 using VRage.Utils;
 using VRageMath;
+using VRageRender;
 
 namespace AquaExpansion.Core
 {
@@ -20,6 +24,8 @@ namespace AquaExpansion.Core
     public enum AquaFishBlockStage { Idlle, Atracting, Catching, CatchResult, Full };
     public enum AquaOceanLayer { Surface, Shallow, Mid, Deep, Abyss};
     public enum AquaDefinitionOB { Component, ConsumableItem };
+    public enum AquaSeaAnchorState { Idle, Deploying, Deployed, Attached, Retracting }
+    public enum AquaSeaAnchorType { S, L }
     /// <summary>
     /// Main utilite class
     /// </summary>
@@ -31,6 +37,7 @@ namespace AquaExpansion.Core
         private string ErrorText = "Error";
         private string EmptyplantText = "No Plant";
         private string EmptyfishText = "No Fish";
+        private string EmptyAnchorText = "Not Installed";
         private int zeroed = 0;
         public event Action<int> ModelStageChanged;
         public event Action<int> FishModelStageChanged;
@@ -41,6 +48,11 @@ namespace AquaExpansion.Core
         private readonly HashSet<string> inventorymodelpaths = new HashSet<string>();
         public readonly List<string> inventorymodelpathsList = new List<string>();
         private bool onetimereloadbait = true;
+        private HashSet<string> Anchorsubtypes = new HashSet<string>();
+        private readonly HashSet<string> Anchormodelpaths = new HashSet<string>();
+        public readonly List<string> Anchormodelpahslist = new List<string>();
+        public event Action<int> AnchormodelShow;
+        public event Action<bool> RevertSignalEquip;
         /// <summary>
         /// Change model event
         /// </summary>
@@ -64,6 +76,22 @@ namespace AquaExpansion.Core
         public void OnInventoryFishShowStageChanged(int stage)
         {
             InventoryFishShow?.Invoke(stage);
+        }
+        /// <summary>
+        /// Change Anchor model
+        /// </summary>
+        /// <param name="stage"></param>
+        public void OnAnchorObjectStageChanged(int stage)
+        {
+            AnchormodelShow?.Invoke(stage);
+        }
+        /// <summary>
+        /// Failed eqiop or null
+        /// </summary>
+        /// <param name="fail"></param>
+        public void OnFailedEquip(bool fail)
+        {
+            RevertSignalEquip?.Invoke(fail);
         }
         /// <summary>
         /// Model optimization
@@ -136,7 +164,7 @@ namespace AquaExpansion.Core
             return inventorymodelpathsList[index];
         }
         /// <summary>
-        /// Get Color by Status
+        /// Get Color by Status Old
         /// </summary>
         /// <param name="stage"></param>
         /// <returns></returns>
@@ -159,6 +187,34 @@ namespace AquaExpansion.Core
                     break;
                 case AquaFarmBlockStage.Full:
                     statusColor = Color.HotPink;
+                    break;
+            }
+            return statusColor;
+        }
+        /// <summary>
+        /// Get Color by Anchor status
+        /// </summary>
+        /// <param name="stage"></param>
+        /// <returns></returns>
+        private Color GeAnchorStatusColor(AquaSeaAnchorState stage)
+        {
+            Color statusColor = Color.Green;
+            switch (stage)
+            {
+                case AquaSeaAnchorState.Idle:
+                    statusColor = Color.Green;
+                    break;
+                case AquaSeaAnchorState.Deploying:
+                    statusColor = Color.Yellow;
+                    break;
+                case AquaSeaAnchorState.Deployed:
+                    statusColor = Color.White;
+                    break;
+                case AquaSeaAnchorState.Attached:
+                    statusColor = Color.Blue;
+                    break;
+                case AquaSeaAnchorState.Retracting:
+                    statusColor = Color.Yellow;
                     break;
             }
             return statusColor;
@@ -202,6 +258,18 @@ namespace AquaExpansion.Core
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed || block.MarkedForClose)
                 return;
             block.SetEmissiveParts("Emissive", GeStatusColor(stage), emissivity);
+        }
+        /// <summary>
+        /// Set Emissive by Anchor state
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="stage"></param>
+        /// <param name="emissivity"></param>
+        public void SetEmissivebyAnchorStatus(IMyFunctionalBlock block, AquaSeaAnchorState stage, float emissivity)
+        {
+            if (block == null || !block.Enabled || !block.IsFunctional || block.Closed || block.MarkedForClose)
+                return;
+            block.SetEmissiveParts("Emissive", GeAnchorStatusColor(stage), emissivity);
         }
         /// <summary>
         /// Get emissive depth factor
@@ -412,6 +480,98 @@ namespace AquaExpansion.Core
                 }
             }
             info.AppendLine($"Status:{status}");
+        }
+        /// <summary>
+        /// Get Sea Anchor Status Info
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="block"></param>
+        /// <param name="inv"></param>
+        /// <param name="Stage"></param>
+        public void AnchorStatusInfo(StringBuilder info, IMyFunctionalBlock block, MyInventory inv, AquaSeaAnchorState Stage)
+        {
+            if (block == null || block.Closed || block.MarkedForClose || inv == null)
+                return;
+            string status = "";
+            if (!block.Enabled)
+            { status = "ERROR"; }
+            else
+            {
+                switch (Stage)
+                {
+                    case AquaSeaAnchorState.Idle:
+                        status = "Idle";
+                        break;
+                    case AquaSeaAnchorState.Deploying:
+                        status = "Deploying";
+                        break;
+                    case AquaSeaAnchorState.Deployed:
+                        status = "Deployed";
+                        break;
+                    case AquaSeaAnchorState.Attached:
+                        status = "Contact";
+                        break;
+                    case AquaSeaAnchorState.Retracting:
+                        status = "Retracting";
+                        break;
+                }
+            }
+            info.AppendLine($"Status:{status}");
+        }
+        /// <summary>
+        /// Cureent  Anchor info
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="block"></param>
+        /// <param name="inv"></param>
+        /// <param name="order"></param>
+        public void CurrentAnchor(StringBuilder info, IMyFunctionalBlock block, MyInventory inv, AquaSeaAnchorEquipOrder order)
+        {
+            if (block != null && inv != null)
+            {
+                if (block.Enabled)
+                {
+                    if (order != null)
+                    {
+                        info.AppendLine($"Anchor:{order.Displayname}");
+                    }
+                    else
+                    {
+                        info.AppendLine($"Anchor:{EmptyAnchorText}");
+                    }
+                }
+                else
+                {
+                    info.AppendLine($"Anchor: {ErrorText}");
+                }
+            }
+        }
+        /// <summary>
+        /// Anchor Cable info
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="block"></param>
+        /// <param name="activeanchor"></param>
+        public void AnchorCableinfo(StringBuilder info, IMyFunctionalBlock block, AquaSeaAnchorInstance activeanchor)
+        {
+            if (block != null)
+            {
+                if (block.Enabled)
+                {
+                    if (activeanchor != null)
+                    {
+                        info.AppendLine($"Cable:{(float)Math.Round(activeanchor.Cablelength)}m / {activeanchor.anchordef.Maxcablelength}m");
+                    }
+                    else
+                    {
+                        info.AppendLine($"Cable:{EmptyAnchorText}");
+                    }
+                }
+                else
+                {
+                    info.AppendLine($"Cable: {ErrorText}");
+                }
+            }
         }
         /// <summary>
         /// Get Current Plant
@@ -777,7 +937,6 @@ namespace AquaExpansion.Core
 
             return result;
         }
-
         /// <summary>
         /// Setup Definitions
         /// </summary>
@@ -795,6 +954,8 @@ namespace AquaExpansion.Core
                     MapPlantData();
                     AquaRecipeDatabase.Init();
                     AquaRecipeDatabase.Validate();
+                    AquaHelpDatabase.Init();
+                    AquaHelpDatabase.Validate();
                     break;
                 case AquaFarmingBlockType.FishingBlock:
                     AquaFishItemsDatabase.Init();
@@ -804,6 +965,8 @@ namespace AquaExpansion.Core
                     AquaFishDatabase.Validate();
                     AquaFishingRecipeDatabase.Init();
                     AquaFishingRecipeDatabase.Validate();
+                    AquaHelpDatabase.Init();
+                    AquaHelpDatabase.Validate();
                     break;
                 case AquaFarmingBlockType.FishingBlockAdvance:
                     AquaFishItemsDatabase.Init();
@@ -813,10 +976,51 @@ namespace AquaExpansion.Core
                     AquaFishDatabase.Validate();
                     AquaFishingRecipeDatabase.Init();
                     AquaFishingRecipeDatabase.Validate();
+                    AquaHelpDatabase.Init();
+                    AquaHelpDatabase.Validate();
                     break;
             }
         }
-
+        /// <summary>
+        /// Setup Anchor Defiitions
+        /// </summary>
+        /// <param name="type"></param>
+        public void SetupSeaAnchorDefinitions(AquaSeaAnchorType type)
+        {
+            switch (type)
+            {
+                case AquaSeaAnchorType.L:
+                    AquaSeaAnchorItemsDatabase.Init();
+                    AquaSeaAnchorItemsDatabase.Validate();
+                    FillSeaAnchorSubtypes();
+                    AquaSeaAnchorDatabase.Init();
+                    AquaSeaAnchorDatabase.Validate();
+                    AquaSeaAnchorEquipOrderDatabase.Init();
+                    AquaSeaAnchorEquipOrderDatabase.Validate();
+                    AquaHelpDatabase.Init();
+                    AquaHelpDatabase.Validate();
+                    break;
+                case AquaSeaAnchorType.S:
+                    AquaSeaAnchorItemsDatabase.Init();
+                    AquaSeaAnchorItemsDatabase.Validate();
+                    FillSeaAnchorSubtypes();
+                    AquaSeaAnchorDatabase.Init();
+                    AquaSeaAnchorDatabase.Validate();
+                    AquaSeaAnchorEquipOrderDatabase.Init();
+                    AquaSeaAnchorEquipOrderDatabase.Validate();
+                    AquaHelpDatabase.Init();
+                    AquaHelpDatabase.Validate();
+                    break;
+            }
+        }
+        /// <summary>
+        /// Setup help database for block not using shared functions
+        /// </summary>
+        public void SetupHelp()
+        {
+            AquaHelpDatabase.Init();
+            AquaHelpDatabase.Validate();
+        }
         /// <summary>
         /// Map Plant Data
         /// </summary>
@@ -826,7 +1030,6 @@ namespace AquaExpansion.Core
             AquaPlantDatabase.MapComponent(AquaFarmItemsDatabase.GetSporebyID(2), 1);
             AquaPlantDatabase.MapComponent(AquaFarmItemsDatabase.GetSporebyID(3), 2);
         }
-
         /// <summary>
         /// Fill DataHashes
         /// </summary>
@@ -839,7 +1042,6 @@ namespace AquaExpansion.Core
             SeaweedSubtypes.Add(AquaFarmItemsDatabase.GetCropbyID(2));
             SeaweedSubtypes.Add(AquaFarmItemsDatabase.GetCropbyID(3));
         }
-
         /// <summary>
         /// Fill Fish Datahashes
         /// </summary>
@@ -871,7 +1073,14 @@ namespace AquaExpansion.Core
             FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(21));
             FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(22));
         }
-
+        /// <summary>
+        /// Fill Anchor subtypes
+        /// </summary>
+        private void FillSeaAnchorSubtypes()
+        {
+            Anchorsubtypes.Add(AquaSeaAnchorItemsDatabase.GetAnchorbyID(1));
+            Anchorsubtypes.Add(AquaSeaAnchorItemsDatabase.GetAnchorbyID(2));
+        }
         /// <summary>
         /// Check Recipe Prerequisites
         /// </summary>
@@ -899,7 +1108,6 @@ namespace AquaExpansion.Core
                 inv.RemoveItemsOfType(req.Value, req.Key);
             }
         }
-
         /// <summary>
         /// Check invertory volume
         /// </summary>
@@ -917,7 +1125,18 @@ namespace AquaExpansion.Core
             }
             return true;
         }
-
+        /// <summary>
+        /// Arm Anchor in block
+        /// </summary>
+        /// <param name="inv"></param>
+        /// <param name="requirements"></param>
+        private void ArmAnchor(MyInventory inv, Dictionary<MyDefinitionId, MyFixedPoint> requirements)
+        {
+            foreach (var req in requirements)
+            {
+                inv.RemoveItemsOfType(req.Value, req.Key);
+            }
+        }
         /// <summary>
         /// Get Recipe subtype
         /// </summary>
@@ -933,7 +1152,6 @@ namespace AquaExpansion.Core
 
             return null;
         }
-
         /// <summary>
         /// Get fish recipe subtype
         /// </summary>
@@ -949,7 +1167,20 @@ namespace AquaExpansion.Core
 
             return null;
         }
+        /// <summary>
+        /// Get Order subtype
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        private string GetOrderAnchorSubtype(AquaSeaAnchorEquipOrder order)
+        {
+            foreach (var pre in order.AnchorItemToEquip)
+            {
+                return pre.Key.SubtypeId.ToString();
+            }
 
+            return null;
+        }
         /// <summary>
         /// Autoselect Plant Recipe
         /// </summary>
@@ -960,7 +1191,6 @@ namespace AquaExpansion.Core
             if (inventory == null)
                 return null;
             var sporeCounts = GetItemCounts(inventory, SporeSubtypes);
-
             AquaFarmingRecipe bestRecipe = null;
             int bestCount = 0;
             foreach (var recipe in AquaRecipeDatabase.GetAll())
@@ -986,57 +1216,6 @@ namespace AquaExpansion.Core
             }
             return bestRecipe;
         }
-
-        /// <summary>
-        /// Autoselect old fish recipe
-        /// </summary>
-        /// <param name="inventory"></param>
-        /// <param name="type"></param>
-        /// <param name="depth"></param>
-        /// <returns></returns>
-        private AquaFishingRecipe SelectBestFishRecipe(MyInventory inventory, AquaFarmingBlockType type, float depth)
-        {
-            if (inventory == null)
-                return null;
-            var baitCounts = GetItemCounts(inventory, BaitSubtypes);
-            AquaFishingRecipe bestrecipe = null;
-            int bestCount = 0;
-            IEnumerable<AquaFishingRecipe> enumerator = null;
-            //var Layer = AquaEnviromentUtils.GetOceanLayer(depth * (-1f));
-            //AquaExpansionSession.Insance.Log(true, $"layer {depth * (-1f)}");
-            switch (type)
-            {
-                case AquaFarmingBlockType.FishingBlock:
-                    enumerator = AquaFishingRecipeDatabase.GetAll();
-                    break;
-                case AquaFarmingBlockType.FishingBlockAdvance:
-                    enumerator = AquaFishingRecipeDatabase.GetAllBigFish();
-                    break;
-            }
-            foreach (var recipe in enumerator)
-            {
-                var baitSubtype = GetRecipeBaitSubtype(recipe);
-                int count;
-                if (baitSubtype == null)
-                    continue;
-                if (!baitCounts.TryGetValue(baitSubtype, out count))
-                    continue;
-                if (count <= 0)
-                    continue;
-                // ensure we have enough for recipe
-                if (!HasItems(inventory, recipe.BaitPrerequisites))
-                    continue;
-                // pick recipe with MOST baites available
-                if (count > bestCount)
-                {
-                    bestCount = count;
-                    bestrecipe = recipe;
-                    AquaExpansionSession.Insance.Log(true, $"Recipe ID {bestrecipe.Id}, layer {bestrecipe.Oceanlayer}");
-                }
-            }
-            return bestrecipe;
-        }
-
         /// <summary>
         /// Autoselect random fish recipe
         /// </summary>
@@ -1092,7 +1271,48 @@ namespace AquaExpansion.Core
             //AquaExpansionSession.Insance.Log(true, $"Recipe ID {randomlayerrecipe.Id}, Recipe Displayname {randomlayerrecipe.Displayname}, in OceanLayer {Layer}");
             return randomlayerrecipe;
         }
-
+        /// <summary>
+        /// AutoSelect Anchor Order to Equip
+        /// </summary>
+        /// <returns></returns>
+        private AquaSeaAnchorEquipOrder SelectAnchorOrder(MyInventory inventory, AquaSeaAnchorType type)
+        {
+            if (inventory == null)
+                return null;
+            var AnchorCounts = GetItemCounts(inventory, Anchorsubtypes);
+            AquaSeaAnchorEquipOrder bestorder = null;
+            int bestCount = 0;
+            IEnumerable<AquaSeaAnchorEquipOrder> enumerator = null;
+            switch (type)
+            {
+                case AquaSeaAnchorType.L:
+                    enumerator = AquaSeaAnchorEquipOrderDatabase.GetAll();
+                    break;
+                case AquaSeaAnchorType.S:
+                    enumerator = AquaSeaAnchorEquipOrderDatabase.GetAllSmall();
+                    break;
+            }
+            foreach (var order in enumerator)
+            {
+                var anchorSubtype = GetOrderAnchorSubtype(order);
+                int count;
+                if (anchorSubtype == null)
+                    continue;
+                if (!AnchorCounts.TryGetValue(anchorSubtype, out count))
+                    continue;
+                if (count <= 0)
+                    continue;
+                if (!HasItems(inventory, order.AnchorItemToEquip))
+                    continue;
+                if (count > bestCount)
+                {
+                    bestCount = count;
+                    bestorder = order;
+                    //AquaExpansionSession.Insance.Log(true, $"Order ID {bestorder.Id}");
+                }
+            }
+            return bestorder;
+        }
         /// <summary>
         /// Update fishing global
         /// </summary>
@@ -1140,7 +1360,6 @@ namespace AquaExpansion.Core
             }
             UpdateFishingProcess(inv, ref stage, ref activeRecipe, ref currentfish, ref chance, depth, salt, ref remtime);
         }
-
         /// <summary>
         /// Try start Fishing
         /// </summary>
@@ -1186,7 +1405,6 @@ namespace AquaExpansion.Core
             Stage = AquaFishBlockStage.Atracting;
             OnModelStageChanged(1);
         }
-
         /// <summary>
         /// Update fishing process
         /// </summary>
@@ -1201,7 +1419,6 @@ namespace AquaExpansion.Core
         private void UpdateFishingProcess(MyInventory inv, ref AquaFishBlockStage stage, ref AquaFishingRecipe activeRecipe, ref AquaFishInstance currenfish, 
             ref float chance, float indepth, float insalt, ref float remantime)
         {
-
             if (currenfish == null || activeRecipe == null)
                 return;
             var def = currenfish.fishDef;
@@ -1273,7 +1490,6 @@ namespace AquaExpansion.Core
                     break;
             }
         }
-
         /// <summary>
         /// OneTime reload bait after block was disabled
         /// </summary>
@@ -1284,7 +1500,6 @@ namespace AquaExpansion.Core
             onetimereloadbait = true;
             OnModelStageChanged(1);
         }
-
         /// <summary>
         /// Try Catch fish
         /// </summary>
@@ -1328,7 +1543,6 @@ namespace AquaExpansion.Core
                 MissCatch(ref activeRecipe, ref currentFish, ref stage);
             }
         }
-
         /// <summary>
         /// Miss catch
         /// </summary>
@@ -1344,7 +1558,6 @@ namespace AquaExpansion.Core
             //AquaExpansionSession.Insance.Log(true, $"Failed");
             stage = AquaFishBlockStage.Idlle;
         }
-
         /// <summary>
         /// Rest catch
         /// </summary>
@@ -1360,7 +1573,6 @@ namespace AquaExpansion.Core
             //AquaExpansionSession.Insance.Log(true, $"Success");
             stage = AquaFishBlockStage.Idlle;
         }
-
         /// <summary>
         /// Roll catch chance
         /// </summary>
@@ -1374,7 +1586,6 @@ namespace AquaExpansion.Core
             //AquaExpansionSession.Insance.Log(true,$"Fish Roll={roll:0.000} Chance={chance:0.000} Success={success}");
             return success;
         }
-
         /// <summary>
         /// Update Farm
         /// </summary>
@@ -1409,7 +1620,6 @@ namespace AquaExpansion.Core
                 return;
             UpdatePlant(inv, ref stage, ref activeRecipe, ref currentPlant, ref eff, depth, salt, ref remtime);
         }
-
         /// <summary>
         /// Start Plant
         /// </summary>
@@ -1450,7 +1660,6 @@ namespace AquaExpansion.Core
             Stage = AquaFarmBlockStage.Planting;
             OnModelStageChanged(1);
         }
-
         /// <summary>
         /// Change Plant Stage
         /// </summary>
@@ -1468,7 +1677,6 @@ namespace AquaExpansion.Core
                     break;
             }
         }
-
         /// <summary>
         /// Change Fishing Stage
         /// </summary>
@@ -1485,7 +1693,6 @@ namespace AquaExpansion.Core
                     break;
             }
         }
-
         /// <summary>
         /// Update Plant Progress
         /// </summary>
@@ -1564,7 +1771,6 @@ namespace AquaExpansion.Core
             }
 
         }
-
         /// <summary>
         /// Autoharvert
         /// </summary>
@@ -1604,7 +1810,6 @@ namespace AquaExpansion.Core
             //stage = AquaFarmBlockStage.Iddle;
             //OnModelStageChanged(0);
         }
-
         /// <summary>
         /// Rest plant
         /// </summary>
@@ -1620,7 +1825,6 @@ namespace AquaExpansion.Core
             stage = AquaFarmBlockStage.Iddle;
             OnModelStageChanged(0);
         }
-
         /// <summary>
         /// Farm effiency
         /// </summary>
@@ -1640,7 +1844,6 @@ namespace AquaExpansion.Core
             //AquaExpansionSession.Insance.Log(true, $" depthFactor {depthFactor}, salt {salt} saltfactor {saltFactor} eff {eff}");
             return eff;
         }
-
         /// <summary>
         /// Fish catch chance
         /// </summary>
@@ -1656,7 +1859,6 @@ namespace AquaExpansion.Core
             //AquaExpansionSession.Insance.Log(true, $"depthfactor {depthFactor} def chance {def.BaseCatchChance}, chance {chance}");
             return MathHelper.Clamp(chance, 0f, 1f);
         }
-
         /// <summary>
         /// Fish depth  catch eff
         /// </summary>
@@ -1682,21 +1884,6 @@ namespace AquaExpansion.Core
                 return 0f;
             return t;
         }
-
-        /// <summary>
-        /// Get fish salt factor
-        /// </summary>
-        /// <param name="def"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
-        private float GetSalinityFactor(AquaFishDefinition def, float salt)
-        {
-            float delta = Math.Abs(salt - def.OptimalSalt);
-            float t = 1f - (delta / def.SaltTolerance);
-
-            return MathHelper.Clamp(t, 0f, 1f);
-        }
-
         /// <summary>
         /// Salt Tolerance Efficiency
         /// </summary>
@@ -1707,15 +1894,9 @@ namespace AquaExpansion.Core
         /// <returns></returns>
         private float SaltEff(float salt, float optimal, float tolerance, float falloff)
         {
-            /*float delta = Math.Abs(salt - optimal);
-            if (delta <= tolerance)
-                return 1f;
-            float x = (delta - tolerance) / falloff;
-            return (float)Math.Exp(-x * x);*/
             float delta = Math.Abs(salt - optimal);
             return (float)Math.Exp(-(delta * delta) / (tolerance * tolerance));
         }
-
         /// <summary>
         /// Depth Tolerance Efficiency
         /// </summary>
@@ -1739,7 +1920,6 @@ namespace AquaExpansion.Core
             float x = (absDelta - tolerance) / falloff;
             return (float)Math.Exp(-x * x);
         }
-
         /// <summary>
         /// Get virtual recipe data
         /// </summary>
@@ -1769,7 +1949,6 @@ namespace AquaExpansion.Core
             string cropinfo = string.Join(" \n", crops);
             return $"{preinfo}\n{odepth}\n{time}\n{cropinfo}";
         }
-
         /// <summary>
         /// Get virtual Fish recipe data
         /// </summary>
@@ -1800,14 +1979,21 @@ namespace AquaExpansion.Core
             string fishinfo = string.Join(" \n", fishes);
             return $"{preinfo}\n{odepth}\n{time}\n{chance}\n{fishinfo}";
         }
-
+        /// <summary>
+        /// Get Help text from database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public string GetHelpText(int id)
+        {
+            return AquaHelpDatabase.GetHelpLineByID(id);
+        }
         /// <summary>
         /// Time Conversion to 24H format
         /// </summary>
         /// <param name="seconds"></param>
         /// <returns></returns>
         public static string GetHMS(float seconds) => $"{(int)seconds / 3600:00}:{((int)seconds % 3600) / 60:00}:{(int)seconds % 60:00}";
-
         /// <summary>
         /// Get Mod path in utils bound
         /// </summary>
@@ -1821,8 +2007,417 @@ namespace AquaExpansion.Core
             modpath = AquaExpansionSession.Insance.ModContext.ModPath;
             return Path.Combine(modpath, "Models\\", model);
         }
-    }
+        /// <summary>
+        /// Main Anchor equip update
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="inv"></param>
+        /// <param name="state"></param>
+        /// <param name="currentanchor"></param>
+        /// <param name="activeorder"></param>
+        /// <param name="signalequip"></param>
+        public void UpdateAnchoring(IMyFunctionalBlock block, MyInventory inv, ref AquaSeaAnchorState state, AquaSeaAnchorType type, ref AquaSeaAnchorInstance currentanchor, ref AquaSeaAnchorEquipOrder activeorder,
+            bool signalequip, ref bool armed, float deployspeed, Vector3D deployDirection, Vector3D AnchorStartPosition, float retractspeed, Vector3D RopeStartPosition, Vector3D RopeEndPosition)
+        {
+            if (!ValidateAnchor(block, inv, ref state, ref currentanchor, ref activeorder,ref armed))
+                return;
+            UpdateAnchorEquipment(block, inv, type, ref currentanchor, ref activeorder, signalequip,  ref armed, AnchorStartPosition);
+            if (currentanchor == null)
+                return;
+            UpdateAnchorRuntime(block, ref state, ref currentanchor, ref activeorder, deployspeed, deployDirection, AnchorStartPosition,retractspeed, RopeStartPosition, RopeEndPosition);
+        }
+        /// <summary>
+        /// Validate Anchor
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="inv"></param>
+        /// <param name="state"></param>
+        /// <param name="currentAnchor"></param>
+        /// <param name="currentOrder"></param>
+        /// <param name="maxCableLength"></param>
+        /// <param name="armed"></param>
+        /// <returns></returns>
+        private bool ValidateAnchor(IMyFunctionalBlock block, MyInventory inv, ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance currentAnchor, ref AquaSeaAnchorEquipOrder currentOrder,
+         ref bool armed)
+        {
+            if (block == null || block.Closed || block.CubeGrid == null | block.CubeGrid.Closed || !block.IsFunctional || inv == null)
+            {
+                state = AquaSeaAnchorState.Idle;
+                ResetAnchorEquip(ref currentAnchor,ref currentOrder, ref armed);
+                armed = false;
+                OnFailedEquip(false);
+                //AquaExpansionSession.Insance.Log(true, "Anchor terminated");
+                return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// Update Anchor Equipment
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="inv"></param>
+        /// <param name="type"></param>
+        /// <param name="currentAnchor"></param>
+        /// <param name="currentOrder"></param>
+        /// <param name="signalEquip"></param>
+        /// <param name="armed"></param>
+        private void UpdateAnchorEquipment(IMyFunctionalBlock block, MyInventory inv, AquaSeaAnchorType type, ref AquaSeaAnchorInstance currentAnchor, ref AquaSeaAnchorEquipOrder currentOrder,
+        bool signalEquip,ref bool armed, Vector3D AnchorStartPosition)
+        {
+            if (signalEquip)
+            {
+                if (currentAnchor == null)
+                {
+                    TryStartAnchorEquip(block, inv, type, ref currentAnchor, ref currentOrder, ref armed, AnchorStartPosition);
+                    //AquaExpansionSession.Insance.Log(true, "Anchor equipped.");
+                }
+            }
+            else
+            {
+                if (currentAnchor != null)
+                {
+                    TryStartAnchorUnequip(inv, ref currentOrder, ref currentAnchor, ref armed);
+                    //AquaExpansionSession.Insance.Log(true,"Anchor unequipped.");
+                }
+            }
+        }
+        /// <summary>
+        /// Anchor runtime update
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="state"></param>
+        /// <param name="currentAnchor"></param>
+        /// <param name="currentOrder"></param>
+        /// <param name="deployspeed"></param>
+        /// <param name="deployDirection"></param>
+        /// <param name="AnchorStartPosition"></param>
+        /// <param name="retractspeed"></param>
+        /// <param name="RopeStartPosition"></param>
+        /// <param name="RopeEndPosition"></param>
+        private void UpdateAnchorRuntime(IMyFunctionalBlock block,ref AquaSeaAnchorState state,ref AquaSeaAnchorInstance currentAnchor,ref AquaSeaAnchorEquipOrder currentOrder, float deployspeed,
+            Vector3D deployDirection, Vector3D AnchorStartPosition,float retractspeed, Vector3D RopeStartPosition, Vector3D RopeEndPosition)
+        {
+            if (currentAnchor == null || currentOrder == null)
+                return;
+            if (block.Enabled)
+            {
+                switch (state)
+                {
+                    case AquaSeaAnchorState.Idle:
+                        break;
 
+                    case AquaSeaAnchorState.Deploying:
+                        UpdateDeploy(ref state, ref currentAnchor, ref currentOrder, deployspeed, deployDirection, AnchorStartPosition);
+                        break;
+                    case AquaSeaAnchorState.Deployed:
+                        UpdateDeployed(ref currentAnchor, AnchorStartPosition, deployDirection);
+                        break;
+
+                    case AquaSeaAnchorState.Attached:
+                        UpdateAttached(ref state,ref currentAnchor, block,AnchorStartPosition, deployDirection);
+                        break;
+
+                    case AquaSeaAnchorState.Retracting:
+                        UpdateRetract(ref state, ref currentAnchor, retractspeed, AnchorStartPosition, deployDirection);
+                        break;
+                }
+            }
+            DrawDebug(state, deployDirection, RopeStartPosition, RopeEndPosition, currentAnchor.anchordef.Cablescale);//first cable line
+            DrawDebug(state,deployDirection, AnchorStartPosition, currentAnchor.AnchorPosition, currentAnchor.anchordef.Cablescale);//main cable line
+            //AquaExpansionSession.Insance.Log(true, $"Anchor tension {Math.Round(currentAnchor.CurrentTension)}");
+        }
+        /// <summary>
+        /// Build rope line
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="deployDirection"></param>
+        /// <param name="AnchorStartPosition"></param>
+        /// <param name="AnchorPostion"></param>
+        private void DrawDebug(AquaSeaAnchorState state, Vector3D deployDirection, Vector3D AnchorStartPosition, Vector3D AnchorPostion, float scale)
+        {
+            Vector4 color = Color.Black; 
+            Vector3D start = AnchorStartPosition; 
+            Vector3D end = AnchorPostion; 
+            MySimpleObjectDraw.DrawLine(start, end, MyStringId.GetOrCompute("Square"), ref color, scale, MyBillboard.BlendTypeEnum.Standard);
+        }
+        /// <summary>
+        /// Update retract
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="currentAnchor"></param>
+        /// <param name="retractSpeed"></param>
+        /// <param name="AnchorStartPosition"></param>
+        private void UpdateRetract(ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance currentAnchor, float retractSpeed, Vector3D AnchorStartPosition, Vector3D deployDirection)
+        {
+            if (currentAnchor == null)
+                return;
+            float dt = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            float step = retractSpeed * dt;
+            // Reel in cable
+            currentAnchor.Cablelength = Math.Max(0f, currentAnchor.Cablelength - step);
+            Vector3D rope = currentAnchor.AnchorPosition - AnchorStartPosition;
+            double distance = rope.Length();
+            if (distance > 0.001)
+            {
+                Vector3D dir = rope / distance;
+                if (distance > currentAnchor.Cablelength)
+                {
+                    // Cable is taut -> pull anchor toward ship
+                    currentAnchor.AnchorPosition = AnchorStartPosition + dir * currentAnchor.Cablelength;
+                }
+                else
+                {
+                    // Cable is slack -> reel anchor upward
+                    currentAnchor.AnchorPosition -= deployDirection * step;
+                    // Prevent anchor from moving farther than cable allows
+                    rope = currentAnchor.AnchorPosition - AnchorStartPosition;
+                    distance = rope.Length();
+                    if (distance > currentAnchor.Cablelength)
+                    {
+                        dir = rope / distance;
+                        currentAnchor.AnchorPosition = AnchorStartPosition + dir * currentAnchor.Cablelength;
+                    }
+                }
+            }
+            // Dock anchor
+            if (currentAnchor.Cablelength <= 0.05f ||
+                Vector3D.DistanceSquared(currentAnchor.AnchorPosition, AnchorStartPosition) < 0.04)
+            {
+                currentAnchor.Cablelength = 0f;
+                currentAnchor.AnchorPosition = AnchorStartPosition;
+                state = AquaSeaAnchorState.Idle;
+            }
+        }
+        /// <summary>
+        /// Update attached state
+        /// </summary>
+        /// <param name="currentAnchor"></param>
+        private void UpdateAttached(ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance currentAnchor,IMyFunctionalBlock block, Vector3D ropeStart, Vector3D deploydirection)
+        {
+            if (currentAnchor == null || block?.CubeGrid?.Physics == null)
+                return;
+            // Rope from ship to anchor
+            Vector3D rope = currentAnchor.AttachPoint - ropeStart;
+            double distance = rope.Length();
+            if (distance < 0.001)
+                return;
+            Vector3D dir = rope / distance;
+            // Cable stretch beyond deployed length
+            double stretch = Math.Max(0.0, distance - currentAnchor.Cablelength);
+            // Spring tension
+            currentAnchor.CurrentTension = (float)(stretch * currentAnchor.anchordef.Stiffness);
+            if (currentAnchor.CurrentTension <= 0f)
+                return;
+            // HOLD
+            if (currentAnchor.CurrentTension < currentAnchor.anchordef.HoldForce)
+            {
+                Vector3D velocity = block.CubeGrid.Physics.LinearVelocity;
+                // Velocity along the cable
+                double velAlongCable = Vector3D.Dot(velocity, dir);
+                // Simple damping
+                float damping = (float)(velAlongCable * 5000f);
+                float forceMagnitude = Math.Max(0f,currentAnchor.CurrentTension - damping);
+                block.CubeGrid.Physics.AddForce(
+                    MyPhysicsForceType.APPLY_WORLD_FORCE,
+                    dir * forceMagnitude,
+                    ropeStart,
+                    null);
+                return;
+            }
+            // DRAG
+            if (currentAnchor.CurrentTension < currentAnchor.anchordef.DragResistance)
+            {
+                float factor = (currentAnchor.CurrentTension - currentAnchor.anchordef.HoldForce) / (currentAnchor.anchordef.DragResistance - currentAnchor.anchordef.HoldForce);
+                factor = MathHelper.Clamp(factor, 0f, 1f);
+                // Scale drag speed by tension
+                float dragDistance = currentAnchor.anchordef.DragSpeed * factor;
+                currentAnchor.AttachPoint += dir * dragDistance;
+                //currentAnchor.AnchorPosition = currentAnchor.AttachPoint - deploydirection * (currentAnchor.anchordef.Height * 2.0f);
+                return;
+            }
+            // BREAK FREE
+            currentAnchor.CurrentTension = 0f;
+            state = AquaSeaAnchorState.Deployed;
+        }
+        /// <summary>
+        /// Update Deploy
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="ActiveAnchor"></param>
+        /// <param name="ActiveOrder"></param>
+        /// <param name="deployspeed"></param>
+        /// <param name="deployDirection"></param>
+        /// <param name="AnchorStartPosition"></param>
+        private void UpdateDeploy(ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance ActiveAnchor, ref AquaSeaAnchorEquipOrder ActiveOrder, float deployspeed, Vector3D deployDirection,
+            Vector3D AnchorStartPosition)
+        {
+            if (ActiveAnchor == null || ActiveOrder == null)
+                return;
+            float dt = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            float step = deployspeed * dt;
+            // Deploy cable while winch is paying out
+            ActiveAnchor.Cablelength = Math.Min(ActiveAnchor.Cablelength + step,ActiveAnchor.anchordef.Maxcablelength);
+            // Rope from ship to anchor
+            Vector3D rope = ActiveAnchor.AnchorPosition - AnchorStartPosition;
+            double distance = rope.Length();
+            if (distance < 0.001)
+            {
+                // Initial deployment
+                ActiveAnchor.AnchorPosition = AnchorStartPosition + deployDirection * ActiveAnchor.Cablelength;
+            }
+            else if (distance > ActiveAnchor.Cablelength)
+            {
+                // Cable is taut - keep anchor at rope end
+                rope /= distance;
+                ActiveAnchor.AnchorPosition = AnchorStartPosition + rope * ActiveAnchor.Cablelength;
+            }
+            else
+            {
+                // Cable has slack - continue sinking
+                ActiveAnchor.AnchorPosition += deployDirection * step;
+            }
+            // Raycast from anchor tip
+            Vector3D tip = ActiveAnchor.AnchorPosition + deployDirection * ActiveAnchor.anchordef.Height;
+            Vector3D rayEnd = tip + deployDirection * Math.Max(step, 0.25f);
+            IHitInfo hit;
+            if (MyAPIGateway.Physics.CastRay(tip, rayEnd, out hit))
+            {
+                if (hit.HitEntity is MyVoxelBase)
+                {
+                    ActiveAnchor.AttachPoint = hit.Position;
+                    ActiveAnchor.Cablelength = (float)Vector3D.Distance(AnchorStartPosition,ActiveAnchor.AttachPoint);
+                    state = AquaSeaAnchorState.Attached;
+                    return;
+                }
+            }
+            // Cable fully deployed
+            if (ActiveAnchor.Cablelength >= ActiveAnchor.anchordef.Maxcablelength)
+            {
+                //ActiveAnchor.AnchorPosition = ActiveAnchor.AttachPoint - deployDirection * (ActiveAnchor.anchordef.Height * 2.0f);
+                state = AquaSeaAnchorState.Deployed;
+            }
+        }
+        /// <summary>
+        /// Update Deployed
+        /// </summary>
+        /// <param name="anchor"></param>
+        /// <param name="ropeStart"></param>
+        /// <param name="deployDirection"></param>
+        private void UpdateDeployed(ref AquaSeaAnchorInstance anchor,Vector3D ropeStart,Vector3D deployDirection)
+        {
+            if (anchor == null)
+                return;
+            // Direction from anchor to ship
+            Vector3D ropeDir = ropeStart - anchor.AttachPoint;
+            double distance = ropeDir.Length();
+            if (distance < 0.001)
+                return;
+            ropeDir /= distance;
+            // Cable slack -> anchor stays where it is
+            if (distance <= anchor.Cablelength)
+                return;
+            // Amount cable is stretched
+            double stretch = distance - anchor.Cablelength;
+            // Slide speed across seabed
+            float dragSpeed = (float)stretch * 0.2f;
+            // Never move too fast
+            dragSpeed = Math.Min(dragSpeed, 2.0f);
+            // Slide toward the ship
+            anchor.AttachPoint += ropeDir * dragSpeed;
+            // Keep anchor on seabed
+            Vector3D rayStart = anchor.AttachPoint - deployDirection * 2.0;
+            Vector3D rayEnd = anchor.AttachPoint + deployDirection * 2.0;
+            IHitInfo hit;
+            if (MyAPIGateway.Physics.CastRay(rayStart, rayEnd, out hit))
+            {
+                if (hit.HitEntity is MyVoxelBase)
+                {
+                    anchor.AttachPoint = hit.Position;
+                }
+            }
+            anchor.AnchorPosition = anchor.AttachPoint - deployDirection * anchor.anchordef.Height * 2.0f;
+        }
+        /// <summary>
+        /// Equip Anchor
+        /// </summary>
+        /// <param name="block"></param>
+        /// <param name="inv"></param>
+        /// <param name="type"></param>
+        /// <param name="currentanchor"></param>
+        /// <param name="activeorder"></param>
+        private void TryStartAnchorEquip(IMyFunctionalBlock block, MyInventory inv, AquaSeaAnchorType type ,ref AquaSeaAnchorInstance currentanchor, ref AquaSeaAnchorEquipOrder activeorder,
+            ref bool armed, Vector3D AnchorStartposition)
+        {
+            if (currentanchor != null || activeorder != null)
+            { OnFailedEquip(false); return; }
+            var order = SelectAnchorOrder(inv, type);
+            if (order == null)
+            { OnFailedEquip(false); return; }
+            if (!HasItems(inv, order.AnchorItemToEquip))
+            { OnFailedEquip(false); return; }
+            ArmAnchor(inv, order.AnchorItemToEquip);
+            activeorder = order;
+            currentanchor = new AquaSeaAnchorInstance
+            {
+                DefID = order.Anchorresult.NumericId,
+                DefId = order.Anchorresult.Id,
+                anchordef = order.Anchorresult,
+                Cablelength = 0f,
+                AnchorPosition = AnchorStartposition
+            };
+            armed = true;
+            OnModelStageChanged(1);
+            OnAnchorObjectStageChanged(1);
+            //AquaExpansionSession.Insance.Log(true,$"Anchor '{order.Anchorresult.Id}' equipped.");
+        }
+        /// <summary>
+        /// Unequip Anchor
+        /// </summary>
+        private void TryStartAnchorUnequip(MyInventory inv, ref AquaSeaAnchorEquipOrder currentorder, ref AquaSeaAnchorInstance currentanchor, ref bool armed)
+        {
+            if (inv == null || currentorder == null || currentanchor == null)
+            { OnFailedEquip(false); return; }
+            // Make sure everything fits before adding anything.
+            foreach (var item in currentorder.AnchorItemToUnequip)
+            {
+                if (!inv.CanItemsBeAdded(item.Value, item.Key))
+                {
+                    //AquaExpansionSession.Insance.Log(true,$"Cannot unequip anchor. Inventory is full ({item.Key.SubtypeName}).");
+                    return;
+                }
+            }
+            // Return components to the inventory.
+            foreach (var item in currentorder.AnchorItemToUnequip)
+            {
+                var component = MyObjectBuilderSerializer.CreateNewObject(item.Key) as MyObjectBuilder_Component;
+
+                if (component == null)
+                {
+                    //AquaExpansionSession.Insance.Log(true,$"Failed to create component '{item.Key.SubtypeName}'.");
+                    continue;
+                }
+                inv.AddItems(item.Value, component);
+            }
+            //AquaExpansionSession.Insance.Log(true, "Anchor unequipped.");
+            ResetAnchorEquip(ref currentanchor,ref currentorder,ref armed);
+        }
+        /// <summary>
+        /// Reset Anchor
+        /// </summary>
+        /// <param name="currentanchor"></param>
+        /// <param name="currentorder"></param>
+        /// <param name="armed"></param>
+        private void ResetAnchorEquip(ref AquaSeaAnchorInstance currentanchor, ref AquaSeaAnchorEquipOrder currentorder, ref bool armed)
+        {
+            OnModelStageChanged(0);
+            OnAnchorObjectStageChanged(0);
+            currentanchor = null;
+            currentorder = null;
+            armed = false;
+            OnFailedEquip(false);
+            //AquaExpansionSession.Insance.Log(true, "Anchor reset.");
+        }
+    }
     /// <summary>
     /// Enviromental helpers
     /// </summary>
@@ -1846,7 +2441,6 @@ namespace AquaExpansion.Core
             return AquaOceanLayer.Abyss;
         }
     }
-
     /// <summary>
     /// Class for Process virtual blueprints
     /// </summary>
@@ -1858,7 +2452,6 @@ namespace AquaExpansion.Core
         public int Id;
         public int Amount;
         public string Displayname;
-
         public AquaFarmingRecipe(int id, string displayname, int amout  = 1)
         {
             Id = id;
@@ -1872,7 +2465,6 @@ namespace AquaExpansion.Core
         {
             SporeToGrowPrerequisites.Add(MyDefinitionId.Parse($"MyObjectBuilder_Component/{subtypeid}"), amount);
         }
-
         /// <summary>
         /// Add Plant results Old
         /// </summary>
@@ -1880,7 +2472,6 @@ namespace AquaExpansion.Core
         {
             PlantResult = plant;
         }
-
         /// <summary>
         /// Add Crop Result Old
         /// </summary>
@@ -1894,7 +2485,6 @@ namespace AquaExpansion.Core
             );
         }
     }
-
     /// <summary>
     /// Class for process virual fishing blueprins
     /// </summary>
@@ -1915,7 +2505,24 @@ namespace AquaExpansion.Core
             Amount = amout;
         }
     }
-
+    /// <summary>
+    /// Class for Process virtual Orders
+    /// </summary>
+    public class AquaSeaAnchorEquipOrder
+    {
+        public Dictionary<MyDefinitionId, MyFixedPoint> AnchorItemToEquip = new Dictionary<MyDefinitionId, MyFixedPoint>();
+        public AquaSeaAnchorDefinition Anchorresult;
+        public Dictionary<MyDefinitionId, MyFixedPoint> AnchorItemToUnequip = new Dictionary<MyDefinitionId, MyFixedPoint>();
+        public int Id;
+        public int Amount;
+        public string Displayname;
+        public AquaSeaAnchorEquipOrder(int id, string displayname, int amount = 1)
+        {
+            Id = id;
+            Displayname = displayname;
+            Amount = amount;
+        }
+    }
     /// <summary>
     /// Plant definition class for defining the plant properies and requirements to grow
     /// </summary>
@@ -1943,7 +2550,6 @@ namespace AquaExpansion.Core
         // visuals
         public string[] StageModels;
     }
-
     /// <summary>
     /// Fish definition class for defining the fish properies and requirements to catch
     /// </summary>
@@ -1968,7 +2574,25 @@ namespace AquaExpansion.Core
         public float BaseCatchChance;
         public string Model;
     }
-
+    /// <summary>
+    ///  Anchor definition class for defining the cable and anchor properies
+    /// </summary>
+    public class AquaSeaAnchorDefinition
+    {
+        // identity
+        public int NumericId;     // used for save/load
+        public string Id;
+        //cable
+        public float Maxcablelength;
+        public string CableModel;
+        public string Anchormodel;
+        public float Cablescale;
+        public float Height;
+        public float Stiffness;
+        public float HoldForce;
+        public float DragResistance;
+        public float DragSpeed;
+    }
     /// <summary>
     /// Running instance of a plant with all the necessary data to track its growth progress
     /// </summary>
@@ -1986,7 +2610,6 @@ namespace AquaExpansion.Core
         [ProtoIgnore] public float CurrentDepth;
         [ProtoIgnore] public float CurrentSalt;
     }
-
     /// <summary>
     /// Running instance of a fish with all the necessary data to track catch progress
     /// </summary>
@@ -2004,7 +2627,20 @@ namespace AquaExpansion.Core
         [ProtoIgnore] public float CurrentDepth;
         [ProtoIgnore] public float CurrentSalt;
     }
-
+    /// <summary>
+    /// Running instance of a anchor with all the necessary data
+    /// </summary>
+    [ProtoContract]
+    public class AquaSeaAnchorInstance
+    {
+        [ProtoIgnore] public AquaSeaAnchorDefinition anchordef;
+        [ProtoIgnore] public string DefId;
+        [ProtoIgnore] public float CurrentTension;
+        [ProtoMember(1)] public int DefID;
+        [ProtoMember(2)] public float Cablelength;
+        [ProtoMember(3)] public Vector3D AnchorPosition;
+        [ProtoMember(4)] public Vector3D AttachPoint;
+    }
     /// <summary>
     /// Plant Database
     /// </summary>
@@ -2014,7 +2650,6 @@ namespace AquaExpansion.Core
         private static readonly  Dictionary<string, AquaPlantDefinition> plantsByName = new Dictionary<string, AquaPlantDefinition>();
         private static readonly Dictionary<string, int> componentToPlant = new Dictionary<string, int>();
         private static readonly Dictionary<string, AquaPlantDefinition> plants = new Dictionary<string, AquaPlantDefinition>();
-
         /// <summary>
         /// Init Database
         /// </summary>
@@ -2093,7 +2728,6 @@ namespace AquaExpansion.Core
                 }
             });
         }
-
         /// <summary>
         /// Register Plant
         /// </summary>
@@ -2103,7 +2737,6 @@ namespace AquaExpansion.Core
             plantsById[def.NumericId] = def;
             plantsByName[def.Id] = def;
         }
-
         /// <summary>
         /// Get Plant by ID
         /// </summary>
@@ -2117,7 +2750,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Plant NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get Plant by String
         /// </summary>
@@ -2131,7 +2763,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"PlantDefinition NOT FOUND: {id}");
             return null;
         }
-
         /// <summary>
         /// Map Component by ID
         /// </summary>
@@ -2141,7 +2772,6 @@ namespace AquaExpansion.Core
         {
             componentToPlant[componentSubtype] = plantId;
         }
-
         /// <summary>
         /// Get Component
         /// </summary>
@@ -2155,7 +2785,6 @@ namespace AquaExpansion.Core
 
             return null;
         }
-
         /// <summary>
         /// Validate Database
         /// </summary>
@@ -2171,7 +2800,6 @@ namespace AquaExpansion.Core
             }
         }
     }
-
     /// <summary>
     /// Fish Database
     /// </summary>
@@ -2180,7 +2808,6 @@ namespace AquaExpansion.Core
         private static readonly Dictionary<int, AquaFishDefinition> fishsById = new Dictionary<int, AquaFishDefinition>();
         private static readonly Dictionary<string, AquaFishDefinition> fishesByName = new Dictionary<string, AquaFishDefinition>();
         private static readonly Dictionary<string, AquaFishDefinition> fishes = new Dictionary<string, AquaFishDefinition>();
-
         /// <summary>
         /// Init
         /// </summary>
@@ -2606,7 +3233,6 @@ namespace AquaExpansion.Core
                 Model = AquaModpathUtils.GetWaterModPath(GetFishModelbysubtype(AquaFishItemsDatabase.GetFishbyID(22)))
             });
         }
-
         /// <summary>
         /// Register Fish
         /// </summary>
@@ -2616,7 +3242,6 @@ namespace AquaExpansion.Core
             fishsById[def.NumericId] = def;
             fishesByName[def.Id] = def;
         }
-
         /// <summary>
         /// Get Fish by ID
         /// </summary>
@@ -2630,7 +3255,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Fish NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get Fish by string
         /// </summary>
@@ -2644,7 +3268,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"FishDefinition NOT FOUND: {id}");
             return null;
         }
-
         /// <summary>
         /// Get model from subtype
         /// </summary>
@@ -2664,7 +3287,6 @@ namespace AquaExpansion.Core
                 model = model.Substring(index);
             return model;
         }
-
         /// <summary>
         /// Validate
         /// </summary>
@@ -2680,7 +3302,98 @@ namespace AquaExpansion.Core
             }
         }
     }
-
+    /// <summary>
+    /// Anchor Database
+    /// </summary>
+    public static class AquaSeaAnchorDatabase
+    {
+        private static readonly Dictionary<int, AquaSeaAnchorDefinition> anchorsById = new Dictionary<int, AquaSeaAnchorDefinition>();
+        private static readonly Dictionary<string, AquaSeaAnchorDefinition> anchorsByName = new Dictionary<string, AquaSeaAnchorDefinition>();
+        private static readonly Dictionary<string, AquaSeaAnchorDefinition> anchors = new Dictionary<string, AquaSeaAnchorDefinition>();
+        /// <summary>
+        /// Init
+        /// </summary>
+        public static void Init()
+        {
+            Register(new AquaSeaAnchorDefinition
+            {
+                NumericId = 1,
+                Id = "BaseAnchorLarge",
+                Maxcablelength = 100f,
+                CableModel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelPath("AquaSeaAnchorRopeBase.mwm")),
+                Anchormodel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelPath("AquaBaseAnchorPart.mwm")),
+                Cablescale = 0.05f,
+                Height = 2f,
+                Stiffness = 14000f,
+                HoldForce = 120000f,
+                DragResistance = 240000f,
+                DragSpeed = 5.0f
+            });
+            Register(new AquaSeaAnchorDefinition
+            {
+                NumericId = 2,
+                Id = "BaseAnchorSmall",
+                Maxcablelength = 100f,
+                CableModel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelSmallPath("AquaSeaAnchorRopeBaseS.mwm")),
+                Anchormodel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelSmallPath("AquaBaseAnchorSPart.mwm")),
+                Cablescale = 0.015f,
+                Height = 0.7f,
+                Stiffness = 6000f,
+                HoldForce = 50000f,
+                DragResistance = 100000f,
+                DragSpeed = 10.0f
+            });
+        }
+        /// <summary>
+        /// Register Anchor
+        /// </summary>
+        /// <param name="def"></param>
+        private static void Register(AquaSeaAnchorDefinition def)
+        {
+            anchorsById[def.NumericId] = def;
+            anchorsByName[def.Id] = def;
+        }
+        /// <summary>
+        /// Get Anchor by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorDefinition Get(int id)
+        {
+            AquaSeaAnchorDefinition def;
+            if (anchorsById.TryGetValue(id, out def))
+                return def;
+            AquaExpansionSession.Insance.Log(true, $"Anchor NOT FOUND (id): {id}");
+            return null;
+        }
+        /// <summary>
+        /// Get Anchor by string
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorDefinition Get(string id)
+        {
+            AquaSeaAnchorDefinition def;
+            if (anchors.TryGetValue(id, out def))
+                return def;
+            AquaExpansionSession.Insance.Log(true, $"AnchorDefinition NOT FOUND: {id}");
+            return null;
+        }
+        /// <summary>
+        /// Validate Database
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        public static void Validate()
+        {
+            foreach (var p in anchorsByName.Values)
+            {
+                if (p.NumericId <= 0)
+                    throw new Exception($"Invalid NumericId for anchor: {p.Id}");
+                if (string.IsNullOrEmpty(p.Id))
+                    throw new Exception($"Anchor missing string Id");
+            }
+        }
+    }
     /// <summary>
     /// SavePlantData
     /// </summary>
@@ -2693,7 +3406,6 @@ namespace AquaExpansion.Core
         [ProtoMember(4)] public float Planting;
         [ProtoMember(5)] public float Harvesting;
     }
-
     /// <summary>
     /// Save FishData
     /// </summary>
@@ -2706,7 +3418,6 @@ namespace AquaExpansion.Core
         [ProtoMember(4)] public float Catch;
         [ProtoMember(5)] public float CatchResult;
     }
-
     /// <summary>
     /// SaveData
     /// </summary>
@@ -2717,7 +3428,17 @@ namespace AquaExpansion.Core
         [ProtoMember(2)] public int RecipeId;
         [ProtoMember(3)] public int ModelStageId;
     }
-
+    /// <summary>
+    /// Save Anchor data
+    /// </summary>
+    [ProtoContract]
+    public class AquaSeaAnchorSaveData
+    {
+        [ProtoMember(1)] public int DefId;
+        [ProtoMember(2)] public float Cablelength;
+        [ProtoMember(3)] public Vector3D AnchorPosition;
+        [ProtoMember(4)] public Vector3D AttachPoint;
+    }
     /// <summary>
     /// Save FishingData
     /// </summary>
@@ -2729,7 +3450,6 @@ namespace AquaExpansion.Core
         [ProtoMember(3)] public int BaitModelStageId;
         [ProtoMember(4)] public int FishModelStageId;
     }
-
     /// <summary>
     /// Recipe Database
     /// </summary>
@@ -2738,7 +3458,6 @@ namespace AquaExpansion.Core
         private static readonly Dictionary<int, AquaFarmingRecipe> recipesById = new Dictionary<int, AquaFarmingRecipe>();
         private static readonly Dictionary<string, AquaFarmingRecipe> recipesByName = new Dictionary<string, AquaFarmingRecipe>();
         private static readonly Dictionary<string, int> plantToRecipe = new Dictionary<string, int>();
-
         /// <summary>
         /// Init registered Recipes
         /// </summary>
@@ -2799,7 +3518,6 @@ namespace AquaExpansion.Core
                 }
             });
         }
-
         /// <summary>
         /// Register Recipe in Database
         /// </summary>
@@ -2809,7 +3527,6 @@ namespace AquaExpansion.Core
             recipesById[recipe.Id] = recipe;
             recipesByName[recipe.Displayname] = recipe;
         }
-
         /// <summary>
         /// Get recipe by ID
         /// </summary>
@@ -2823,7 +3540,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Recipe NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get recipe by name
         /// </summary>
@@ -2837,7 +3553,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Recipe NOT FOUND (name): {name}");
             return null;
         }
-
         /// <summary>
         /// Map Plant by ID
         /// </summary>
@@ -2847,7 +3562,6 @@ namespace AquaExpansion.Core
         {
             plantToRecipe[plantId] = recipeId;
         }
-
         /// <summary>
         /// Get by Plant ID
         /// </summary>
@@ -2860,7 +3574,6 @@ namespace AquaExpansion.Core
                 return Get(id);
             return null;
         }
-
         /// <summary>
         /// Validate Recipe Database
         /// </summary>
@@ -2875,7 +3588,6 @@ namespace AquaExpansion.Core
                     throw new Exception($"Recipe {r.Displayname} missing PlantDefId");
             }
         }
-
         /// <summary>
         /// Get Recipes
         /// </summary>
@@ -2884,7 +3596,6 @@ namespace AquaExpansion.Core
         {
             return recipesById.Values;
         }
-
         /// <summary>
         /// Set Item Input
         /// </summary>
@@ -2894,7 +3605,6 @@ namespace AquaExpansion.Core
         {
             return MyDefinitionId.Parse($"MyObjectBuilder_Component/{subtype}");
         }
-
         /// <summary>
         /// Set Item output
         /// </summary>
@@ -2905,7 +3615,6 @@ namespace AquaExpansion.Core
             return MyDefinitionId.Parse($"MyObjectBuilder_ConsumableItem/{subtype}");
         }
     }
-
     /// <summary>
     /// Fishing Recipe database
     /// </summary>
@@ -3344,7 +4053,6 @@ namespace AquaExpansion.Core
                 Oceanlayer = AquaEnviromentUtils.GetOceanLayer(AquaFishDatabase.Get(22).OptimalDepth)
             });
         }
-
         /// <summary>
         /// Register standart recipe
         /// </summary>
@@ -3360,7 +4068,6 @@ namespace AquaExpansion.Core
                     recipebyrawfishsubtype[subtype] = recipe;
             }
         }
-
         /// <summary>
         /// Register Big Fish recipe
         /// </summary>
@@ -3376,7 +4083,6 @@ namespace AquaExpansion.Core
                     recipebyrawbigfishsubtype[subtype] = recipe;
             }
         }
-
         /// <summary>
         /// Get recipe by ID
         /// </summary>
@@ -3390,7 +4096,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Recipe NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get BigFish recipe by ID
         /// </summary>
@@ -3417,7 +4122,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Recipe NOT FOUND (name): {name}");
             return null;
         }
-
         /// <summary>
         /// Get Big Fish recipe by name
         /// </summary>
@@ -3431,7 +4135,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Big Fish Recipe NOT FOUND (name): {name}");
             return null;
         }
-
         /// <summary>
         /// Get recipe by subtype and block type
         /// </summary>
@@ -3454,7 +4157,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Fish Recipe NOT FOUND (subtype): {subtype}");
             return null;
         }
-
         /// <summary>
         /// Get baitmodel from recipe
         /// </summary>
@@ -3482,7 +4184,6 @@ namespace AquaExpansion.Core
             }
             return null;
         }
-
         /// <summary>
         /// Validate
         /// </summary>
@@ -3504,7 +4205,6 @@ namespace AquaExpansion.Core
                     throw new Exception($"Big Fish Recipe {bf.Displayname} missing FishDefId");
             }
         }
-
         /// <summary>
         /// Get All standart recipes
         /// </summary>
@@ -3521,7 +4221,6 @@ namespace AquaExpansion.Core
         {
             return BigFishrecipesById.Values;
         }
-
         /// <summary>
         /// Set Bait input
         /// </summary>
@@ -3531,7 +4230,6 @@ namespace AquaExpansion.Core
         {
             return MyDefinitionId.Parse($"MyObjectBuilder_Component/{subtype}");
         }
-
         /// <summary>
         /// Set fish raw output
         /// </summary>
@@ -3542,7 +4240,222 @@ namespace AquaExpansion.Core
             return MyDefinitionId.Parse($"MyObjectBuilder_ConsumableItem/{subtype}");
         }
     }
+    /// <summary>
+    /// Anchor Equip Order database
+    /// </summary>
+    public static class AquaSeaAnchorEquipOrderDatabase
+    {
+        private static readonly Dictionary<int, AquaSeaAnchorEquipOrder> ordersById = new Dictionary<int, AquaSeaAnchorEquipOrder>();
+        private static readonly Dictionary<string, AquaSeaAnchorEquipOrder> ordersByName = new Dictionary<string, AquaSeaAnchorEquipOrder>();
+        private static readonly Dictionary<int, AquaSeaAnchorEquipOrder> smallordersById = new Dictionary<int, AquaSeaAnchorEquipOrder>();
+        private static readonly Dictionary<string, AquaSeaAnchorEquipOrder> smallordersByName = new Dictionary<string, AquaSeaAnchorEquipOrder>();
+        private static readonly Dictionary<string, AquaSeaAnchorEquipOrder> orderbyitemsubtype = new Dictionary<string, AquaSeaAnchorEquipOrder>();
+        private static readonly Dictionary<string, AquaSeaAnchorEquipOrder> orderbysmallitemsubtype = new Dictionary<string, AquaSeaAnchorEquipOrder>();
+        /// <summary>
+        /// Init
+        /// </summary>
+        public static void Init()
+        {
+            //Standart orders
+            Register(new AquaSeaAnchorEquipOrder(1, "BaseAnchorLarge", 1)
+            {
+                AnchorItemToEquip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(1)),
+                        1
+                    }
+                },
+                Anchorresult = AquaSeaAnchorDatabase.Get(1),
+                AnchorItemToUnequip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetUnEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(1)),
+                        1
+                    }
+                }
+            });
 
+            //small orders
+            RegisterSmall(new AquaSeaAnchorEquipOrder(1, "BaseAnchorSmall", 1)
+            {
+                AnchorItemToEquip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(2)),
+                        1
+                    }
+                },
+                Anchorresult = AquaSeaAnchorDatabase.Get(2),
+                AnchorItemToUnequip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetUnEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(2)),
+                        1
+                    }
+                }
+            });
+        }
+        /// <summary>
+        /// Register standart Order
+        /// </summary>
+        /// <param name="order"></param>
+        private static void Register(AquaSeaAnchorEquipOrder order)
+        {
+            ordersById[order.Id] = order;
+            ordersByName[order.Displayname] = order;
+            foreach (var fishDef in order.AnchorItemToEquip.Keys)
+            {
+                string subtype = fishDef.SubtypeId.String;
+                if (!string.IsNullOrEmpty(subtype))
+                    orderbyitemsubtype[subtype] = order;
+            }
+        }
+        /// <summary>
+        /// Register small Order
+        /// </summary>
+        /// <param name="order"></param>
+        private static void RegisterSmall(AquaSeaAnchorEquipOrder order)
+        {
+            smallordersById[order.Id] = order;
+            smallordersByName[order.Displayname] = order;
+            foreach (var fishDef in order.AnchorItemToEquip.Keys)
+            {
+                string subtype = fishDef.SubtypeId.String;
+                if (!string.IsNullOrEmpty(subtype))
+                    orderbysmallitemsubtype[subtype] = order;
+            }
+        }
+        /// <summary>
+        /// Get order by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorEquipOrder Get(int id)
+        {
+            AquaSeaAnchorEquipOrder order;
+            if (ordersById.TryGetValue(id, out order))
+                return order;
+            AquaExpansionSession.Insance.Log(true, $"Order NOT FOUND (id): {id}");
+            return null;
+        }
+        /// <summary>
+        /// Get small order by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorEquipOrder GetSmall(int id)
+        {
+            AquaSeaAnchorEquipOrder order;
+            if (smallordersById.TryGetValue(id, out order))
+                return order;
+            AquaExpansionSession.Insance.Log(true, $"Small Order NOT FOUND (id): {id}");
+            return null;
+        }
+        /// <summary>
+        /// Get order by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorEquipOrder Get(string name)
+        {
+            AquaSeaAnchorEquipOrder order;
+            if (ordersByName.TryGetValue(name, out order))
+                return order;
+            AquaExpansionSession.Insance.Log(true, $"Order NOT FOUND (name): {name}");
+            return null;
+        }
+        /// <summary>
+        /// Get small order by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorEquipOrder GetSmall(string name)
+        {
+            AquaSeaAnchorEquipOrder order;
+            if (smallordersByName.TryGetValue(name, out order))
+                return order;
+            AquaExpansionSession.Insance.Log(true, $"Small Order NOT FOUND (name): {name}");
+            return null;
+        }
+        /// <summary>
+        /// Get order by subtype and block type
+        /// </summary>
+        /// <param name="subtype"></param>
+        /// <returns></returns>
+        public static AquaSeaAnchorEquipOrder GetOrderbySubtype(string subtype, AquaSeaAnchorType type)
+        {
+            AquaSeaAnchorEquipOrder order;
+            switch (type)
+            {
+                case AquaSeaAnchorType.L:
+                    if (orderbyitemsubtype.TryGetValue(subtype, out order))
+                        return order;
+                    break;
+                case AquaSeaAnchorType.S:
+                    if (orderbysmallitemsubtype.TryGetValue(subtype, out order))
+                        return order;
+                    break;
+            }
+            AquaExpansionSession.Insance.Log(true, $"Anchor Order NOT FOUND (subtype): {subtype}");
+            return null;
+        }
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        public static void Validate()
+        {
+            foreach (var r in ordersById.Values)
+            {
+                if (r.Id <= 0)
+                    throw new Exception($"Invalid Order Id: {r.Displayname}");
+                if (r.Id <= 0)
+                    throw new Exception($"Order {r.Displayname} missing AnchorDefId");
+            }
+            foreach (var bf in smallordersById.Values)
+            {
+                if (bf.Id <= 0)
+                    throw new Exception($"Invalid Small Order Id: {bf.Displayname}");
+                if (bf.Id <= 0)
+                    throw new Exception($"Small Order {bf.Displayname} missing AnchorDefId");
+            }
+        }
+        /// <summary>
+        /// Get All standart orders
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<AquaSeaAnchorEquipOrder> GetAll()
+        {
+            return ordersById.Values;
+        }
+        /// <summary>
+        /// Get All small orders
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<AquaSeaAnchorEquipOrder> GetAllSmall()
+        {
+            return smallordersById.Values;
+        }
+        /// <summary>
+        /// Set Anchor Set input
+        /// </summary>
+        /// <param name="subtype"></param>
+        /// <returns></returns>
+        private static MyDefinitionId SetEquipedAnchor(string subtype)
+        {
+            return MyDefinitionId.Parse($"MyObjectBuilder_Component/{subtype}");
+        }
+        /// <summary>
+        /// Set Anchor Set output
+        /// </summary>
+        /// <param name="subtype"></param>
+        /// <returns></returns>
+        private static MyDefinitionId SetUnEquipedAnchor(string subtype)
+        {
+            return MyDefinitionId.Parse($"MyObjectBuilder_Component/{subtype}");
+        }
+    }
     /// <summary>
     /// Get Modpath anywhere
     /// </summary>
@@ -3561,7 +4474,6 @@ namespace AquaExpansion.Core
             modpath = AquaExpansionSession.Insance.ModContext.ModPath;
             return Path.Combine(modpath, "Models\\", model);
         }
-
         /// <summary>
         /// Get detailed my mod path
         /// </summary>
@@ -3575,7 +4487,19 @@ namespace AquaExpansion.Core
             detailpath = $"Cubes\\large\\{model}";
             return detailpath;
         }
-
+        /// <summary>
+        /// Get detailed my mod path for small models
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static string GetDetailedModelSmallPath(string model)
+        {
+            if (string.IsNullOrEmpty(model))
+                return null;
+            string detailpath = "";
+            detailpath = $"Cubes\\small\\{model}";
+            return detailpath;
+        }
         /// <summary>
         /// Get detailed my mod item path
         /// </summary>
@@ -3589,7 +4513,6 @@ namespace AquaExpansion.Core
             detailpath = $"{model}";
             return detailpath;
         }
-
         /// <summary>
         /// Get watermod path to models
         /// </summary>
@@ -3603,7 +4526,6 @@ namespace AquaExpansion.Core
             watermodpath = AquaExpansionSession.Insance.WatermodLink;
             return Path.Combine(watermodpath, "Models\\", model);
         }
-
         /// <summary>
         /// Get direct fish model path from recipe
         /// </summary>
@@ -3618,7 +4540,6 @@ namespace AquaExpansion.Core
             directpath = AquaFishingRecipeDatabase.GetRecipebySubtype(subtype, type).FishResult.Model;
             return directpath;
         }
-
         /// <summary>
         /// Get subtype by OB
         /// </summary>
@@ -3630,7 +4551,6 @@ namespace AquaExpansion.Core
             return MyDefinitionId.Parse($"MyObjectBuilder_{definition}/{subtype}");
         }
     }
-
     /// <summary>
     /// Farm Items Database
     /// </summary>
@@ -4015,6 +4935,182 @@ namespace AquaExpansion.Core
                     throw new Exception($"Fish Missing reverse mapping for '{subtype}'");
                 if (backId != id)
                     throw new Exception($"Fish Mismatch: '{subtype}' → {backId}, expected {id}");
+            }
+        }
+    }
+    [ProtoContract]
+    public class AnchorStorage
+    {
+        [ProtoMember(1)] public AquaSeaAnchorSaveData Anchor;
+        [ProtoMember(2)] public int OrderID;
+        [ProtoMember(3)] public int state;
+        [ProtoMember(4)] public int Ropemodelstage;
+        [ProtoMember(5)] public int Anchormodelstage;
+        [ProtoMember(6)] public bool armstate;
+        [ProtoMember(7)] public bool equiped;
+    }
+    /// <summary>
+    /// Sea Anchor Item DataBase
+    /// </summary>
+    public static class AquaSeaAnchorItemsDatabase
+    {
+        private static readonly Dictionary<int, string> AnchorItemsbyID = new Dictionary<int, string>();
+        private static readonly Dictionary<string, int> AnchorItemsbyName = new Dictionary<string, int>();
+        /// <summary>
+        /// Init
+        /// </summary>
+        public static void Init()
+        {
+            RegisterAnchor(1, "AquaAnchorBaseSet_Large");
+            RegisterAnchor(2, "AquaAnchorBaseSet_Small");
+        }
+        /// <summary>
+        /// Register anchor
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="subtype"></param>
+        private static void RegisterAnchor(int id, string subtype)
+        {
+            AnchorItemsbyID[id] = subtype;
+            AnchorItemsbyName[subtype] = id;
+        }
+        /// <summary>
+        /// Get anchor by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static string GetAnchorbyID(int id)
+        {
+            string subtype;
+            if (AnchorItemsbyID.TryGetValue(id, out subtype))
+                return subtype;
+            AquaExpansionSession.Insance.Log(true, $"Anchor NOT FOUND (id): {id}");
+            return null;
+        }
+        /// <summary>
+        /// Get anchor by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static int GetAnchorIDbyName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return -1;
+            int id;
+            name = name.Trim();
+            if (AnchorItemsbyName.TryGetValue(name, out id))
+                return id;
+            foreach (var key in AnchorItemsbyName.Keys)
+            {
+                if (string.Equals(key, name, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    AquaExpansionSession.Insance.Log(true, $"Case mismatch: '{name}' should be '{key}'");
+                    break;
+                }
+            }
+            AquaExpansionSession.Insance.Log(true, $"Anchor NOT FOUND: '{name}'");
+            return -1;
+        }
+        /// <summary>
+        /// Get all anchors
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetAllAnchors()
+        {
+            return AnchorItemsbyID.Values;
+        }
+        /// <summary>
+        /// is this subtype are Anchor?
+        /// </summary>
+        /// <param name="subtype"></param>
+        /// <returns></returns>
+        public static bool IsAnchor(string subtype) => AnchorItemsbyName.ContainsKey(subtype);
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        public static void Validate()
+        {
+            // --- ANCHORS ---
+            var usedAnchorNames = new HashSet<string>();
+            foreach (var pair in AnchorItemsbyID)
+            {
+                int id = pair.Key;
+                int backId;
+                string subtype = pair.Value;
+                if (string.IsNullOrWhiteSpace(subtype))
+                    throw new Exception($"Anchor ID {id} has null/empty subtype");
+                if (!usedAnchorNames.Add(subtype))
+                    throw new Exception($"Anchor Duplicate subtype: {subtype}");
+                if (!AnchorItemsbyName.TryGetValue(subtype, out backId))
+                    throw new Exception($"Anchor Missing reverse mapping for '{subtype}'");
+                if (backId != id)
+                    throw new Exception($"Anchor Mismatch: '{subtype}' → {backId}, expected {id}");
+            }
+        }
+    }
+    /// <summary>
+    /// Help Database
+    /// </summary>
+    public static class AquaHelpDatabase
+    {
+        private static readonly Dictionary<int, string> HelplinesbyID = new Dictionary<int, string>();
+        /// <summary>
+        /// Init
+        /// </summary>
+        public static void Init()
+        {
+            RegisterLine(1, "Place the battery underwater and connect it to your power grid.\nInstall it in deeper, saltier water to maximize energy flow efficiency.");
+            RegisterLine(2, "Place the turbine fully submerged and connect it to your power grid.\nInstall it in deeper, saltier water to maximize power generation.");
+            RegisterLine(3, "Place the block underwater and supply power.\nAdd spores to the inventory—the largest spore stack is selected automatically. Harvest the produced resources when growth is complete.");
+            RegisterLine(4, "Place the platform fully submerged and supply power.\nAdd compatible bait to the inventory and collect harvested fish periodically.");
+            RegisterLine(5, "Supply power and insert a compatible seafloor anchor into the inventory.\nDeploy the anchor to securely moor ships and stations to the seabed.");
+        }
+        /// <summary>
+        /// register help line
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="line"></param>
+        private static void RegisterLine(int id, string line)
+        {
+            HelplinesbyID[id] = line;
+        }
+        /// <summary>
+        /// Get line by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static string GetHelpLineByID(int id)
+        {
+            string line;
+            if (HelplinesbyID.TryGetValue(id, out line))
+                return line;
+            AquaExpansionSession.Insance.Log(true, $"Help line NOT FOUND (id): {id}");
+            return null;
+        }
+        /// <summary>
+        /// Get all lines
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<string> GetAllHelpLines()
+        {
+            return HelplinesbyID.Values;
+        }
+        /// <summary>
+        /// Validate
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        public static void Validate()
+        {
+            var usedHelpLines = new HashSet<string>();
+            foreach (var pair in HelplinesbyID)
+            {
+                int id = pair.Key;
+                string line = pair.Value;
+                if (string.IsNullOrWhiteSpace(line))
+                    throw new Exception($"Help line ID {id} has null/empty line");
+                if (!usedHelpLines.Add(line))
+                    throw new Exception($"Help line Duplicate line: {line}");
             }
         }
     }

@@ -11,7 +11,6 @@ namespace AquaExpansion.UnderwaterFishing
     public class UnderwaterFishingBlockAdvanced : UnderwaterFishingBase
     {
         public static Guid UnderwaterFishingStationKey = new Guid("4C6CC8D7-D511-440B-A45A-7F40940900E4");
-
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             Ttitle = "Underwater Fishing Station";
@@ -28,13 +27,11 @@ namespace AquaExpansion.UnderwaterFishing
             fishoffcet = 7f;
             base.Init(objectBuilder);
         }
-
         protected override void LoadingUnderwaterFishingData()
         {
             base.LoadingUnderwaterFishingData();
             LoadStats(UnderwaterFishingStationKey);
         }
-
         protected override void SaveUnderwaterFishingData()
         {
             base.SaveUnderwaterFishingData();

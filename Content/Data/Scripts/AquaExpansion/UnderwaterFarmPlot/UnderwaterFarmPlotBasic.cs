@@ -17,13 +17,11 @@ namespace AquaExpansion.UnderwaterFarmPlot
             FarmBlockType = AquaFarmingBlockType.UnderwaterFarmPlot;
             base.Init(objectBuilder);
         }
-
         protected override void SaveUnderwaterFarmPlotData()
         {
             base.SaveUnderwaterFarmPlotData();
             SaveStats(UnderwaterFarmPlotKey);
         }
-
         protected override void LoadingUnderwaterFarmPlotData()
         {
             base.LoadingUnderwaterFarmPlotData();

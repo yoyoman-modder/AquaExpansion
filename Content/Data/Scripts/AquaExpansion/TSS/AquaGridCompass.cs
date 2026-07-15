@@ -1,16 +1,12 @@
 ﻿using AquaExpansion.Core;
 using Sandbox.Game.GameSystems.TextSurfaceScripts;
 using Sandbox.ModAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI;
 using VRageMath;
 
-namespace AquaExpansion.AquaExpansion.TSS
+namespace AquaExpansion.TSS
 {
     [MyTextSurfaceScript("AquaCompass", "Aqua Compass")]
     class AquaGridCompass : MyTSSCommon
@@ -21,19 +17,16 @@ namespace AquaExpansion.AquaExpansion.TSS
         private Vector2 innerSize;
         private Vector2 linesSize;
         private StringBuilder stringBuilder = new StringBuilder();
-
         public override ScriptUpdate NeedsUpdate
         {
             get { return ScriptUpdate.Update10; }
         }
-
         public AquaGridCompass(IMyTextSurface surface, IMyCubeBlock block, Vector2 size) : base(surface, block, size)
         {
             innerSize = new Vector2(ASPECT_RATIO, 1.1f);
             linesSize = new Vector2(0.5f, 0.5f);
             FitRect(surface.SurfaceSize, ref innerSize);
         }
-
         public override void Run()
         {
             base.Run();
@@ -75,7 +68,6 @@ namespace AquaExpansion.AquaExpansion.TSS
                 AddBrackets(frame, new Vector2(64, 256), innerSize.Y / 256 * 0.9f, (m_size.X - innerSize.X) / 2);
             }
         }
-
         public override void Dispose()
         {
             base.Dispose();

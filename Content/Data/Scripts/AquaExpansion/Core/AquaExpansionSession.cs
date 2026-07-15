@@ -15,7 +15,9 @@ using System.Xml.Serialization;
 using VRage;
 using VRage.Game;
 using VRage.Game.Components;
+using VRage.Game.Entity;
 using VRage.Game.ModAPI;
+using VRage.Input;
 using VRage.ModAPI;
 using VRageMath;
 
@@ -29,6 +31,7 @@ namespace AquaExpansion.Core
         private float maxSaltDepth = 100f;
         public AquaJetpackUnderWaterSystem JetpackUnderWaterSystem;
         private int tick;
+        //shared effects
         private HashSet<IMyTerminalBlock> TerminalTracedBlocks = new HashSet<IMyTerminalBlock>(); // Terminal
         private HashSet<IMyThrust> TrackedThrusters = new HashSet<IMyThrust>(); // Thrusters
         private HashSet<IMyWindTurbine> BannedTurbines = new HashSet<IMyWindTurbine>(); // Wind turbines
@@ -114,6 +117,7 @@ namespace AquaExpansion.Core
         private float effectLod2disSq = 40f;
         private float scale;
         private readonly List<IMyPlayer> playersL = new List<IMyPlayer>();
+        //HUD 
         private HudAPIv2 TextAPI;
         private bool hudConnected;
         private HudAPIv2.HUDMessage gearHUD;
@@ -130,8 +134,6 @@ namespace AquaExpansion.Core
         public float ApexFarmMaxworkDepth = 8f;
         private const string STORAGE_FILE = "WaterClientSettings.xml";
         private LatentScheduler latentScheduler;
-        private AquaWaterSettings waterSettings;
-        private bool ready;
         private MyEnvironmentDefinition enviromentdef;
         private Color GlobaldepthbasedHUDColor;
         private Color OriginalInteractionColor;
@@ -226,7 +228,6 @@ namespace AquaExpansion.Core
         private void StopEffect(IMyTerminalBlock block)
         {
             MyParticleEffect effect;
-
             if (effects.TryGetValue(block.EntityId, out effect))
             {
                 effect?.Stop();
@@ -616,7 +617,6 @@ namespace AquaExpansion.Core
                 //Log(true, $"Logic fail");
                 return;
             }
-
             MatrixD matrix = block.LocalMatrix;
             Vector3D pos = logic.Flamepos;
             MyParticleEffect effect;
@@ -696,37 +696,6 @@ namespace AquaExpansion.Core
             Log(true, $"Welcome back!");
             EnviromentHighlightControll();
         }
-        private void LoadWaterConfig()
-        {
-            waterSettings = AquaHyperStorage.AquaHyperLoad(STORAGE_FILE);
-        }
-        private void SaveWaterConfig()
-        {
-            AquaHyperStorage.AquaHyperSave(waterSettings, STORAGE_FILE);
-            //Log(true, $"Depth is disabled");
-        }
-        private void FirstReminder()
-        {
-            if (waterSettings != null && waterSettings.ShowDepth)
-            {
-                Log(true, $"Default depthmeter detected! Please enter chat command /wdepth to disable default meter for better immersion");
-            }
-        }
-        private void AutoDisableWaterConfig()
-        {
-            if(waterSettings != null)
-            {
-                if (waterSettings.ShowDepth)
-                {
-                    waterSettings.ShowDepth = false;
-                }
-                if (!waterSettings.Silent)
-                {
-                    waterSettings.Silent = true;
-                }
-                SaveWaterConfig();
-            }
-        }
         private void onRegisteredCallback()
         {
             hudConnected = true;
@@ -750,34 +719,6 @@ namespace AquaExpansion.Core
             LineAnimationManager.Update();
             UpdateAll();
             base.UpdateAfterSimulation();
-        }
-        private void Reminder()
-        {
-            if (ready)
-                return;
-            ready = true;
-            LoadWaterConfig();
-            if (waterSettings != null)
-            {
-                latentScheduler.Schedule(CheckDefaultDepthMeter, 10, false, 0);
-            }
-        }
-        private void CheckDefaultDepthMeter()
-        {
-            if (waterSettings.ShowDepth)
-            {
-                if (WaterModAPI.Registered && MyAPIGateway.Session?.Player != null)
-                {
-                    //AutoDisableWaterConfig();
-                    Log(true, $"Default depthmeter detected! Please disable it via chatcommand /wdepth");
-                    ready = false;
-                }
-            }
-            else
-            {
-                //Log(true, "already disabled");
-                ready = false;
-            }
         }
         private void EnviromentHighlightControll()
         {
@@ -813,6 +754,7 @@ namespace AquaExpansion.Core
                 0.1f
             );
         }
+        //Utils
         public List<IMyPlayer> GetPlayersWithCharacters()
         {
             playersL.Clear();
@@ -820,6 +762,7 @@ namespace AquaExpansion.Core
             playersL.RemoveAll(p => p?.Character == null);
             return playersL;
         }
+        //get waterData
         public MyTuple<float, float, float, int> GetPlanetWaveData(IMyFunctionalBlock block)
         {
             var waterdata = new MyTuple<float, float, float, int>(0f, 0f, 0f, 0);
@@ -830,6 +773,7 @@ namespace AquaExpansion.Core
             }
             return waterdata;
         }
+        //Get waterdata in grid
         public MyTuple<float, float, float, int> GetPlanetWaveDatabyGrid(IMyCubeGrid grid)
         {
             var waterdata = new MyTuple<float, float, float, int>(0f, 0f, 0f, 0);
@@ -842,6 +786,7 @@ namespace AquaExpansion.Core
             }
             return waterdata;
         }
+        //Get Depth
         public float GetWaterDepth(IMyFunctionalBlock block)
         {
             var depth = 0f;
@@ -851,6 +796,7 @@ namespace AquaExpansion.Core
             }
             return depth;
         }
+        //get Depth in grid
         public float GetWaterDepthbyGrid(IMyCubeGrid grid)
         {
             if (grid == null || grid.Closed)
@@ -881,6 +827,16 @@ namespace AquaExpansion.Core
             }
             return (float)depth;
         }
+        public float GetWaterDepthbyEntity(MyEntity entity)
+        {
+            if (entity == null || entity.Closed || entity.MarkedForClose)
+                return 0f;
+            if (!WaterModAPI.IsUnderwater(entity.WorldMatrix.Translation))
+                return 0f;
+            double depth = 0;
+            depth = WaterModAPI.Entity_FluidDepth(entity);
+            return (float)depth;
+        }
         public float GetBouyancybyCharacter(IMyCharacter character)
         {
             if (character == null || character.IsDead || character.Closed)
@@ -895,6 +851,7 @@ namespace AquaExpansion.Core
             }
             return b;
         }
+        //get salt level
         public float GetSaltLevel(IMyFunctionalBlock block, float depth)
         {
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed)
@@ -905,6 +862,7 @@ namespace AquaExpansion.Core
             depthNorm = (float)Math.Pow(depthNorm, 0.5f);
             return 1f + depthNorm * 2f;
         }
+        //Saltlevel by grid less precise
         public float GetSaltLevelbyGrid(IMyCubeGrid grid, float depth)
         {
             if (grid == null || grid.Closed)
@@ -917,6 +875,7 @@ namespace AquaExpansion.Core
             depthNorm = (float)Math.Pow(depthNorm, 0.5f);
             return 1f + depthNorm * 2f;
         }
+        //Saltlevel byPlayer
         public float GetSaltlevelbyPlayer(IMyCharacter character, float depth)
         {
             if (character == null || character.IsDead || character.Closed)
@@ -927,11 +886,13 @@ namespace AquaExpansion.Core
             depthNorm = (float)Math.Pow(depthNorm, 0.5f);
             return 1f + depthNorm * 2f;
         }
+        //get salt2%
         public float SaltToPercent(float salt)
         {
             salt = MathHelper.Clamp(salt, 1f, 3f);
             return 10f + ((salt - 1f) / 2f) * 90f;
         }
+        //get Pressure in grid
         public float GetPressurebyGrid(IMyCubeGrid grid)
         {
             if (grid == null || grid.Closed)
@@ -961,6 +922,7 @@ namespace AquaExpansion.Core
             }
             return (float)pressure;
         }
+        //GetFlow in grid
         public Vector3 GetFlowbyGrid(IMyCubeGrid grid)
         {
             Vector3 flow = new Vector3(0, 0, 0);
@@ -1026,6 +988,7 @@ namespace AquaExpansion.Core
             }
             return percent;
         }
+        //Log
         public void Log(bool inlogging, string message)
         {
             if (inlogging && !string.IsNullOrEmpty(message))
@@ -1033,6 +996,7 @@ namespace AquaExpansion.Core
                 MyAPIGateway.Utilities.ShowMessage(System, message);
             }
         }
+        //UpdateTerminal
         public void UpdateTerminal(IMyFunctionalBlock block)
         {
             if (block != null && !block.Closed)
@@ -1041,6 +1005,8 @@ namespace AquaExpansion.Core
                 block.SetDetailedInfoDirty();
             }
         }
+        //Underwater movement section
+        //Get player Inventory
         public void GetCharacterInventory(IMyCharacter character, out IMyInventory inv, out MyInventory invE)
         {
             inv = null;
@@ -1061,12 +1027,11 @@ namespace AquaExpansion.Core
                 }
             }
         }
+        //DiverMode
         private void DiveMode()
         {
             foreach (var player in GetPlayersWithCharacters())
             {
-                if (player == null || player.Character == null || player.Character.Closed || player.Character.IsDead)
-                    continue;
                 JetpackUnderWaterSystem.SetDiverMode(player.Character, player.IdentityId, tick);
                 JetpackUnderWaterSystem.AddPID(player.IdentityId);
                 UpdatePlayerEffects(player);
@@ -1229,7 +1194,6 @@ namespace AquaExpansion.Core
                 //Log(true, $"revert to original color {GlobaldepthbasedHUDColor.ToVector4().ToString()}");
                 return;
             }
-
             float depth = GetWaterDepthbyCharacter(character);
             float adepth = Math.Abs(depth);
             float tintfactor = MathHelper.Clamp(adepth / maxSaltDepth, 0f, 1f);
@@ -1371,8 +1335,6 @@ namespace AquaExpansion.Core
         }
         public bool IsPlayerProtected(IMyPlayer player)
         {
-            if (player == null || player.Character == null || player.Character.Closed || player.Character.IsDead)
-                return false;
             var seat = player.Controller?.ControlledEntity?.Entity as IMyShipController;
             if (seat != null)
             {
@@ -1447,9 +1409,9 @@ namespace AquaExpansion.Core
             BannedTurbines.Clear();
             BannedSolars.Clear();
             TrackedAlgaeFarms.Clear();
-            waterSettings = null;
             latentScheduler.Clear();
             enviromentdef = null;
+            //
             foreach (var e in Weldereffects.Values)
             { e?.Stop(); }
             Weldereffects.Clear();
@@ -1502,7 +1464,7 @@ namespace AquaExpansion.Core
             if (!WelderEffectLib.TryGetValue(enme, out effectName))
             {
                 WelderEffectLib.TryGetValue("Default", out effectName);
-                //Log(true, $"weldereffect set to  {effectName}");
+                Log(true, $"weldereffect set to  {effectName}");
             }
             MatrixD matrix = MatrixD.Identity;
             Vector3D pos = welder.GetMuzzlePosition();
@@ -1641,7 +1603,7 @@ namespace AquaExpansion.Core
             GetBlockInAirtightGrid(block, out ingridox);
             MyParticleEffect effect;
             WeldereffectsShip.TryGetValue(block.EntityId, out effect);
-            if (!isUnderwater || isBroken || !block.Enabled || !block.IsWorking || !block.IsActivated ||
+            if (!isUnderwater || isBroken || !block.Enabled || !block.IsWorking || !block.IsActivated || 
                 (isUnderwater && ingridox > MIN_ENVOXYGENLEVEL))
             {
                 StopShipWelderEffect(block);

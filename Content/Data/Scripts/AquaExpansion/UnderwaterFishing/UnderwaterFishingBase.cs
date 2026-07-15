@@ -86,7 +86,6 @@ namespace AquaExpansion.UnderwaterFishing
             //AquaExpansionSession.Insance.Log(true, $"Underwater fising block initialized for block: {block.EntityId}");
             NeedsUpdate = MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME | MyEntityUpdateEnum.EACH_FRAME;
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -109,7 +108,6 @@ namespace AquaExpansion.UnderwaterFishing
             Load();
             base.UpdateOnceBeforeFrame();
         }
-
         private void OnInventoryFishChanged(int obj)
         {
             showfishstage = obj;
@@ -119,7 +117,6 @@ namespace AquaExpansion.UnderwaterFishing
             //AquaExpansionSession.Insance.Log(true, $"fish stage {showfishstage}");
             SetInventoryFishModel(GetModelbyInventoryFish(showfishstage));
         }
-
         private void OnFishStageChanged(int obj)
         {
             fishstage = obj;
@@ -128,7 +125,6 @@ namespace AquaExpansion.UnderwaterFishing
             fishlastStage = fishstage;
             SetFishModel(GetModelByActiveFish(fishstage));
         }
-
         private void OnStageChanged(int obj)
         {
             baitstage = obj;
@@ -138,7 +134,6 @@ namespace AquaExpansion.UnderwaterFishing
             //AquaExpansionSession.Insance.Log(true, $" model idx {baitstage}");
             SetBaitModel(GetModelByBait(baitstage));
         }
-
         private void OnSessionSave()
         {
             if (block != null && !block.Closed && !block.MarkedForClose)
@@ -147,7 +142,6 @@ namespace AquaExpansion.UnderwaterFishing
                 //AquaExpansionSession.Insance.Log(true, $"Saved from Session");
             }
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -164,7 +158,6 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             }
         }
-
         private void SetInfo(StringBuilder info)
         {
             if (grid == null || grid.Closed)
@@ -185,7 +178,6 @@ namespace AquaExpansion.UnderwaterFishing
             info.AppendLine($"{Tdepth} {(float)Math.Round(WaterDepth)} m");
             info.AppendLine($"{Tsalt} {(float)Math.Round(saltP)}%");
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -201,7 +193,6 @@ namespace AquaExpansion.UnderwaterFishing
             UnderwaterRules();
             base.UpdateBeforeSimulation();
         }
-
         public override void UpdateAfterSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -224,7 +215,6 @@ namespace AquaExpansion.UnderwaterFishing
             utils.SetEnviromentalFishingEmissive(time, block, currentStage, WaterDepth, attractstage, catchstage, catchresultstage);
             base.UpdateAfterSimulation();
         }
-
         private void Opimization()
         {
             if (ActiveFish == null || ActiveFishingRecipe == null)
@@ -238,7 +228,6 @@ namespace AquaExpansion.UnderwaterFishing
                 utils.ModelOptimization(Fish, block);
             }
         }
-
         private void InventoryFishOptimization()
         {
             if (showfishstage != -1 || showfishstage != -2)
@@ -246,7 +235,6 @@ namespace AquaExpansion.UnderwaterFishing
                 utils.ModelOptimization(InventoryFish, block);
             }
         }
-
         public override void UpdateAfterSimulation10()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -275,7 +263,6 @@ namespace AquaExpansion.UnderwaterFishing
             utils.ShowInventoryFish(FishStorage, ref showfishtimer);
             base.UpdateAfterSimulation10();
         }
-
         private void UpdateSink()
         {
             if (block != null && !block.Closed && WaterModAPI.IsUnderwater(block.GetPosition()) && block.IsFunctional)
@@ -286,7 +273,6 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             }
         }
-
         private void GetCurrentWaterData()
         {
             if (block != null && !block.Closed && block.Enabled && block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()) && block.IsWorking)
@@ -296,7 +282,6 @@ namespace AquaExpansion.UnderwaterFishing
                 saltP = AquaExpansionSession.Insance.SaltToPercent(saltLevel);
             }
         }
-
         private void UnderwaterRules()
         {
             if (block == null || block.Closed || block.MarkedForClose || grid == null || grid.Closed)
@@ -309,7 +294,6 @@ namespace AquaExpansion.UnderwaterFishing
                 block.Enabled = false;
             }
         }
-
         private void SetSink()
         {
             sink = new MyResourceSinkComponent();
@@ -323,7 +307,6 @@ namespace AquaExpansion.UnderwaterFishing
             sink.Init(MyStringHash.GetOrCompute("Utility"), sinkInfo);
             //AquaExpansionSession.Insance.Log(true, $"Sink OK");
         }
-
         private float ComputeRequiredPower()
         {
             if (block == null || block.Closed || !block.Enabled || !block.IsFunctional)
@@ -333,7 +316,6 @@ namespace AquaExpansion.UnderwaterFishing
             CurrentPowerInput = power;
             return power;
         }
-
         private bool HasPower()
         {
             if (block == null || block.Closed || !block.Enabled || !block.IsFunctional || grid == null || grid.Closed || !grid.IsStatic)
@@ -342,7 +324,6 @@ namespace AquaExpansion.UnderwaterFishing
             }
             return sink.IsPoweredByType(MyResourceDistributorComponent.ElectricityId);
         }
-
         private void InventoryHandler()
         {
             if (HaseInventory)
@@ -359,7 +340,6 @@ namespace AquaExpansion.UnderwaterFishing
                 AquaExpansionSession.Insance.Log(true, $"No inventory used");
             }
         }
-
         private void ModStorageHandler()
         {
             if (HasModStorage)
@@ -374,17 +354,14 @@ namespace AquaExpansion.UnderwaterFishing
                 AquaExpansionSession.Insance.Log(true, $"No ModStorage used");
             }
         }
-
         protected virtual void SaveUnderwaterFishingData()
         {
             
         }
-
         protected virtual void LoadingUnderwaterFishingData()
         {
             
         }
-
         private void Save()
         {
             if (HasModStorage)
@@ -395,10 +372,8 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             }
         }
-
         private void Load()
         {
-
             if (HasModStorage)
             {
                 if (block != null && !block.Closed)
@@ -407,7 +382,6 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             }
         }
-
         protected void LoadStats(Guid guid)
         {
             string raw;
@@ -421,7 +395,6 @@ namespace AquaExpansion.UnderwaterFishing
                 //AquaExpansionSession.Insance.Log(true, "Loaded");
             }
         }
-
         protected void SaveStats(Guid guid)
         {
             if (block.Storage != null)
@@ -433,7 +406,6 @@ namespace AquaExpansion.UnderwaterFishing
                 //AquaExpansionSession.Insance.Log(true, "Saved");
             }
         }
-
         private AquaFishingSaveData ToSave()
         {
             if (ActiveFish == null || ActiveFishingRecipe == null)
@@ -453,7 +425,6 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             };
         }
-
         private void ToLoad(AquaFishingSaveData data)
         {
             // rebuild recipe
@@ -482,13 +453,11 @@ namespace AquaExpansion.UnderwaterFishing
             RestoreEnvironment(ActiveFish);
             RelinkLoadData();
         }
-
         private void RestoreEnvironment(AquaFishInstance fish)
         {
             fish.CurrentDepth = WaterDepth;
             fish.CurrentSalt = saltLevel;
         }
-
         private void RelinkLoadData()
         {
             if (ActiveFish == null || ActiveFishingRecipe == null)
@@ -496,7 +465,6 @@ namespace AquaExpansion.UnderwaterFishing
             // sync block stage with plant
             currentStage = ActiveFish.Stage;
         }
-
         private void CreateBait()
         {
             if (Bait != null || !block.IsFunctional || !block.Enabled)
@@ -511,7 +479,6 @@ namespace AquaExpansion.UnderwaterFishing
             Bait.NeedsWorldMatrix = true;
             //AquaExpansionSession.Insance.Log(true, $"block children {block.Hierarchy.Children.Count}");
         }
-
         private void CreateFish()
         {
             if (Fish != null || !block.IsFunctional || !block.Enabled)
@@ -526,7 +493,6 @@ namespace AquaExpansion.UnderwaterFishing
             Fish.NeedsWorldMatrix = true;
             //AquaExpansionSession.Insance.Log(true, $"block children {block.Hierarchy.Children.Count}");
         }
-
         private void CreateInventoryFish()
         {
             if (InventoryFish != null || !block.IsFunctional || !block.Enabled)
@@ -540,7 +506,6 @@ namespace AquaExpansion.UnderwaterFishing
             block.NeedsWorldMatrix = true;
             InventoryFish.NeedsWorldMatrix = true;
         }
-
         private string GetModelByBait(int baitstage)
         {
             if (ActiveFishingRecipe == null)
@@ -551,7 +516,6 @@ namespace AquaExpansion.UnderwaterFishing
                 default: return null; // stage 0 = no bait
             }
         }
-
         private string GetModelByActiveFish(int fishstage)
         {
             if (ActiveFishingRecipe == null)
@@ -562,7 +526,6 @@ namespace AquaExpansion.UnderwaterFishing
                 default: return null; // stage 0 = no fish
             }
         }
-
         private string GetModelbyInventoryFish(int inventoryfishstage)
         {
             if (inventoryfishstage == -1 || inventoryfishstage == -2)
@@ -575,7 +538,6 @@ namespace AquaExpansion.UnderwaterFishing
 
             return list[inventoryfishstage];
         }
-
         private void SetBaitModel(string model)
         {
             if (Bait == null || !Bait.InScene)
@@ -594,7 +556,6 @@ namespace AquaExpansion.UnderwaterFishing
             Bait.Render.AddRenderObjects();
             Bait.Render.UpdateRenderObject(true);
         }
-
         private void SetFishModel(string model)
         {
             if (Fish == null || !Fish.InScene)
@@ -613,7 +574,6 @@ namespace AquaExpansion.UnderwaterFishing
             Fish.Render.AddRenderObjects();
             Fish.Render.UpdateRenderObject(true);
         }
-
         private void SetInventoryFishModel(string model)
         {
             if (InventoryFish == null || !InventoryFish.InScene)
@@ -632,7 +592,6 @@ namespace AquaExpansion.UnderwaterFishing
             InventoryFish.Render.AddRenderObjects();
             InventoryFish.Render.UpdateRenderObject(true);
         }
-
         private void UpdateBaitMatrix()
         {
             if (Bait == null || block == null || block.Closed || block.MarkedForClose)
@@ -641,7 +600,6 @@ namespace AquaExpansion.UnderwaterFishing
             MatrixD world = local * block.WorldMatrix;
             Bait.PositionComp.SetWorldMatrix(ref world);
         }
-
         private void UpdateFishMatrix()
         {
              if(Fish == null || block == null || block.Closed || block.MarkedForClose)
@@ -685,7 +643,6 @@ namespace AquaExpansion.UnderwaterFishing
                 Fish.PositionComp.SetWorldMatrix(ref world);
             }
         }
-
         private void UpdateInventoryFishmatrix()
         {
             if (InventoryFish == null || block == null || block.Closed || block.MarkedForClose)
@@ -754,7 +711,6 @@ namespace AquaExpansion.UnderwaterFishing
             grid = null;
             block = null;
         }
-
         public override void Close()
         {
             Clear();

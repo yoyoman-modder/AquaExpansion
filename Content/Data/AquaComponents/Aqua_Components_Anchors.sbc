@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Components>
+		<!--Region Anchor Items-->
+		<Component>
+			<Public>true</Public>
+			<Id>
+				<TypeId>Component</TypeId>
+				<SubtypeId>AquaAnchorBaseSet_Large</SubtypeId>
+			</Id>
+			<DisplayName>Anchor Set Large 1t</DisplayName>
+			<Description>
+				Heavy steel anchor designed to secure vessels to the seabed.
+				Deploy using a compatible winch block.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\AquaBaseAnchor.dds</Icon>
+			<IconSymbol>ANCHOR</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>1000</Mass>
+			<Volume>1000</Volume>
+			<Model>Models\Items\AquaBaseAnchor.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<MaxIntegrity>30</MaxIntegrity>
+			<DropProbability>0.5</DropProbability>
+			<Health>18</Health>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</Component>
+		<Component>
+			<Public>true</Public>
+			<Id>
+				<TypeId>Component</TypeId>
+				<SubtypeId>AquaAnchorBaseSet_Small</SubtypeId>
+			</Id>
+			<DisplayName>Anchor Set Small 500kg</DisplayName>
+			<Description>
+				Heavy steel anchor designed to secure vessels to the seabed.
+				Deploy using a compatible winch block.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\AquaBaseAnchorS.dds</Icon>
+			<IconSymbol>ANCHOR</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>500</Mass>
+			<Volume>125</Volume>
+			<Model>Models\Items\AquaBaseAnchorS.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<MaxIntegrity>30</MaxIntegrity>
+			<DropProbability>0.5</DropProbability>
+			<Health>18</Health>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</Component>
+		<!--END Anchor Items-->
+	</Components>
+</Definitions>

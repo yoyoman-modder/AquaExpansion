@@ -16,13 +16,11 @@ namespace AquaExpansion.UnderwaterFishing
         private UnderwaterFishingBase blocklogic;
         private bool ready;
         public event Action BlockSaveRequest;
-
         public override void LoadData()
         {
             Instance = this;
             base.LoadData();
         }
-
         public void ConnectToBlock(IMyFunctionalBlock block)
         {
             if (block != null && !block.Closed || !block.MarkedForClose)
@@ -34,7 +32,6 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             }
         }
-
         public override void SaveData()
         {
             base.SaveData();
@@ -43,12 +40,10 @@ namespace AquaExpansion.UnderwaterFishing
                 OnBlockRequestSave();
             }
         }
-
         public void OnBlockRequestSave()
         {
             BlockSaveRequest?.Invoke();
         }
-
         public void RunControlls()
         {
             if (ready)
@@ -56,7 +51,6 @@ namespace AquaExpansion.UnderwaterFishing
             ready = true;
             CreateControls<IMyFunctionalBlock>();
         }
-
         private void CreateControls<T>() where T : IMyFunctionalBlock
         {
             //separetor
@@ -113,19 +107,36 @@ namespace AquaExpansion.UnderwaterFishing
                 }
             };
             MyAPIGateway.TerminalControls.AddControl<T>(Bplist);
+            var helpbutton = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlButton, IMyTerminalBlock>("help_button");
+            helpbutton.Title = MyStringId.GetOrCompute("Help");
+            helpbutton.SupportsMultipleBlocks = false;
+            helpbutton.Visible = CustomVisibleCondition;
+            helpbutton.Enabled = HelpEnabled;
+            var htooltip = blocklogic.utils.GetHelpText(4);
+            helpbutton.Tooltip = MyStringId.GetOrCompute(htooltip);
+            helpbutton.Action = (b) =>
+            {
+                HelpAction(b);
+            };
+            MyAPIGateway.TerminalControls.AddControl<T>(helpbutton);
         }
-
         private bool CustomVisibleCondition(IMyTerminalBlock b)
         {
             return b?.GameLogic?.GetAs<UnderwaterFishingBase>() != null;
         }
-
+        private bool HelpEnabled(IMyTerminalBlock b)
+        {
+            return false;
+        }
+        private void HelpAction(IMyTerminalBlock b)
+        {
+            //empty
+        }
         private void Clear()
         {
             blocklogic = null;
             Instance = null;
         }
-
         protected override void UnloadData()
         {
             Clear();

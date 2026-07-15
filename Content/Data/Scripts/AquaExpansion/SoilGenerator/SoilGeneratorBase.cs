@@ -34,7 +34,6 @@ namespace AquaExpansion.SoilGenerator
         private MyFixedPoint lastSoilAmount = 0;
         private double WaterPressure;
         private string TPressure = "Pressure:";
-
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -55,7 +54,6 @@ namespace AquaExpansion.SoilGenerator
             }
             NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -67,7 +65,6 @@ namespace AquaExpansion.SoilGenerator
             block.AppendingCustomInfo += AppendCustomInfo;
             base.UpdateOnceBeforeFrame();
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -84,7 +81,6 @@ namespace AquaExpansion.SoilGenerator
                 }
             }
         }
-
         private void SetInfo(StringBuilder info)
         {
             if (grid == null || grid.Closed)
@@ -103,7 +99,6 @@ namespace AquaExpansion.SoilGenerator
                 info.AppendLine($"{Tsalt} {(float)Math.Round(saltP)}%");
             }
         }
-
         private void GetCurrentWaterData()
         {
             if (block != null && !block.Closed && block.Enabled && block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()) && block.IsWorking)
@@ -117,7 +112,6 @@ namespace AquaExpansion.SoilGenerator
                 }
             }
         }
-
         private void CalculateSaltEffect()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed || !block.IsWorking)
@@ -132,7 +126,6 @@ namespace AquaExpansion.SoilGenerator
             salteffect = 1f + depthFactor * (saltBoost - 1f);
             salteffect = MathHelper.Clamp(salteffect, 1f, 3f);
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -145,7 +138,6 @@ namespace AquaExpansion.SoilGenerator
                 block.Enabled = false;
             base.UpdateBeforeSimulation();
         }
-
         public override void UpdateAfterSimulation10()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -160,7 +152,6 @@ namespace AquaExpansion.SoilGenerator
             AquaExpansionSession.Insance.UpdateTerminal(block);
             base.UpdateAfterSimulation10();
         }
-
         private void UpdateGeneratorOutput()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed || !block.IsWorking)
@@ -208,7 +199,6 @@ namespace AquaExpansion.SoilGenerator
             outputInv.AddItems((MyFixedPoint)bonus, soil);
             lastSoilAmount = currentSoil;
         }
-
         private void Clear()
         {
             if (block?.CubeGrid?.Physics != null)
@@ -216,7 +206,6 @@ namespace AquaExpansion.SoilGenerator
                 block.AppendingCustomInfo -= AppendCustomInfo;
             }
         }
-
         public override void Close()
         {
             Clear();

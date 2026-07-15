@@ -7,13 +7,13 @@ namespace AquaExpansion.Core
     public class LatentScheduler
     {
         double deltaTime = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+       
         private class LatentEntry
         {
             public Action Action;
             public double TimeRemaining;
             public double Interval;
             public bool Repeat;
-
             public LatentEntry(Action action, double seconds, bool repeat, double interval)
             {
                 Action = action;
@@ -57,6 +57,10 @@ namespace AquaExpansion.Core
                 }
             }
         }
+        /// <summary>
+        /// Cancel Action
+        /// </summary>
+        /// <param name="action"></param>
         public void Cancel(Action action)
         {
             if (action == null)
@@ -64,6 +68,9 @@ namespace AquaExpansion.Core
 
             latentActions.RemoveAll(e => e.Action == action);
         }
+        /// <summary>
+        /// Clear Actions
+        /// </summary>
         public void Clear()
         {
             latentActions.Clear();

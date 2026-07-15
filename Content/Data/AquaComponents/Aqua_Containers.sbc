@@ -18,7 +18,7 @@
 			</Id>
 			<DefaultComponents>
 				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="UnderwaterFishingBlock" ForceCreate="true"/>
-				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFishingBlockt" ForceCreate="true"/>
+				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFishingBlock" ForceCreate="true"/>
 			</DefaultComponents>
 		</Container>
 		<Container>
@@ -29,6 +29,26 @@
 			<DefaultComponents>
 				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="UnderwaterFishingStation" ForceCreate="true"/>
 				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="UnderwaterFishingStation" ForceCreate="true"/>
+			</DefaultComponents>
+		</Container>
+		<Container>
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>AquaSeaAnchorL</SubtypeId>
+			</Id>
+			<DefaultComponents>
+				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="AquaSeaAnchorL" ForceCreate="true"/>
+				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="AquaSeaAnchorL" ForceCreate="true"/>
+			</DefaultComponents>
+		</Container>
+		<Container>
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>AquaSeaAnchorS</SubtypeId>
+			</Id>
+			<DefaultComponents>
+				<Component BuilderType="MyObjectBuilder_Inventory" SubtypeId="AquaSeaAnchorS" ForceCreate="true"/>
+				<Component BuilderType="MyObjectBuilder_ConveyorEndpointComponent" SubtypeId="AquaSeaAnchorS" ForceCreate="true"/>
 			</DefaultComponents>
 		</Container>
     </EntityContainers>

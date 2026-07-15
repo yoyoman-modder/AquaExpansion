@@ -82,6 +82,8 @@
 		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_DiveGearT1" />
 		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_DiveGearT2" />
 		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_DiveGearT3" />
+		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_AnchorSetSmall500" />
+		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_AnchorSetLarge1000" />
 		<!--Patch Food Processor -->
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Green" />
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Brown" />

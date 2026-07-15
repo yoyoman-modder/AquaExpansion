@@ -20,7 +20,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             Instance = this;
             base.LoadData();
         }
-
         public void ConnectToBlock(IMyFunctionalBlock block)
         {
             if (block != null && !block.Closed || !block.MarkedForClose)
@@ -32,7 +31,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             }
         }
-
         public override void SaveData()
         {
             base.SaveData();
@@ -41,12 +39,10 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 OnBlockRequestSave();
             }
         }
-
         public void OnBlockRequestSave()
         {
             BlockSaveRequest?.Invoke();
         }
-
         public void RunControlls()
         {
             if (ready)
@@ -54,7 +50,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             ready = true;
             CreateControls<IMyFunctionalBlock>();
         }
-
         private void CreateControls<T>() where T : IMyFunctionalBlock
         {
             //separetor
@@ -102,19 +97,36 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             };
             MyAPIGateway.TerminalControls.AddControl<T>(Bplist);
+            var helpbutton = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlButton, IMyTerminalBlock>("help_button");
+            helpbutton.Title = MyStringId.GetOrCompute("Help");
+            helpbutton.SupportsMultipleBlocks = false;
+            helpbutton.Visible = CustomVisibleCondition;
+            helpbutton.Enabled = HelpEnabled;
+            var htooltip = blocklogic.utils.GetHelpText(3);
+            helpbutton.Tooltip = MyStringId.GetOrCompute(htooltip);
+            helpbutton.Action = (b) =>
+            {
+                HelpAction(b);
+            };
+            MyAPIGateway.TerminalControls.AddControl<T>(helpbutton);
         }
-
+        private void HelpAction(IMyTerminalBlock b)
+        {
+            //empty
+        }
+        private bool HelpEnabled(IMyTerminalBlock b)
+        {
+            return false;
+        }
         private bool CustomVisibleCondition(IMyTerminalBlock b)
         {
             return b?.GameLogic?.GetAs<UnderwaterFarmPlotBase>() != null;
         }
-
         private void Clear()
         {
             blocklogic = null;
             Instance = null;
         }
-
         protected override void UnloadData()
         {
             Clear();

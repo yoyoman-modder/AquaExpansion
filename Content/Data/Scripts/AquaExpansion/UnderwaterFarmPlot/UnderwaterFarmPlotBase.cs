@@ -72,7 +72,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             //AquaExpansionSession.Insance.Log(true,$"Underwater FarmPlot initialized for block: {block.EntityId}");
             NeedsUpdate = MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME | MyEntityUpdateEnum.EACH_FRAME;
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -89,7 +88,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             }
         }
-
         private void SetInfo(StringBuilder info)
         {
             if (grid == null || grid.Closed)
@@ -110,7 +108,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             info.AppendLine($"{Tdepth} {(float)Math.Round(WaterDepth)} m");
             info.AppendLine($"{Tsalt} {(float)Math.Round(saltP)}%");
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -131,7 +128,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             Load();
             base.UpdateOnceBeforeFrame();
         }
-
         private void OnStageChanged(int obj)
         {
             stage = obj;
@@ -141,7 +137,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             //AquaExpansionSession.Insance.Log(true, $" model idx {stage}");
             SetPlantModel(GetModelForStagebyPlant(stage));
         }
-
         public void OnSessionSave()
         {
             if (block != null && !block.Closed && !block.MarkedForClose)
@@ -150,7 +145,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 //AquaExpansionSession.Insance.Log(true, $"Saved from Session");
             }
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -166,7 +160,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             UnderwaterRules();
             base.UpdateBeforeSimulation();
         }
-
         private void UnderwaterRules()
         {
             if (block == null || block.Closed || block.MarkedForClose || grid == null || grid.Closed)
@@ -179,7 +172,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 block.Enabled = false;
             }
         }
-
         public override void UpdateAfterSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -196,7 +188,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             utils.SetEnviromentalEmissive(time, block, currentStage, growEfficiency, WaterDepth, plantstage, growstage, harvstage);
             base.UpdateAfterSimulation();
         }
-
         public override void UpdateAfterSimulation10()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -225,7 +216,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             AquaExpansionSession.Insance.UpdateTerminal(block);
             base.UpdateAfterSimulation10();
         }
-
         private void GetCurrentWaterData()
         {
             if (block != null && !block.Closed && block.Enabled && block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()) && block.IsWorking)
@@ -235,7 +225,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 saltP = AquaExpansionSession.Insance.SaltToPercent(saltLevel);
             }
         }
-
         public void ActivateEvent()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -249,7 +238,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 MyAPIGateway.Gui.ShowTerminalPage(MyTerminalPageEnum.ControlPanel, null, entity, false);
             }
         }
-
         private void InventoryHandler()
         {
             if (HaseInventory)
@@ -266,7 +254,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 AquaExpansionSession.Insance.Log(true, $"No inventory used");
             }
         }
-
         private void ModStorageHandler()
         {
             if (HasModStorage)
@@ -281,7 +268,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 AquaExpansionSession.Insance.Log(true, $"No ModStorage used");
             }
         }
-
         private void Load()
         {
             if (HasModStorage)
@@ -292,12 +278,10 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             }
         }
-
         protected virtual void LoadingUnderwaterFarmPlotData()
         {
 
         }
-
         private void Save()
         {
             if (HasModStorage)
@@ -308,12 +292,10 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             }
         }
-
         protected virtual void SaveUnderwaterFarmPlotData()
         {
 
         }
-
         private void CreatePlant()
         {
             /*if (plant != null || !block.IsFunctional || !block.Enabled)
@@ -355,7 +337,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             plant.NeedsWorldMatrix = true;
             //AquaExpansionSession.Insance.Log(true, $"block children {block.Hierarchy.Children.Count}");
         }
-
         private void UpdatePlantmatrix()
         {
             if (plant == null || block == null || block.MarkedForClose)
@@ -365,7 +346,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             MatrixD world = local * block.WorldMatrix;
             plant.PositionComp.SetWorldMatrix(ref world);
         }
-
         private string GetModelForStagebyPlant(int stage)
         {
             if (ActivePlant == null)
@@ -381,7 +361,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 default: return null; // stage 0 = no plant
             }
         }
-
         private void SetPlantModel(string model)
         {
             if (plant == null || !plant.InScene)
@@ -400,7 +379,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             plant.Render.AddRenderObjects();
             plant.Render.UpdateRenderObject(true);
         }
-
         private void SetSink()
         {
             sink = new MyResourceSinkComponent();
@@ -414,7 +392,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             sink.Init(MyStringHash.GetOrCompute("Utility"), sinkInfo);
             //AquaExpansionSession.Insance.Log(true, $"Sink OK");
         }
-
         private float ComputeRequiredPower()
         {
             if (block == null || block.Closed || !block.Enabled || !block.IsFunctional)
@@ -424,14 +401,12 @@ namespace AquaExpansion.UnderwaterFarmPlot
             CurrentPowerInput = power;
             return power;
         }
-
         private bool HasPower()
         {
             if (block == null || block.Closed || !block.Enabled || !block.IsFunctional || grid == null || grid.Closed || !grid.IsStatic)
                 return false;
             return sink.IsPoweredByType(MyResourceDistributorComponent.ElectricityId);
         }
-
         private void UpdateSink()
         {
             if (block != null && !block.Closed && WaterModAPI.IsUnderwater(block.GetPosition()) && block.IsFunctional)
@@ -442,7 +417,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             } 
         }
-
         private AquaFarmSaveData ToSave()
         {
             if (ActivePlant == null || ActiveRecipe == null)
@@ -461,7 +435,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 }
             };
         }
-
         private void ToLoad(AquaFarmSaveData data)
         {
             // rebuild recipe
@@ -486,7 +459,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                     //$"\n plant growth {ActivePlant.Growth}\n plant planting {ActivePlant.Planting}\n plant stage {ActivePlant.Stage}\n block stage {currentStage}");
             }
         }
-
         private void RelinkLoadData()
         {
             if (ActivePlant == null || ActiveRecipe == null)
@@ -494,13 +466,11 @@ namespace AquaExpansion.UnderwaterFarmPlot
             // sync block stage with plant
             currentStage = ActivePlant.Stage;
         }
-
         private void RestoreEnvironment(AquaPlantInstance plant)
         {
             plant.CurrentDepth = WaterDepth;
             plant.CurrentSalt = saltLevel;
         }
-
         public void SaveStats(Guid guid)
         {
             if (block.Storage != null)
@@ -512,7 +482,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 //AquaExpansionSession.Insance.Log(true, "Saved");
             }
         }
-
         public void LoadStats(Guid guid)
         {
             string raw;
@@ -526,7 +495,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                 //AquaExpansionSession.Insance.Log(true, $"Loaded\n recipe {data.RecipeId},\n growth {data.Plant.Growth}\n planting {data.Plant.Planting}\n plant stage {data.Plant.Stage} \nplant defID {data.Plant.DefId}\n block stage {currentStage}");
             }
         }
-
         private void ClearbyGrid()
         {
             if (block?.CubeGrid?.Physics != null) // ignore projected and other non-physical grids
@@ -548,7 +516,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
             grid = null;
             block = null;
         }
-
         public override void Close()
         {
             Clear();

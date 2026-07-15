@@ -18,13 +18,11 @@ namespace AquaExpansion.UnderwaterFishing
             usebigfishdata = false;
             base.Init(objectBuilder);
         }
-
         protected override void LoadingUnderwaterFishingData()
         {
             base.LoadingUnderwaterFishingData();
             LoadStats(UnderwaterFishingBlockKey);
         }
-
         protected override void SaveUnderwaterFishingData()
         {
             base.SaveUnderwaterFishingData();

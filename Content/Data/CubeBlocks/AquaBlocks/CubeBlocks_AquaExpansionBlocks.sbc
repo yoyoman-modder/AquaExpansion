@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<CubeBlocks>
-		<!-- Region AquaExpansion Main blocks-->
+		<!-- Region AquaExpansion Power blocks-->
 		<Definition xsi:type="MyObjectBuilder_FunctionalBlockDefinition">
 			<Id>
 				<TypeId>FunctionalBlock</TypeId>
@@ -126,6 +126,8 @@
 			</TargetingGroups>
 			<DLC>DecorativeBlocks3</DLC>
 		</Definition>
+		<!--End Region AquaExpansion Power blocks-->
+		<!--Region AquaExpansion Production blocks-->
 		<Definition xsi:type="MyObjectBuilder_RefineryDefinition">
 			<Id>
 				<TypeId>Refinery</TypeId>
@@ -196,6 +198,8 @@
 			</TieredUpdateTimes>
 			<AllowSelfPulling>false</AllowSelfPulling>
 		</Definition>
+		<!--End Region AquaExpansion Production blocks-->
+		<!--Region AquaExpansion Battery blocks-->
 		<Definition xsi:type="MyObjectBuilder_BatteryBlockDefinition">
 			<Id>
 				<TypeId>BatteryBlock</TypeId>
@@ -383,7 +387,7 @@
 				<string>PowerSystems</string>
 			</TargetingGroups>
 		</Definition>
-		<!--End Region AquaExpansion Main blocks-->
+		<!--End Region AquaExpansion Battery blocks-->
 		<!--Region AquaExpansion Engine blocks-->
 		<Definition xsi:type="MyObjectBuilder_ThrustDefinition">
 			<Id>
@@ -1994,7 +1998,7 @@
 			<PCU>55</PCU>
 		</Definition>
 		<!--End Region AquaExpansion Farming blocks-->
-		<!--Region Special blocks-->
+		<!--Region AquaExpansion Special blocks-->
 		<Definition xsi:type="MyObjectBuilder_UpgradeModuleDefinition">
 			<Id>
 				<TypeId>UpgradeModule</TypeId>
@@ -2052,6 +2056,120 @@
 			<PCU>1</PCU>
 			<IsAirTight>false</IsAirTight>
 		</Definition>
-		<!--End Region Special blocks-->
+		<Definition xsi:type="MyObjectBuilder_FunctionalBlockDefinition">
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>AquaSeaAnchorL</SubtypeId>
+			</Id>
+			<DisplayName>Sea Anchor large</DisplayName>
+			<Description>
+				Deploys a seafloor anchor to stabilize submarines and underwater structures.
+				Prevents drifting by maintaining a firm connection to the ocean floor.
+			</Description>
+			<Icon>Textures\GUI\Icons\Cubes\AquaSeaAnchorL.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<CubeSize>Large</CubeSize>
+			<GuiVisible>false</GuiVisible>
+			<PlaceDecals>false</PlaceDecals>
+			<ResearchCost>5</ResearchCost>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="1" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\large\AquaSeaAnchorL.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="180" />
+				<Component Subtype="Construction" Count="40" />
+				<Component Subtype="Motor" Count="24" />
+				<Component Subtype="LargeTube" Count="18" />
+				<Component Subtype="Computer" Count="15" />
+				<Component Subtype="MetalGrid" Count="12" />
+				<Component Subtype="InteriorPlate" Count="30" />
+			</Components>
+			<CriticalComponent Subtype="Computer" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\large\AquaSeaAnchorL_BS1.mwm"/>
+				<Model BuildPercentUpperBound="0.67" File="Models\Cubes\large\AquaSeaAnchorL_BS2.mwm"/>
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\large\AquaSeaAnchorL_BS3.mwm"/>
+			</BuildProgressModels>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>60</BuildTimeSeconds>
+			<DamageEffectId>214</DamageEffectId>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<DestroySound>ParticleWeapExpl</DestroySound>
+			<EmissiveColorPreset>Default</EmissiveColorPreset>
+			<IsAirTight>false</IsAirTight>
+			<VoxelPlacement>
+				<StaticMode>
+					<PlacementMode>OutsideVoxel</PlacementMode>
+				</StaticMode>
+				<DynamicMode>
+					<PlacementMode>OutsideVoxel</PlacementMode>
+				</DynamicMode>
+			</VoxelPlacement>
+			<ResourceSinkGroup>Utility</ResourceSinkGroup>
+			<RequiredPowerInput>0.0005</RequiredPowerInput>
+			<PCU>55</PCU>
+		</Definition>
+		<Definition xsi:type="MyObjectBuilder_FunctionalBlockDefinition">
+			<Id>
+				<TypeId>FunctionalBlock</TypeId>
+				<SubtypeId>AquaSeaAnchorS</SubtypeId>
+			</Id>
+			<DisplayName>Sea Anchor small</DisplayName>
+			<Description>
+				Deploys a seafloor anchor to stabilize submarines and underwater structures.
+				Prevents drifting by maintaining a firm connection to the ocean floor.
+			</Description>
+			<Icon>Textures\GUI\Icons\Cubes\AquaSeaAnchorS.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<CubeSize>Small</CubeSize>
+			<GuiVisible>false</GuiVisible>
+			<PlaceDecals>false</PlaceDecals>
+			<ResearchCost>5</ResearchCost>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="1" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\small\AquaSeaAnchorS.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="35" />
+				<Component Subtype="Construction" Count="12" />
+				<Component Subtype="Motor" Count="8" />
+				<Component Subtype="SmallTube" Count="10" />
+				<Component Subtype="Computer" Count="5" />
+				<Component Subtype="MetalGrid" Count="3" />
+			</Components>
+			<CriticalComponent Subtype="Computer" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Back" StartX="0.00" StartY="0.00" EndX="1.00" EndY="1.00"/>
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.50" File="Models\Cubes\small\AquaSeaAnchorS_BS1.mwm"/>
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\small\AquaSeaAnchorS_BS2.mwm"/>
+			</BuildProgressModels>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>15</BuildTimeSeconds>
+			<DamageEffectId>214</DamageEffectId>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<DestroySound>ParticleWeapExpl</DestroySound>
+			<EmissiveColorPreset>Default</EmissiveColorPreset>
+			<IsAirTight>false</IsAirTight>
+			<VoxelPlacement>
+				<StaticMode>
+					<PlacementMode>OutsideVoxel</PlacementMode>
+				</StaticMode>
+				<DynamicMode>
+					<PlacementMode>OutsideVoxel</PlacementMode>
+				</DynamicMode>
+			</VoxelPlacement>
+			<ResourceSinkGroup>Utility</ResourceSinkGroup>
+			<RequiredPowerInput>0.0005</RequiredPowerInput>
+			<PCU>20</PCU>
+		</Definition>
+		<!--End AquaExpansion Region Special blocks-->
 	</CubeBlocks>
 </Definitions>

@@ -51,6 +51,7 @@ namespace AquaExpansion.UnderwaterTurbine
         private float saltP = 0f;
         private float Boost = 0f;
         long originalGridId;
+        public AquaExpansionUtils utils;
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -66,9 +67,9 @@ namespace AquaExpansion.UnderwaterTurbine
                 }
                 SetPowerSource();
             }
+            utils = new AquaExpansionUtils();
             NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -86,7 +87,6 @@ namespace AquaExpansion.UnderwaterTurbine
                 }
             }
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -97,11 +97,13 @@ namespace AquaExpansion.UnderwaterTurbine
                 return;
             if (!grid.IsStatic)
                 return;
+            utils.SetupHelp();
             block.AppendingCustomInfo += AppendCustomInfo;
             SetTurbineRotor();
+            UnderWaterTurbineUI.instance.ConnectToBlock(block);
+            UnderWaterTurbineUI.instance.RunControlls();
             base.UpdateOnceBeforeFrame();
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -117,7 +119,6 @@ namespace AquaExpansion.UnderwaterTurbine
             UpdateTurbineBlades();
             base.UpdateBeforeSimulation();
         }
-
         public override void UpdateAfterSimulation10()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -133,7 +134,6 @@ namespace AquaExpansion.UnderwaterTurbine
             AquaExpansionSession.Insance.UpdateTerminal(block);
             base.UpdateAfterSimulation10();
         }
-
         private void SetPowerSource()
         {
             source = new MyResourceSourceComponent();
@@ -149,7 +149,6 @@ namespace AquaExpansion.UnderwaterTurbine
             source.SetProductionEnabledByType(MyResourceDistributorComponent.ElectricityId, true);
             source.Enabled = true;
         }
-
         private void GetCurrentWaterStats(out MyTuple<float, float,float,int> waterdata)
         {
             waterdata = new MyTuple<float, float, float, int>(0f, 0f, 0f, 0);
@@ -161,7 +160,6 @@ namespace AquaExpansion.UnderwaterTurbine
                 saltP = AquaExpansionSession.Insance.SaltToPercent(saltLevel);
             }
         }
-
         private float CalculatePowerOutput()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed)
@@ -187,7 +185,6 @@ namespace AquaExpansion.UnderwaterTurbine
             //AquaExpansionSession.Insance.DebugPanel(Logging, DebugBlockType.Turbine, depth, depthNorm, saltLevel, saltBoost, wavePower, powerFactor, MaxPowerOutput,0);
             return MaxPowerOutput;
         }
-
         private void UpdatePowerSource()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || source == null || block.Closed)
@@ -200,7 +197,6 @@ namespace AquaExpansion.UnderwaterTurbine
                 source.SetMaxOutputByType(MyResourceDistributorComponent.ElectricityId, WaterEfficiency);
             }
         }
-
         private void SetInfo(StringBuilder info)
         {
             StringBuilder max = new StringBuilder();
@@ -221,7 +217,6 @@ namespace AquaExpansion.UnderwaterTurbine
             info.AppendLine($"{Tsaltboost} {(float)Math.Round(Boost, 2)}");
             info.AppendLine($"{Tsalt} {(float)Math.Round(saltP)}%");
         }
-
         private void UpdateTurbineBlades()
         {
             if (Rotor == null || block == null || block.Closed || !block.IsFunctional || !block.Enabled)
@@ -260,7 +255,6 @@ namespace AquaExpansion.UnderwaterTurbine
             Matrix finalMatrix = rotation * rotorBaseMatrix;
             Rotor.PositionComp.SetLocalMatrix(ref finalMatrix);
         }
-
         private void SetTurbineRotor()
         {
             if (block == null || block.Closed)
@@ -274,7 +268,6 @@ namespace AquaExpansion.UnderwaterTurbine
                 }
             }
         }
-
         private void Clear()
         {
             if (block?.CubeGrid?.Physics != null)
@@ -287,6 +280,7 @@ namespace AquaExpansion.UnderwaterTurbine
             Clear();
             Rotor = null;
             source = null;
+            utils = null;
             grid = null;
             block = null;
             base.Close();
