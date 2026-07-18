@@ -2099,15 +2099,13 @@ namespace AquaExpansion.Core
         {
             if (currentAnchor == null || currentOrder == null)
                 return;
-            if (block.Enabled)
-            {
                 switch (state)
                 {
                     case AquaSeaAnchorState.Idle:
                         break;
 
                     case AquaSeaAnchorState.Deploying:
-                        UpdateDeploy(ref state, ref currentAnchor, ref currentOrder, deployspeed, deployDirection, AnchorStartPosition);
+                        UpdateDeploy(block,ref state, ref currentAnchor, ref currentOrder, deployspeed, deployDirection, AnchorStartPosition);
                         break;
                     case AquaSeaAnchorState.Deployed:
                         UpdateDeployed(ref currentAnchor, AnchorStartPosition, deployDirection);
@@ -2118,10 +2116,9 @@ namespace AquaExpansion.Core
                         break;
 
                     case AquaSeaAnchorState.Retracting:
-                        UpdateRetract(ref state, ref currentAnchor, retractspeed, AnchorStartPosition, deployDirection);
+                        UpdateRetract(block,ref state, ref currentAnchor, retractspeed, AnchorStartPosition, deployDirection);
                         break;
                 }
-            }
             DrawDebug(state, deployDirection, RopeStartPosition, RopeEndPosition, currentAnchor.anchordef.Cablescale);//first cable line
             DrawDebug(state,deployDirection, AnchorStartPosition, currentAnchor.AnchorPosition, currentAnchor.anchordef.Cablescale);//main cable line
             //AquaExpansionSession.Insance.Log(true, $"Anchor tension {Math.Round(currentAnchor.CurrentTension)}");
@@ -2147,9 +2144,11 @@ namespace AquaExpansion.Core
         /// <param name="currentAnchor"></param>
         /// <param name="retractSpeed"></param>
         /// <param name="AnchorStartPosition"></param>
-        private void UpdateRetract(ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance currentAnchor, float retractSpeed, Vector3D AnchorStartPosition, Vector3D deployDirection)
+        private void UpdateRetract(IMyFunctionalBlock block ,ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance currentAnchor, float retractSpeed, Vector3D AnchorStartPosition, Vector3D deployDirection)
         {
             if (currentAnchor == null)
+                return;
+            if (!block.Enabled)
                 return;
             float dt = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
             float step = retractSpeed * dt;
@@ -2222,6 +2221,7 @@ namespace AquaExpansion.Core
                     dir * forceMagnitude,
                     ropeStart,
                     null);
+                //AquaExpansionSession.Insance.Log(true, $"force {forceMagnitude}");
                 return;
             }
             // DRAG
@@ -2248,10 +2248,12 @@ namespace AquaExpansion.Core
         /// <param name="deployspeed"></param>
         /// <param name="deployDirection"></param>
         /// <param name="AnchorStartPosition"></param>
-        private void UpdateDeploy(ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance ActiveAnchor, ref AquaSeaAnchorEquipOrder ActiveOrder, float deployspeed, Vector3D deployDirection,
+        private void UpdateDeploy(IMyFunctionalBlock block,ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance ActiveAnchor, ref AquaSeaAnchorEquipOrder ActiveOrder, float deployspeed, Vector3D deployDirection,
             Vector3D AnchorStartPosition)
         {
             if (ActiveAnchor == null || ActiveOrder == null)
+                return;
+            if (!block.Enabled)
                 return;
             float dt = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
             float step = deployspeed * dt;
@@ -3324,7 +3326,7 @@ namespace AquaExpansion.Core
                 Anchormodel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelPath("AquaBaseAnchorPart.mwm")),
                 Cablescale = 0.05f,
                 Height = 2f,
-                Stiffness = 14000f,
+                Stiffness = 10000f,
                 HoldForce = 120000f,
                 DragResistance = 240000f,
                 DragSpeed = 5.0f
@@ -3338,7 +3340,7 @@ namespace AquaExpansion.Core
                 Anchormodel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelSmallPath("AquaBaseAnchorSPart.mwm")),
                 Cablescale = 0.015f,
                 Height = 0.7f,
-                Stiffness = 6000f,
+                Stiffness = 5500f,
                 HoldForce = 50000f,
                 DragResistance = 100000f,
                 DragSpeed = 10.0f

@@ -15,8 +15,8 @@ namespace AquaExpansion.SeaAnchor
             HaseInventory = true;
             HasModStorage = true;
             AnchorType = AquaSeaAnchorType.S;
-            PowerIddleDrain = 0.01f;
-            PowerWorkDrain = 0.05f;
+            PowerIddleDrain = 0.001f;
+            PowerWorkDrain = 0.005f;
             base.Init(objectBuilder);
         }
         protected override void SaveSeaAnchorData()

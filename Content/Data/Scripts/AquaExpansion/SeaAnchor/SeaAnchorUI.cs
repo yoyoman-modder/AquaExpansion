@@ -14,6 +14,8 @@ namespace AquaExpansion.SeaAnchor
         public static SeaAnchorUI instance = new SeaAnchorUI();
         private SeaAnchorBase blocklogic;
         private bool ready;
+        private bool actionready;
+
         public event Action BlockSaveRequest;
         public override void LoadData()
         {
@@ -40,6 +42,9 @@ namespace AquaExpansion.SeaAnchor
         }
         public void RunActions()
         {
+            if (actionready)
+                return;
+            actionready = true;
             CreateActions<IMyFunctionalBlock>();
         }
         private void CreateActions<T>() where T : IMyFunctionalBlock
