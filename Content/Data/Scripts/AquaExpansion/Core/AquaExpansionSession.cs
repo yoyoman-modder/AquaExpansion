@@ -38,7 +38,7 @@ namespace AquaExpansion.Core
         private HashSet<IMySolarPanel> BannedSolars = new HashSet<IMySolarPanel>(); // Solar Panels
         private HashSet<IMyThrust> BannedThrusters = new HashSet<IMyThrust>(); // not mod thrusters
         private HashSet<IMyFunctionalBlock> TrackedAlgaeFarms = new HashSet<IMyFunctionalBlock>();
-        HashSet<IMyCubeGrid> TrackedGrids = new HashSet<IMyCubeGrid>(); // grids
+        private HashSet<IMyCubeGrid> TrackedGrids = new HashSet<IMyCubeGrid>(); // grids
         private Dictionary<long, MyParticleEffect> effects = new Dictionary<long, MyParticleEffect>(); // Damage Effect
         private Dictionary<long, MyParticleEffect> Engineeffects = new Dictionary<long, MyParticleEffect>(); // Engine Effect
         private static readonly Dictionary<string, string> EffectLib = new Dictionary<string, string>
@@ -1048,7 +1048,6 @@ namespace AquaExpansion.Core
                 HideHUD();
                 return;
             }
-
             bool isUnderwater = WaterModAPI.IsUnderwater(character.GetPosition());
             float Fullunderwater = GetUnderWaterPercent(character);
             var energy = MyVisualScriptLogicProvider.GetPlayersEnergyLevel(player.IdentityId);
@@ -1062,6 +1061,11 @@ namespace AquaExpansion.Core
                 return;
             }
             if (eox > MIN_ENVOXYGENLEVEL || ingridox > MIN_ENVOXYGENLEVEL || IsPlayerProtected(player))
+            {
+                HideHUD();
+                return;
+            }
+            if (IsPlayerControlling(player) || isPlayeUseCamera())
             {
                 HideHUD();
                 return;
@@ -1344,6 +1348,27 @@ namespace AquaExpansion.Core
                     return true;
                 }
             }
+            return false;
+        }
+        public bool IsPlayerControlling(IMyPlayer player)
+        {
+            var controlled = player.Controller?.ControlledEntity?.Entity;
+            // Large or small turret
+            if (controlled is IMyLargeTurretBase)
+            {
+                return true;
+            }
+            // Remote control
+            if (controlled is IMyRemoteControl)
+            {
+                return true;
+            }
+            return false;
+        }
+        public bool isPlayeUseCamera()
+        {
+            if (Session.CameraController?.Entity is MyCameraBlock)
+                return true;
             return false;
         }
         private double GetHeading(Vector3D forward)

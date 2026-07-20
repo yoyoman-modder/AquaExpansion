@@ -15,7 +15,6 @@ namespace AquaExpansion.SeaAnchor
         private SeaAnchorBase blocklogic;
         private bool ready;
         private bool actionready;
-
         public event Action BlockSaveRequest;
         public override void LoadData()
         {
@@ -52,7 +51,8 @@ namespace AquaExpansion.SeaAnchor
             var armaction = MyAPIGateway.TerminalControls.CreateAction<T>("arm_action");
             armaction.Name = new StringBuilder("Arm/Disarm");
             armaction.ValidForGroups = true;
-            armaction.Icon = @"Textures\GUI\Icons\Cubes\AquaSeaAnchorL.dds";
+            armaction.Icon = @"Textures\GUI\Icons\Actions\Reset.dds";
+            armaction.Enabled = CustomVisibleCondition;
             armaction.Action = (b) =>
             {
                 ArmAction(b);
@@ -61,7 +61,8 @@ namespace AquaExpansion.SeaAnchor
             var depaction = MyAPIGateway.TerminalControls.CreateAction<T>("deploy_action");
             depaction.Name = new StringBuilder("Deploy/Retract");
             depaction.ValidForGroups = true;
-            depaction.Icon = @"Textures\GUI\Icons\Cubes\AquaSeaAnchorL.dds";
+            depaction.Icon = @"Textures\GUI\Icons\Actions\Reverse.dds";
+            depaction.Enabled = CustomVisibleCondition;
             depaction.Action = (b) =>
             {
                 DeployAction(b);
