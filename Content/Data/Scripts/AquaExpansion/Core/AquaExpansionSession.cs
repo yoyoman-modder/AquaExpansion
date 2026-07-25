@@ -17,7 +17,6 @@ using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.Entity;
 using VRage.Game.ModAPI;
-using VRage.Input;
 using VRage.ModAPI;
 using VRageMath;
 
@@ -156,6 +155,19 @@ namespace AquaExpansion.Core
             };
         private Dictionary<long, MyParticleEffect> WeldereffectsShip = new Dictionary<long, MyParticleEffect>(); // Welder Ship Effect
         private HashSet<IMyShipWelder> TrackedShipWelders = new HashSet<IMyShipWelder>(); // ShipWelders
+        private HashSet<string> ForbiddenAlgaeComponents = new HashSet<string>
+        {
+            {
+                "MySolarFoodGenerator"
+            }
+        };
+        private HashSet<string> ForbiddenFarmComponents = new HashSet<string>
+        {
+            {
+                "MyFarmPlotLogic"
+            }
+        };
+        private HashSet<IMyFunctionalBlock> TrackedFarms = new HashSet<IMyFunctionalBlock>();
         public override void LoadData()
         {
             Insance = this;
@@ -370,6 +382,13 @@ namespace AquaExpansion.Core
                 ControllAlgaeFarms(block);
                 //Log(true, $"Run on 10 frame");
             }
+            foreach (var fblock in TrackedFarms)
+            {
+                if (fblock == null || fblock.Closed || fblock.MarkedForClose)
+                    continue;
+                ControllFarms(fblock);
+                //Log(true, $"Run on 10 frame");
+            }
         }
         private void ControllAlgaeFarms(IMyFunctionalBlock block)
         {
@@ -377,6 +396,12 @@ namespace AquaExpansion.Core
                 return;
             CheckUnderwaterBlockRules(block, false);
 
+        }
+        private void ControllFarms(IMyFunctionalBlock block)
+        {
+            if (block == null || block.Closed || block.MarkedForClose)
+                return;
+            CheckUnderwaterBlockRules(block, true);
         }
         private void FilterAlgaeFarms()
         {
@@ -421,6 +446,56 @@ namespace AquaExpansion.Core
                     {
                         TrackedAlgaeFarms.Add(farm);
                         //Log(true, $"Add AlgaeFarm {farm.EntityId}");
+                    }
+                }
+            }
+        }
+        private void FilterFarms()
+        {
+            if (tick % 10 != 0)
+                return;
+            //Cleanup tracked
+            List<IMyFunctionalBlock> toRemove = null;
+            foreach (var farm in TrackedFarms)
+            {
+                if (farm == null ||
+                   farm.Closed ||
+                   farm.MarkedForClose ||
+                   !WaterModAPI.IsUnderwater(farm.GetPosition()))
+                {
+                    if (toRemove == null)
+                        toRemove = new List<IMyFunctionalBlock>();
+
+                    toRemove.Add(farm);
+                }
+                if (toRemove != null)
+                {
+                    foreach (var t in toRemove)
+                    {
+                        TrackedFarms.Remove(t);
+                        //Log(true, $"Remove Farm {farm.EntityId}");
+                    }
+                }
+            }
+            //Main scan
+            foreach (var block in TerminalTracedBlocks)
+            {
+                if (block == null || block.Closed || block.MarkedForClose)
+                    continue;
+                var farm = block as IMyFunctionalBlock;
+                if (farm == null || farm.Closed || farm.MarkedForClose)
+                    continue;
+                var isUnderwater = WaterModAPI.IsUnderwater(farm.GetPosition());
+                foreach (var comp in farm.Components)
+                {
+                    if (comp != null && ForbiddenFarmComponents.Contains(comp.GetType().Name))
+                    {
+                        //AquaExpansionSession.Insance.Log(true, $"Found {comp.GetType().Name}");
+                        if (isUnderwater && !TrackedFarms.Contains(farm))
+                        {
+                            TrackedFarms.Add(farm);
+                            //Log(true, $"Add Farm {farm.EntityId}");
+                        }
                     }
                 }
             }
@@ -706,6 +781,7 @@ namespace AquaExpansion.Core
             FilterThrusters();
             FilterForbiddenBlocks();
             FilterAlgaeFarms();
+            FilterFarms();
             FilterShipWelders();
             UpdateEngineBlocks();
             UpdateTrackedAlgaeFarms();

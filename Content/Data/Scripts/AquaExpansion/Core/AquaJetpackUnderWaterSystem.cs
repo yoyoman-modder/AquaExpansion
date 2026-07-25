@@ -11,8 +11,6 @@ using VRage.Input;
 using VRage.Utils;
 using VRageMath;
 
-
-
 namespace AquaExpansion.Core
 {
     public struct DivingGearData
@@ -68,7 +66,6 @@ namespace AquaExpansion.Core
             MaxseabedSpeed = maxSeabedSpeed;
         }
     }
-
     public class AquaJetpackUnderWaterSystem
     {
         private Dictionary<string, MyObjectBuilder_ThrustDefinition> OriginalThrusterData = new Dictionary<string, MyObjectBuilder_ThrustDefinition>();
@@ -131,7 +128,7 @@ namespace AquaExpansion.Core
                     SurfaceFloatingMax = 2.0,
                     MaxSinkSpeed = 2.5,
                     SinkBias = 1.5f,
-                    HoverMinDepth = 15.0,
+                    HoverMinDepth = 2.0,
                     HoverMaxDepth = 40.0,
                     BuoyancyFactor = 0.08,
                     SwimForce = -0.25,
@@ -150,7 +147,7 @@ namespace AquaExpansion.Core
                     SurfaceFloatingMax = 2.0,
                     MaxSinkSpeed = 1.5,
                     SinkBias = -0.5f,
-                    HoverMinDepth = 20.0,
+                    HoverMinDepth = 2.0,
                     HoverMaxDepth = 300.0,
                     BuoyancyFactor = 0.1,
                     SwimForce = -0.1,
@@ -190,7 +187,6 @@ namespace AquaExpansion.Core
             }
             gearlevel = bestlevel;
         }
-
         public void SetDiverMode(IMyCharacter character, long ID, int tick)
         {
             if (character == null && character.Closed && character.IsDead)
@@ -211,14 +207,13 @@ namespace AquaExpansion.Core
             else
             {
                 UpdateSeabedMovement(character, ID, depth);
-                if (tick % 10 != 0) // every ~0.3 sec
+                if (tick % 7 != 0) // every ~0.3 sec
                     return;
                 PlayerOxygenRefillActive = false;
                 UpdateUnderwaterMovement(character, delta, depth, salt, 0, ID);
             }
             PlayerGearlevelIndx = gearlevel;
         }
-
         /// <summary>
         /// Call this every tick for each character to handle underwater propulsion and oxygen refill.
         /// </summary>
@@ -232,12 +227,11 @@ namespace AquaExpansion.Core
             float depth = AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character);
             float salt = AquaExpansionSession.Insance.GetSaltlevelbyPlayer(character, depth);
             UpdateSeabedMovement(character, ID, depth);
-            if (tick % 10 != 0) // every ~0.3 sec
+            if (tick % 7 != 0) // every ~0.3 sec
                 return;
             UpdateUnderwaterMovement(character, deltaTime, depth, salt, glevel, ID);
             RefillOxygen(character, deltaTime, depth, ID, salt, glevel);
         }
-
         private void UpdateUnderwaterMovement(IMyCharacter character, float deltaTime, float depth, float saltLevel, int glevel, long ID)
         {
             if (character == null || character.IsDead || character.Closed)
@@ -368,7 +362,6 @@ namespace AquaExpansion.Core
             double targetSinkSpeed = 0.5f;
             PID.Update(character, deltaTime, depth, targetSinkSpeed, glevel, verticalVel, gear);
         }
-
         private void RefillOxygen(IMyCharacter character, float deltaTime, float depth, long ID, float salt, int glevel)
         {
             if (character == null || character.Closed || character.IsDead)
@@ -445,7 +438,6 @@ namespace AquaExpansion.Core
 
             MyVisualScriptLogicProvider.SetPlayersOxygenLevel(ID, targetO2);
         }
-
         private void UpdateSeabedMovement(IMyCharacter character, long ID, float depth)
         {
             if (character == null || character.IsDead || character.Closed)
@@ -495,7 +487,6 @@ namespace AquaExpansion.Core
                     vel *= 0.98;
                     physics.LinearVelocity = horizontalVel + Vector3D.ProjectOnVector(ref vel,ref v);
                 }
-               
                 //AquaExpansionSession.Insance.Log(true, $"depth {depth:F1} maxSpeed {maxSpeed:F2} vel {vel.Length()}");
             }
             else
@@ -503,9 +494,7 @@ namespace AquaExpansion.Core
                 character.CanSprint = true;
                 wasNearSeabed = false;
             }
-           
         }
-
         private Vector3D GetInputDirection()
         {
             var ctrl = MyAPIGateway.Input;
@@ -516,7 +505,6 @@ namespace AquaExpansion.Core
             if (ctrl.IsKeyPress(MyKeys.D)) dir += Vector3D.Right;
             return dir;
         }
-
         public void AddPID(long id)
         {
             if (!playerPID.TryGetValue(id, out PID))
@@ -525,7 +513,6 @@ namespace AquaExpansion.Core
                 playerPID[id] = PID;
             }
         }
-
         private void RemovePID(long id)
         {
             if (playerPID.TryGetValue(id, out PID))
@@ -534,7 +521,6 @@ namespace AquaExpansion.Core
                 playerPID.Remove(id);
             }
         }
-
         public  class UnderwaterBuoyancyPID
         {
             private Vector3D position;
@@ -552,7 +538,6 @@ namespace AquaExpansion.Core
                 buoyancyForce = Vector3D.Zero;
                 counterForce = Vector3D.Zero;
             }
-
             private void Stabilize(IMyCharacter character)
             {
                 if (!initializedVelocity)
@@ -573,7 +558,6 @@ namespace AquaExpansion.Core
                     initializedVelocity = true;
                 }
             }
-
             public void Update(IMyCharacter character, float deltaTime, double depth, double targetSinkSpeed, int gearLevel, double VertSpeeed, DivingGearData gearData)
             {
                 if (character == null || character.Closed || character.IsDead)
@@ -683,7 +667,6 @@ namespace AquaExpansion.Core
                         position,
                         null);
                 }
-
                 // DOWN
                 if (MyAPIGateway.Input.IsGameControlPressed(
                     MyControlsSpace.CROUCH))
