@@ -698,6 +698,7 @@ namespace AquaExpansion.SeaAnchor
                 utils.RevertSignalEquip -= OnFailedEquip;
                 SeaAnchorUI.instance.BlockSaveRequest -= OnSessionSave;
                 block.AppendingCustomInfo -= AppendCustomInfo;
+                Anchorpart.Render.Visible = false;
                 Anchorpart = null;
                 AnchorRope = null;
                 ActiveAnchor = null;

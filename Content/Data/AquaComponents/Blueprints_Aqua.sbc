@@ -1003,7 +1003,7 @@
 				<Item Amount="6" TypeId="Component" SubtypeId="SmallTube" />
 			</Prerequisites>
 			<Results>
-				<Item Amount="1" TypeId="Component" SubtypeId="AquaAnchorBaseSet_Large" />
+				<Item Amount="1" TypeId="Component" SubtypeId="AquaAnchorBaseSet_Small" />
 			</Results>
 			<BaseProductionTimeInSeconds>12</BaseProductionTimeInSeconds>
 		</Blueprint>
