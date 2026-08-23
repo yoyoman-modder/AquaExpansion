@@ -1,9 +1,11 @@
-﻿using Sandbox.ModAPI;
+﻿using AquaExpansion.Core;
+using AquaExpansion.SaltBattery;
+using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using VRage.Game.Components;
 using VRage.Utils;
 
-namespace AquaExpansion.SaltBattery
+namespace AquaExpansionExperimental.SaltBattery
 {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
     public class SaltBatteryUI : MySessionComponentBase
@@ -41,7 +43,7 @@ namespace AquaExpansion.SaltBattery
             helpbutton.SupportsMultipleBlocks = false;
             helpbutton.Visible = CustomVisibleCondition;
             helpbutton.Enabled = HelpEnabled;
-            var htooltip = blocklogic.utils.GetHelpText(1);
+            var htooltip = AquaHelpDatabase.GetHelpLineByID(1);
             helpbutton.Tooltip = MyStringId.GetOrCompute(htooltip);
             helpbutton.Action = (b) =>
             {

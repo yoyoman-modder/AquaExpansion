@@ -1,4 +1,5 @@
 ﻿using AquaExpansion.Core;
+using AquaExpansionExperimental.SaltBattery;
 using Jakaria.API;
 using Sandbox.Game.Entities;
 using Sandbox.Game.EntityComponents;
@@ -107,7 +108,7 @@ namespace AquaExpansion.SaltBattery
                 return;
             if (grid.Physics == null)
                 return;
-            utils.SetupHelp();
+            //utils.SetupHelp();
             block.AppendingCustomInfo += AppendCustomInfo;
             SaltBatteryUI.instance.ConnectToBlock(block);
             SaltBatteryUI.instance.RunControlls();

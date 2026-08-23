@@ -24,6 +24,8 @@
     {
         Bullet = 0,
         Missile = 1,
-        Exit = 2
+        Exit = 2,
+        Shell = 3,
+        Railgun = 4
     }
 }

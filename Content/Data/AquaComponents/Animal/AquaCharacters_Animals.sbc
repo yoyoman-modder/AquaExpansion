@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <Characters>
+        <!-- Shark -->
+        <Character>
+            <Id>
+                <TypeId>MyObjectBuilder_Character</TypeId>
+                <SubtypeId>AquaWhiteShark</SubtypeId>
+            </Id>
+			<AnimationController>Aqua_WhiteShark</AnimationController>
+            <Name>WhiteShark</Name>
+            <Model>Models\Characters\WhiteShark.mwm</Model>
+			<DeathSoundName>BotWolfDeath</DeathSoundName>
+			<HeadServerOffset>0.25</HeadServerOffset>
+            <LoopingFootsteps>true</LoopingFootsteps>
+            <PhysicalMaterial>Wolf</PhysicalMaterial>
+            <Mass>300</Mass>
+            <MaxHealth>200</MaxHealth>
+            <LootingTime>100</LootingTime>
+            <Skeleton>Arachnid</Skeleton>
+            <SpineBone>SpineCenter</SpineBone>
+            <EnableFirstPersonView>false</EnableFirstPersonView>
+            <AnimationMappings>
+				<Mapping Name="Idle" AnimationSubtypeName="IdleShark" />
+				<Mapping Name="Run" AnimationSubtypeName="BoostShark" />
+				<Mapping Name="Walk" AnimationSubtypeName="SwimShark" />
+				<Mapping Name="Attack" AnimationSubtypeName="AttackShark" />
+				<Mapping Name="Died" AnimationSubtypeName="DeathShark" />
+            </AnimationMappings>
+            <VisibleOnHud>false</VisibleOnHud>
+            <UsableByPlayer>false</UsableByPlayer>
+			<Inventory>
+                <InventoryVolume>1</InventoryVolume>
+                <!-- in m3 ! -->
+                <InventoryMass>50</InventoryMass>
+            </Inventory>
+            <!-- ENABLED COMPONENTS -->
+            <EnabledComponents>RagdollComponent</EnabledComponents>
+            <!-- BONES -->
+            <HeadBone>Head</HeadBone>
+            <ModelRootBoneName>Shark_DummyRoot</ModelRootBoneName>
+            <!-- Character control -->
+            <VerticalPositionFlyingOnly>false</VerticalPositionFlyingOnly>
+            <UseOnlyWalking>false</UseOnlyWalking>
+            <MaxSlope>90</MaxSlope>
+            <MaxSprintSpeed>20</MaxSprintSpeed>
+            <MaxRunSpeed>10</MaxRunSpeed>
+            <MaxBackrunSpeed>8</MaxBackrunSpeed>
+            <MaxRunStrafingSpeed>6</MaxRunStrafingSpeed>
+            <MaxWalkSpeed>10</MaxWalkSpeed>
+            <MaxBackwalkSpeed>8</MaxBackwalkSpeed>
+            <MaxWalkStrafingSpeed>6</MaxWalkStrafingSpeed>
+            <MaxCrouchWalkSpeed>10</MaxCrouchWalkSpeed>
+            <MaxCrouchBackwalkSpeed>10</MaxCrouchBackwalkSpeed>
+            <MaxCrouchStrafingSpeed>6</MaxCrouchStrafingSpeed>
+			<CharacterHeadSize>0.35</CharacterHeadSize>
+			<CharacterHeadHeight>0.0</CharacterHeadHeight>
+			<CharacterCollisionScale>0.8</CharacterCollisionScale>
+			<CharacterCollisionHeight>0.5</CharacterCollisionHeight>
+			<CharacterCollisionWidth>0.5</CharacterCollisionWidth>
+			<OxygenConsumption>0.0</OxygenConsumption>
+			<OxygenConsumptionMultiplier>0</OxygenConsumptionMultiplier>
+			<PressureLevelForLowDamage>0.0</PressureLevelForLowDamage>
+			<DamageAmountAtZeroPressure>0.0</DamageAmountAtZeroPressure>
+			<NeedsOxygen>false</NeedsOxygen>
+			<BoneSet>
+                <Name>Body</Name>
+            </BoneSet>
+            <InitialAnimation>Idle</InitialAnimation>
+            <!--
+      <RagdollRootBody>Ragdoll_deer_Pelvis001</RagdollRootBody>
+      <RagdollDataFile>Models\Characters\Basic\ME_Deer_ragdoll.hkt</RagdollDataFile>
+      -->
+            <RagdollBonesMappings>
+				<BoneSet>
+					<Name>JawUp</Name>
+					<Bones>JawUp JawDown</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>Jawbase</Name>
+					<Bones>Jawbase Head</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>Head</Name>
+					<Bones>Head SpineToHead</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineToHead</Name>
+					<Bones>SpineToHead SpineMid</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineMid</Name>
+					<Bones>SpineMid SpineCenter</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineCenter</Name>
+					<Bones>SpineCenter SpineToTail</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineToTail</Name>
+					<Bones>SpineToTail TailStart</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>TailStart</Name>
+					<Bones>TailStart TailMid</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>TailMid</Name>
+					<Bones>TailMid TailEnd</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>TailUpFin</Name>
+					<Bones>TailUpFin TailDownFin</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>RearFinsSpine</Name>
+					<Bones>SpineToTail RearFinsSpine</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>RearArmL</Name>
+					<Bones>RearFinsSpine RearArmLStart</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>RearArmR</Name>
+					<Bones>RearFinsSpine RearArmRStart</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>RearArmLFins</Name>
+					<Bones>RearArmLFinR RearArmLFinL</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>RearArmRFins</Name>
+					<Bones>RearArmRFinR RearArmRFinL</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineToMainFin</Name>
+					<Bones>SpineCenter SpineToMainFin</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>MainFin</Name>
+					<Bones>SpineToMainFin MainFin</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineToArmL</Name>
+					<Bones>SpineCenter SpineToArmL</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>SpineToArmR</Name>
+					<Bones>SpineCenter SpineToArmR</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>ArmL</Name>
+					<Bones>SpineToArmL ArmLStart</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>ArmR</Name>
+					<Bones>SpineToArmR ArmRStart</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>ArmLFin</Name>
+					<Bones>ArmLStart ArmLFin</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+				<BoneSet>
+					<Name>ArmRFin</Name>
+					<Bones>ArmRStart ArmRFin</Bones>
+					<CollisionRadius>0.25</CollisionRadius>
+				</BoneSet>
+            </RagdollBonesMappings>
+            <DeadBodyShape>
+                <BoxShapeScale x="0.8" y="0.45" z="3.2"/>
+                <RelativeCenterOfMass x="0" y="0" z="0"/>
+                <RelativeShapeTranslation x="0" y="-0.5" z="0"/>
+                <Friction>30</Friction>
+            </DeadBodyShape>
+            <RotationToSupport>Full</RotationToSupport>
+        </Character>
+    </Characters>
+</Definitions>

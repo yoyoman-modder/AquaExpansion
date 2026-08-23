@@ -1,4 +1,6 @@
-﻿using AquaExpansion.UndewaterEngines;
+﻿using AquaExpansion.Core.Combat;
+using AquaExpansion.Core.Combat.Balistics;
+using AquaExpansionExperimental.Core.Animals;
 using Draygo.API;
 using Jakaria.API;
 using ProtoBuf;
@@ -17,7 +19,9 @@ using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.Entity;
 using VRage.Game.ModAPI;
+using VRage.Input;
 using VRage.ModAPI;
+using VRage.Utils;
 using VRageMath;
 
 namespace AquaExpansion.Core
@@ -26,10 +30,12 @@ namespace AquaExpansion.Core
     public class AquaExpansionSession : MySessionComponentBase
     {
         private string System = "AquaSystem";
+        public string AquaAPI = "AquaSystemAPI";
         public static AquaExpansionSession Insance;
         private float maxSaltDepth = 100f;
         public AquaJetpackUnderWaterSystem JetpackUnderWaterSystem;
         private int tick;
+        private int weapontick;
         //shared effects
         private HashSet<IMyTerminalBlock> TerminalTracedBlocks = new HashSet<IMyTerminalBlock>(); // Terminal
         private HashSet<IMyThrust> TrackedThrusters = new HashSet<IMyThrust>(); // Thrusters
@@ -40,78 +46,6 @@ namespace AquaExpansion.Core
         private HashSet<IMyCubeGrid> TrackedGrids = new HashSet<IMyCubeGrid>(); // grids
         private Dictionary<long, MyParticleEffect> effects = new Dictionary<long, MyParticleEffect>(); // Damage Effect
         private Dictionary<long, MyParticleEffect> Engineeffects = new Dictionary<long, MyParticleEffect>(); // Engine Effect
-        private static readonly Dictionary<string, string> EffectLib = new Dictionary<string, string>
-            {
-                {
-                   "Default", "UnderwaterDamageEffect"
-                },
-                {
-                    "Electric", "UnderwaterDamageElectrical"
-                },
-                {
-                    "ElectricSmall", "AquaUnderwaterDamageElectricalSmall"
-                },
-                {
-                    "ElectricMicro", "AquaUnderwaterDamageElectricalMicro"
-                },
-                {
-                    "Bubblespray", "AquaUnderwaterDamageBubblesspray"
-                }
-            };
-        private static readonly Dictionary<string, string> EngineEffectLib = new Dictionary<string, string>
-            {
-                {
-                    "Default", "AquaEngineBubbles02Small"
-                },
-                {
-                    "IddleSmall", "AquaEngineBubbles02Small"
-                },
-                {
-                    "IddleFlatSmall", "AquaEngineBubbles02SmallFlat"
-                },
-                {
-                     "IddleMedium", "AquaEngineBubbles02Medium"
-                },
-                {
-                     "IddleFlatMedium", "AquaEngineBubbles02MediumFlat"
-                },
-                {
-                     "IddleLarge", "AquaEngineBubbles02Large"
-                },
-                {
-                     "IddleFlatLarge", "AquaEngineBubbles02LargeFlat"
-                },
-                {
-                     "IddleXLarge", "AquaEngineBubbles02XLarge"
-                },
-                {
-                     "IddleFlatXLarge", "AquaEngineBubbles02XLargeFlat"
-                },
-                {
-                     "RunSmall", "AquaEngineBubbles02Small"
-                },
-                {
-                     "RunFlatSmall", "AquaEngineBubbles02SmallFlat"
-                },
-                {
-                     "RunMedium", "AquaEngineBubbles02Medium"
-                },
-                {
-                     "RunFlatMedium", "AquaEngineBubbles02MediumFlat"
-                },
-                {
-                     "RunLarge", "AquaEngineBubbles02Large"
-                },
-                {
-                     "RunFlatLarge", "AquaEngineBubbles02LargeFlat"
-                },
-                {
-                     "RunXLarge", "AquaEngineBubbles02XLarge"
-                },
-                {
-                     "RunFlatXLarge", "AquaEngineBubbles02XLargeFlat"
-                }
-            };
         private float effectLod1disSq = 30f;
         private float effectLod2disSq = 40f;
         private float scale;
@@ -138,46 +72,48 @@ namespace AquaExpansion.Core
         private Color OriginalInteractionColor;
         public string WatermodLink;
         private Dictionary<long, MyParticleEffect> Weldereffects = new Dictionary<long, MyParticleEffect>(); // Welder Effect
-        private static readonly Dictionary<string, string> WelderEffectLib = new Dictionary<string, string>
-            {
-                {
-                   "Default", "AquaUnderwaterWelding"
-                },
-                {
-                    "WelderSmall", "AquaUnderwaterWelding"
-                },
-                {
-                    "WelderShip", "AquaUnderwaterWeldingShip"
-                },
-                {
-                    "WelderShip2", "AquaUnderwaterWeldingShip2"
-                }
-            };
         private Dictionary<long, MyParticleEffect> WeldereffectsShip = new Dictionary<long, MyParticleEffect>(); // Welder Ship Effect
         private HashSet<IMyShipWelder> TrackedShipWelders = new HashSet<IMyShipWelder>(); // ShipWelders
-        private HashSet<string> ForbiddenAlgaeComponents = new HashSet<string>
-        {
-            {
-                "MySolarFoodGenerator"
-            }
-        };
-        private HashSet<string> ForbiddenFarmComponents = new HashSet<string>
-        {
-            {
-                "MyFarmPlotLogic"
-            }
-        };
+        private HashSet<IMyWelder> Trackedhandwelders = new HashSet<IMyWelder>();
+        //balistics
+        private bool usebalisticsFallback = true;
+        private UnderwaterBalisticsSystem balistics;
+        public event Action<IMyAutomaticRifleGun> RegisterHandWeapon;
+        public event Action<IMyAutomaticRifleGun> UnregisterHandWeapon;
         private HashSet<IMyFunctionalBlock> TrackedFarms = new HashSet<IMyFunctionalBlock>();
+        //modding
+        private bool ModdingAllowed = false;
+        private bool HydroAmmoModdingAllowed = false;
+        private enum ChatCommandPermission { Public,ServerOnly,AdminOnly }
         public override void LoadData()
         {
             Insance = this;
+            InitModdingTools();
             JetpackUnderWaterSystem = new AquaJetpackUnderWaterSystem();
             latentScheduler = new LatentScheduler();
             TextAPI = new HudAPIv2(onRegisteredCallback);
+            balistics = new UnderwaterBalisticsSystem();
             MyAPIGateway.Entities.OnEntityAdd += OnEntityAdd;
             MyAPIGateway.Entities.OnEntityRemove += OnEntityRemove;
+            MyAPIGateway.Utilities.MessageEntered += OnMessageEntered;
             GetMods();
+            InitDatabases();
+            CheckBalisticFallback();
             base.LoadData();
+        }
+        private  void LogFilteredBlocks()
+        {
+            AquaExpansionSession.Insance.Log(true,
+            string.Format(
+             "Filtered grids & Blocks\n" +
+             "Grids      : {0}\n" +
+             "Blocks     : {1} \n" +
+             "Algae      : {2}\n" +
+             "Farms      : {3}",
+             TrackedGrids.Count,
+             TerminalTracedBlocks.Count,
+             TrackedAlgaeFarms.Count,
+             TrackedFarms.Count));
         }
         private void GetMods()
         {
@@ -190,11 +126,111 @@ namespace AquaExpansion.Core
                 {
                     WatermodLink = mod.GetModContext().ModPath;
                 }
+                if (mod.PublishedFileId == 3154371364)
+                {
+                    GetWCConnected();
+                }
+            }
+        }
+        private void GetWCConnected()
+        {
+            Log(true, $"WeaponCore Found! Balistics System disabled!");
+            usebalisticsFallback = false;
+        }
+        private void CheckBalisticFallback()
+        {
+            if (usebalisticsFallback)
+            {
+                balistics.Load();
+                //Log(true, $"Balistics System init");
+            }
+        }
+        private void ClearBalisticksFallback()
+        {
+            if (usebalisticsFallback)
+            {
+                balistics.Unload();
+            }
+        }
+        private void UpdateBalisticsFallback()
+        {
+            if (usebalisticsFallback)
+            {
+                UpdateWeaponTick();
+                balistics.Update(TerminalTracedBlocks);
+            }
+        }
+        private void UpdateWeaponTick()
+        {
+            weapontick++;
+        }
+        private void UpdateGlobalTick()
+        {
+            tick++;
+        }
+        private void UpdateTrackedGrids()
+        {
+            if (tick % 60 != 0)
+                return;
+            foreach (var grid in TrackedGrids)
+            {
+                if (grid == null ||
+                    grid.Closed ||
+                    grid.MarkedForClose)
+                    continue;
+                if (CombatUtils.WaterPlanet(grid.GetPosition()) == null)
+                {
+                    RemoveGridBlocks(grid);
+                    continue;
+                }
+                RescanGrid(grid);
+            }
+        }
+        private void RescanGrid(IMyCubeGrid grid)
+        {
+            if (grid == null ||
+                grid.Closed ||
+                grid.MarkedForClose)
+                return;
+            var blocks = new List<IMySlimBlock>();
+            grid.GetBlocks(blocks);
+            foreach (var slim in blocks)
+            {
+                if (slim == null)
+                    continue;
+                var block = slim.FatBlock as IMyTerminalBlock;
+                if (block == null ||
+                    block.Closed ||
+                    block.MarkedForClose)
+                    continue;
+                AddBlock(block);
+            }
+        }
+        private void RemoveGridBlocks(IMyCubeGrid grid)
+        {
+            if (grid == null)
+                return;
+            List<IMyTerminalBlock> toRemove = null;
+            foreach (var block in TerminalTracedBlocks)
+            {
+                if (block == null)
+                    continue;
+                if (block.CubeGrid != grid)
+                    continue;
+                if (toRemove == null)
+                    toRemove = new List<IMyTerminalBlock>();
+                toRemove.Add(block);
+            }
+            if (toRemove == null)
+                return;
+            foreach (var block in toRemove)
+            {
+                RemoveBlock(block);
             }
         }
         private void RegisterGrid(IMyCubeGrid grid)
         {
-            if (grid == null || grid.Closed || TrackedGrids.Contains(grid))
+            /*if (grid == null || grid.Closed || TrackedGrids.Contains(grid))
                 return;
             TrackedGrids.Add(grid);
             grid.OnBlockAdded += OnBlockAdded;
@@ -203,7 +239,16 @@ namespace AquaExpansion.Core
             var blocks = new List<IMySlimBlock>();
             grid.GetBlocks(blocks);
             foreach (var slim in blocks)
-                AddBlock(slim.FatBlock as IMyTerminalBlock);
+                AddBlock(slim.FatBlock as IMyTerminalBlock);*/
+            if (grid == null ||
+                grid.Closed ||
+                grid.MarkedForClose ||
+                TrackedGrids.Contains(grid))
+                return;
+            TrackedGrids.Add(grid);
+            grid.OnBlockAdded += OnBlockAdded;
+            grid.OnBlockRemoved += OnBlockRemoved;
+            RescanGrid(grid);
         }
         private void OnBlockRemoved(IMySlimBlock block)
         {
@@ -211,10 +256,14 @@ namespace AquaExpansion.Core
         }
         private void RemoveBlock(IMyTerminalBlock block)
         {
-            if (block == null || block.Closed)
+            /*if (block == null || block.Closed)
                 return;
             TerminalTracedBlocks.Remove(block);
-            StopEffect(block);
+            GlobalEffects.StopEffect(block.EntityId, effects);*/
+            if (block == null)
+                return;
+            TerminalTracedBlocks.Remove(block);
+            GlobalEffects.StopEffect(block.EntityId,effects);
         }
         private void OnBlockAdded(IMySlimBlock block)
         {
@@ -225,40 +274,26 @@ namespace AquaExpansion.Core
             if (block == null || block.Closed || TerminalTracedBlocks.Contains(block))
                 return;
             TerminalTracedBlocks.Add(block);
-            CreateEffect(block, scale);
+            GlobalEffects.CreateEffect(block, GetEffectByBlockType(block),scale, effects);
         }
         private void OnEntityRemove(IMyEntity entity)
         {
             var grid = entity as IMyCubeGrid;
+            /*if (grid != null && TrackedGrids.Contains(grid))
+            {
+                grid.OnBlockAdded -= OnBlockAdded;
+                grid.OnBlockRemoved -= OnBlockRemoved;
+                TrackedGrids.Remove(grid);
+            }*/
+            UnRegisterGrid(grid);
+        }
+        private void UnRegisterGrid(IMyCubeGrid grid)
+        {
             if (grid != null && TrackedGrids.Contains(grid))
             {
                 grid.OnBlockAdded -= OnBlockAdded;
                 grid.OnBlockRemoved -= OnBlockRemoved;
                 TrackedGrids.Remove(grid);
-            }
-        }
-        private void StopEffect(IMyTerminalBlock block)
-        {
-            MyParticleEffect effect;
-            if (effects.TryGetValue(block.EntityId, out effect))
-            {
-                effect?.Stop();
-                effect.Autodelete = true;
-                MyParticlesManager.RemoveParticleEffect(effect);
-                effects.Remove(block.EntityId);
-                //Log(true, "Effect Stopped and Deleted");
-            }
-        }
-        private void StopEngineEffect(IMyThrust block)
-        {
-            MyParticleEffect Eeffect;
-            if (Engineeffects.TryGetValue(block.EntityId, out Eeffect))
-            {
-                Eeffect?.Stop();
-                Eeffect.Autodelete = true;
-                MyParticlesManager.RemoveParticleEffect(Eeffect);
-                Engineeffects.Remove(block.EntityId);
-                //Log(true, "Engine Effect Stopped and Deleted");
             }
         }
         public HashSet<IMyTerminalBlock> GetTerminalBlocks()
@@ -312,7 +347,8 @@ namespace AquaExpansion.Core
             {
                 foreach (var t in toRemove)
                 {
-                    StopEngineEffect(t);
+                    //StopEngineEffect(t);
+                    GlobalEffects.StopEngineEffect(t.EntityId,Engineeffects);
                     TrackedThrusters.Remove(t);
                 }
             }
@@ -344,7 +380,7 @@ namespace AquaExpansion.Core
                     if (isUnderwater && !TrackedThrusters.Contains(thruster))
                     {
                         TrackedThrusters.Add(thruster);
-                        CreateEngineEffect(thruster, scale);
+                        GlobalEffects.CreateEngineEffect(thruster, GetEngineEffect(thruster), scale, Engineeffects);
                     }
                     continue;
                 }
@@ -407,46 +443,59 @@ namespace AquaExpansion.Core
         {
             if (tick % 10 != 0)
                 return;
-            //Cleanup tracked
+            // -----------------------------------------
+            // Cleanup tracked
+            // -----------------------------------------
             List<IMyFunctionalBlock> toRemove = null;
             foreach (var farm in TrackedAlgaeFarms)
             {
                 if (farm == null ||
-                   farm.Closed ||
-                   farm.MarkedForClose ||
-                   !WaterModAPI.IsUnderwater(farm.GetPosition()))
+                    farm.Closed ||
+                    farm.MarkedForClose ||
+                    !WaterModAPI.IsUnderwater(farm.GetPosition()))
                 {
                     if (toRemove == null)
                         toRemove = new List<IMyFunctionalBlock>();
 
                     toRemove.Add(farm);
                 }
-                if (toRemove != null)
+            }
+            if (toRemove != null)
+            {
+                foreach (var farm in toRemove)
                 {
-                    foreach (var t in toRemove)
-                    {
-                        TrackedAlgaeFarms.Remove(t);
-                        //Log(true, $"Remove AlgaeFarm {farm.EntityId}");
-                    }
+                    TrackedAlgaeFarms.Remove(farm);
                 }
             }
-            //Main scan
+            // -----------------------------------------
+            // Main scan
+            // -----------------------------------------
             foreach (var block in TerminalTracedBlocks)
             {
-                if (block == null || block.Closed || block.MarkedForClose)
+                if (block == null ||
+                    block.Closed ||
+                    block.MarkedForClose)
                     continue;
                 var farm = block as IMyFunctionalBlock;
-                if (farm == null || farm.Closed || farm.MarkedForClose)
+                if (farm == null ||
+                    farm.Closed ||
+                    farm.MarkedForClose)
                     continue;
-                var isUnderwater = WaterModAPI.IsUnderwater(farm.GetPosition());
-                var subtype = farm.BlockDefinition.SubtypeId;
-                if (subtype.Contains("LargeBlockAlgaeFarm") || subtype.Contains("LargeBlockAlgaeFarmReskin"))
+                if (!WaterModAPI.IsUnderwater(farm.GetPosition()))
+                    continue;
+                if (TrackedAlgaeFarms.Contains(farm))
+                    continue;
+                foreach (var comp in farm.Components)
                 {
-                    if (isUnderwater && !TrackedAlgaeFarms.Contains(farm))
+                    if (comp == null)
+                        continue;
+                    string registeredName = AquaForbiddenComponentsDatabase.GetComponentByID(1);
+                    if (string.Equals(registeredName, comp.GetType().Name, StringComparison.OrdinalIgnoreCase))
                     {
+                        //Log(true, $"Found {registeredName}");
                         TrackedAlgaeFarms.Add(farm);
-                        //Log(true, $"Add AlgaeFarm {farm.EntityId}");
-                    }
+                        break;
+                    } 
                 }
             }
         }
@@ -454,48 +503,59 @@ namespace AquaExpansion.Core
         {
             if (tick % 10 != 0)
                 return;
-            //Cleanup tracked
+            // -----------------------------------------
+            // Cleanup tracked farms
+            // -----------------------------------------
             List<IMyFunctionalBlock> toRemove = null;
             foreach (var farm in TrackedFarms)
             {
                 if (farm == null ||
-                   farm.Closed ||
-                   farm.MarkedForClose ||
-                   !WaterModAPI.IsUnderwater(farm.GetPosition()))
+                    farm.Closed ||
+                    farm.MarkedForClose ||
+                    !WaterModAPI.IsUnderwater(farm.GetPosition()))
                 {
                     if (toRemove == null)
                         toRemove = new List<IMyFunctionalBlock>();
-
                     toRemove.Add(farm);
                 }
-                if (toRemove != null)
+            }
+            if (toRemove != null)
+            {
+                foreach (var farm in toRemove)
                 {
-                    foreach (var t in toRemove)
-                    {
-                        TrackedFarms.Remove(t);
-                        //Log(true, $"Remove Farm {farm.EntityId}");
-                    }
+                    TrackedFarms.Remove(farm);
                 }
             }
-            //Main scan
+            // -----------------------------------------
+            // Main scan
+            // -----------------------------------------
             foreach (var block in TerminalTracedBlocks)
             {
-                if (block == null || block.Closed || block.MarkedForClose)
+                if (block == null ||
+                    block.Closed ||
+                    block.MarkedForClose)
                     continue;
                 var farm = block as IMyFunctionalBlock;
-                if (farm == null || farm.Closed || farm.MarkedForClose)
+                if (farm == null ||
+                    farm.Closed ||
+                    farm.MarkedForClose)
                     continue;
-                var isUnderwater = WaterModAPI.IsUnderwater(farm.GetPosition());
+                if (!WaterModAPI.IsUnderwater(farm.GetPosition()))
+                    continue;
+                if (TrackedFarms.Contains(farm))
+                    continue;
+                // -------------------------------------
+                // Check components
+                // -------------------------------------
                 foreach (var comp in farm.Components)
                 {
-                    if (comp != null && ForbiddenFarmComponents.Contains(comp.GetType().Name))
+                    if (comp == null)
+                        continue;
+                    string registeredName = AquaForbiddenComponentsDatabase.GetComponentByID(2);
+                    if (string.Equals(registeredName,comp.GetType().Name, StringComparison.OrdinalIgnoreCase))
                     {
-                        //AquaExpansionSession.Insance.Log(true, $"Found {comp.GetType().Name}");
-                        if (isUnderwater && !TrackedFarms.Contains(farm))
-                        {
-                            TrackedFarms.Add(farm);
-                            //Log(true, $"Add Farm {farm.EntityId}");
-                        }
+                        TrackedFarms.Add(farm);
+                        break;
                     }
                 }
             }
@@ -587,7 +647,7 @@ namespace AquaExpansion.Core
             //LOD 1
             if (dist > effectLod1disSq * effectLod1disSq)
             {
-                StopEffect(block);
+                GlobalEffects.StopEffect(block.EntityId, effects);
                 return;
             }
             bool isUnderwater = WaterModAPI.IsUnderwater(block.GetPosition());
@@ -596,14 +656,15 @@ namespace AquaExpansion.Core
             effects.TryGetValue(block.EntityId, out effect);
             if (!isUnderwater || !isBroken)
             {
-                StopEffect(block);
+                GlobalEffects.StopEffect(block.EntityId, effects);
                 return;
             }
             // LOD 2
             scale = dist > effectLod2disSq * effectLod2disSq ? 0.5f : 1f;
             if (effect == null)
             {
-                CreateEffect(block, scale);
+                //CreateEffect(block, scale);
+                GlobalEffects.CreateEffect(block, GetEffectByBlockType(block), scale, effects);
             }
             else
             {
@@ -621,7 +682,8 @@ namespace AquaExpansion.Core
             //LOD 1
             if (dist > effectLod1disSq * effectLod1disSq)
             {
-                StopEngineEffect(block);
+                //StopEngineEffect(block);
+                GlobalEffects.StopEngineEffect(block.EntityId, Engineeffects);
                 return;
             }
             bool isUnderwater = WaterModAPI.IsUnderwater(block.GetPosition());
@@ -630,83 +692,20 @@ namespace AquaExpansion.Core
             Engineeffects.TryGetValue(block.EntityId, out effect);
             if (!isUnderwater || isBroken || !block.Enabled || !block.IsWorking)
             {
-                StopEngineEffect(block);
+                //StopEngineEffect(block);
+                GlobalEffects.StopEngineEffect(block.EntityId, Engineeffects);
                 return;
             }
             // LOD 2
             scale = dist > effectLod2disSq * effectLod2disSq ? 0.5f : 1f;
             if (effect == null)
             {
-                CreateEngineEffect(block, scale);
+                //CreateEngineEffect(block, scale);
+                GlobalEffects.CreateEngineEffect(block, GetEngineEffect(block),scale,Engineeffects);
             }
             else
             {
                 effect.UserScale = scale;
-            }
-        }
-        private void CreateEffect(IMyTerminalBlock block, float scale)
-        {
-            if (block == null || block.Closed || block.MarkedForClose)
-                return;
-            var grid = block.CubeGrid;
-            if (grid == null || grid.Closed)
-                return;
-            string effectName;
-            string enme = GetEffectByBlockType(block);
-            if (!EffectLib.TryGetValue(enme, out effectName))
-            {
-                EffectLib.TryGetValue("Default", out effectName);
-            }
-            MatrixD matrix = block.LocalMatrix;
-            Vector3D pos = block.GetPosition();
-            MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(effectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
-            {
-                effect.WorldMatrix = matrix;
-                effect.Autodelete = false;
-                effect.UserScale = scale;
-                effects[block.EntityId] = effect;
-            }
-            else
-            {
-                //Log(true, $"Error in adding effect");
-            }
-        }
-        private void CreateEngineEffect(IMyThrust block, float scale)
-        {
-            if (block == null || block.Closed || block.MarkedForClose)
-                return;
-            var grid = block.CubeGrid;
-            if (grid == null || grid.Closed)
-                return;
-            string EeffectName;
-            string enme = GetEngineEffect(block);
-            if (!EngineEffectLib.TryGetValue(enme, out EeffectName))
-            {
-                EngineEffectLib.TryGetValue("Default", out EeffectName);
-            }
-            var logic = block.GameLogic?.GetAs<UnderWaterEngineBase>();
-            if (logic == null)
-            {
-                //Log(true, $"Logic fail");
-                return;
-            }
-            MatrixD matrix = block.LocalMatrix;
-            Vector3D pos = logic.Flamepos;
-            MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
-            {
-                effect.WorldMatrix = matrix;
-                effect.Autodelete = false;
-                effect.UserScale = scale;
-                Engineeffects[block.EntityId] = effect;
-                //Log(true, $"added Engine effect");
-            }
-            else
-            {
-                //Log(true, $"Error in adding Engine effect");
             }
         }
         private string GetEffectByBlockType(IMyTerminalBlock block)
@@ -716,47 +715,47 @@ namespace AquaExpansion.Core
                 var subtype = block.BlockDefinition.SubtypeId;
                 // Most specific first
                 if (subtype.EndsWith("Micro"))
-                    return "ElectricMicro";
+                    return GlobalEffects.GetEffect("ElectricMicro");
                 if (subtype.Contains("SmallBattery"))
-                    return "ElectricMicro";
+                    return GlobalEffects.GetEffect("ElectricMicro");
                 if (subtype.Contains("Small"))
-                    return "ElectricSmall";
+                    return GlobalEffects.GetEffect("ElectricSmall");
 
-                return "Electric";
+                return GlobalEffects.GetEffect("Electric");
             }
             if (block is IMyCockpit)
-                return "Bubblespray";
+                return GlobalEffects.GetEffect("Bubblespray");
 
-            return "Default";
+            return GlobalEffects.GetEffect("Default");
         }
         private string GetEngineEffect(IMyThrust block)
         {
             if (block == null || block.Closed || block.MarkedForClose || !block.IsFunctional)
-                return "Default";
+                return GlobalEffects.GetEngineEffect("Default");
             var subtype = block.BlockDefinition.SubtypeId;
             if (!subtype.StartsWith("UnderwaterEngineBasic"))
             {
                 //Log(true, $"Unsupported engine subtype: {subtype}");
-                return "Default";
+                return GlobalEffects.GetEngineEffect("Default");
             }
             bool isRunning = block.CurrentThrust > 0.01f;
             if (subtype.EndsWith("SL"))
-                return isRunning ? "RunMedium" : "IddleMedium";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunMedium") : GlobalEffects.GetEngineEffect("IddleMedium");
             if (subtype.EndsWith("LS"))
-                return isRunning ? "RunLarge" : "IddleLarge";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunLarge") : GlobalEffects.GetEngineEffect("IddleLarge");
             if (subtype.EndsWith("S"))
-                return isRunning ? "RunSmall" : "IddleSmall";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunSmall") : GlobalEffects.GetEngineEffect("IddleSmall");
             if (subtype.EndsWith("L"))
-                return isRunning ? "RunXLarge" : "IddleXLarge";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunXLarge") : GlobalEffects.GetEngineEffect("IddleXLarge");
             if (subtype.EndsWith("FlatSmall"))
-                return isRunning ? "RunFlatSmall" : "IddleFlatSmall";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunFlatSmall") : GlobalEffects.GetEngineEffect("IddleFlatSmall");
             if (subtype.EndsWith("FlatMedium"))
-                return isRunning ? "RunFlatMedium" : "IddleFlatMedium";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunFlatMedium") : GlobalEffects.GetEngineEffect("IddleFlatMedium");
             if (subtype.EndsWith("FlatLarge"))
-                return isRunning ? "RunFlatLarge" : "IddleFlatLarge";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunFlatLarge") : GlobalEffects.GetEngineEffect("IddleFlatLarge");
             if (subtype.EndsWith("FlatXLarge"))
-                return isRunning ? "RunFlatXLarge" : "IddleFlatXLarge";
-            return "Default";
+                return isRunning ? GlobalEffects.GetEngineEffect("RunFlatXLarge") : GlobalEffects.GetEngineEffect("IddleFlatXLarge");
+            return GlobalEffects.GetEngineEffect("Default");
         }
         private void OnEntityAdd(IMyEntity entity)
         {
@@ -770,13 +769,38 @@ namespace AquaExpansion.Core
             LineAnimationManager.Init(ticksPerUpdate);
             Log(true, $"Welcome back!");
             EnviromentHighlightControll();
+            MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, BeforeDamage);
+        }
+        /// <summary>
+        /// Cancel Asphyxia damage underwater for seaanimals
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="info"></param>
+        private void BeforeDamage(object target, ref MyDamageInformation info)
+        {
+            if (info.Type != MyDamageType.Asphyxia)
+                return;
+            var animal = target as IMyCharacter;
+            if (animal == null || animal.Closed || animal.MarkedForClose || animal.IsDead)
+                return;
+            if (animal.GameLogic.GetAs<SeaCreatureBase>() != null)
+            {
+                if (WaterModAPI.IsUnderwater(animal.GetPosition()))
+                {
+                    info.Amount = 0f;
+                }
+                //AquaExpansionSession.Insance.Log(true, $"Damage  {info.Type}");
+            }
         }
         private void onRegisteredCallback()
         {
             hudConnected = true;
         }
+        //simulation
         public override void UpdateBeforeSimulation()
         {
+            UpdateGlobalTick();
+            UpdateTrackedGrids();
             UpdateTrackedBlocks();
             FilterThrusters();
             FilterForbiddenBlocks();
@@ -786,16 +810,21 @@ namespace AquaExpansion.Core
             UpdateEngineBlocks();
             UpdateTrackedAlgaeFarms();
             UpdateShipWelderBlocks();
+            UpdateHandTools();
             latentScheduler.Update();
             SetDephbasedColor();
+            UpdateBalisticsFallback();
             base.UpdateBeforeSimulation();
+            //LogFilteredBlocks();
         }
         public override void UpdateAfterSimulation()
         {
             LineAnimationManager.Update();
             UpdateAll();
             base.UpdateAfterSimulation();
+            PressToSpawnAnimal();
         }
+        //
         private void EnviromentHighlightControll()
         {
             enviromentdef = MyDefinitionManager.Static.EnvironmentDefinition;
@@ -822,7 +851,6 @@ namespace AquaExpansion.Core
             float r = color.R * (1f / 255f);
             float g = color.G * (1f / 255f);
             float b = color.B * (1f / 255f);
-
             return new Vector4(
                 r ,
                 g,
@@ -989,7 +1017,6 @@ namespace AquaExpansion.Core
         {
             if (character == null || character.IsDead || character.Closed)
                 return 0f;
-
             double pressure = 0;
             var e = character as IMyEntity;
             if (e != null && WaterModAPI.IsUnderwater(character.GetPosition()))
@@ -1004,12 +1031,10 @@ namespace AquaExpansion.Core
             Vector3 flow = new Vector3(0, 0, 0);
             if (grid == null || grid.Closed)
                 return flow = Vector3.Zero;
-
             double bottomY = grid.WorldAABB.Min.Y;
             Vector3D bottomPos = new Vector3D(grid.GetPosition().X, bottomY, grid.GetPosition().Z);
             if (!WaterModAPI.IsUnderwater(bottomPos))
                 return Vector3.Zero;
-
             var e = grid as IMyEntity;
             if (e != null)
             {
@@ -1022,10 +1047,8 @@ namespace AquaExpansion.Core
             Vector3 flow = new Vector3(0, 0, 0);
             if (character == null || character.Closed || character.IsDead)
                 return flow = Vector3.Zero;
-
             if (!WaterModAPI.IsUnderwater(character.GetPosition()))
                 return Vector3.Zero;
-
             var e = character as IMyEntity;
             if (e != null)
             {
@@ -1038,7 +1061,6 @@ namespace AquaExpansion.Core
             Vector3D drag = new Vector3D(0, 0, 0);
             if (character == null || character.Closed || character.IsDead)
                 return Vector3D.Zero;
-
             if (!WaterModAPI.IsUnderwater(character.GetPosition()))
                 return Vector3D.Zero;
             var e = character as IMyEntity;
@@ -1052,10 +1074,8 @@ namespace AquaExpansion.Core
         {
             if (character == null || character.IsDead || character.Closed)
                 return 0f;
-
             if (!WaterModAPI.IsUnderwater(character.GetPosition()))
                 return 0f;
-
             float percent = 0f;
             var e = character as IMyEntity;
             if (e != null)
@@ -1063,6 +1083,10 @@ namespace AquaExpansion.Core
                 percent = WaterModAPI.Entity_PercentUnderwater((VRage.Game.Entity.MyEntity)e);
             }
             return percent;
+        }
+        public bool CheckNodeinWater(Vector3D p)
+        {
+            return WaterModAPI.IsUnderwater(p);
         }
         //Log
         public void Log(bool inlogging, string message)
@@ -1081,7 +1105,6 @@ namespace AquaExpansion.Core
                 block.SetDetailedInfoDirty();
             }
         }
-        //Underwater movement section
         //Get player Inventory
         public void GetCharacterInventory(IMyCharacter character, out IMyInventory inv, out MyInventory invE)
         {
@@ -1110,7 +1133,6 @@ namespace AquaExpansion.Core
             {
                 JetpackUnderWaterSystem.SetDiverMode(player.Character, player.IdentityId, tick);
                 JetpackUnderWaterSystem.AddPID(player.IdentityId);
-                UpdatePlayerEffects(player);
             }
         }
         private void ConstructHUD()
@@ -1219,7 +1241,8 @@ namespace AquaExpansion.Core
                 string gearName =
                    gear == 0 ? "No Gear" :
                    gear == 1 ? "T1" :
-                   gear == 2 ? "T2" : "T3";
+                   gear == 2 ? "T2" : 
+                   gear == 3 ? "T3" : "T4";
                 gearHUD.Message.Clear().Append($"Dive Gear {gearName}");
                 string O2Status = O2refil ? "ON" : "OFF";
                 OxygenHUD.Message.Clear().Append($"O2 Refill {O2Status}");
@@ -1296,7 +1319,6 @@ namespace AquaExpansion.Core
         }
         private void UpdateAll()
         {
-            tick++;
             DiveMode();
             ConstructHUD();
         }
@@ -1395,7 +1417,7 @@ namespace AquaExpansion.Core
             {
                 float ingridox;
                 GetBlockInAirtightGrid(block, out ingridox);
-                if (isUnderwater && ingridox < AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL)
+                if (isUnderwater && ingridox < MIN_ENVOXYGENLEVEL)
                 {
                     block.Enabled = false;
                     //AquaExpansionSession.Insance.Log(true, $"{block.EntityId} disabled by underwater rules");
@@ -1520,168 +1542,68 @@ namespace AquaExpansion.Core
             { e?.Stop(); }
             WeldereffectsShip.Clear();
             TrackedShipWelders.Clear();
+            TrackedFarms.Clear();
+            Trackedhandwelders.Clear();
         }
         private void ClearAll()
         {
             MyAPIGateway.Entities.OnEntityAdd -= OnEntityAdd;
             MyAPIGateway.Entities.OnEntityRemove -= OnEntityRemove;
+            MyAPIGateway.Utilities.MessageEntered -= OnMessageEntered;
             ClearTrackedBlocks();
             latentScheduler = null;
             JetpackUnderWaterSystem = null;
             TextAPI.Close();
+            ClearBalisticksFallback();
+            balistics = null;
             Insance = null;
         }
-        private void ProcessPlayerWelder(IMyCharacter character, long playerId)
+        private void SpawnTestAnimal(String BotSubtype, string Creaturename)
         {
-            if (character == null || character.Closed || character.MarkedForClose || character.IsDead)
+            var player = MyAPIGateway.Session?.Player;
+            var character = player?.Character;
+            if (character == null || character.Closed || character.IsDead)
                 return;
-            var welder = character.EquippedTool as IMyWelder;
-            bool isUnderwater = WaterModAPI.IsUnderwater(character.GetPosition());
-            float Fullunderwater = GetUnderWaterPercent(character);
-            var eox = MyAPIGateway.Session.OxygenProviderSystem.GetOxygenInPoint(character.GetPosition());
-            float ingridox;
-            GetInAirtightGrid(character, out ingridox);
-            if (welder == null || !welder.IsShooting || !isUnderwater || Fullunderwater < 1f ||
-                eox > MIN_ENVOXYGENLEVEL || ingridox > MIN_ENVOXYGENLEVEL)
+            if (string.IsNullOrEmpty(BotSubtype))
             {
-                StopWelderEffectByPlayer(playerId);
+                Log(true, $"Invalid BotName");
                 return;
             }
-            MyParticleEffect effect;
-            if (!Weldereffects.TryGetValue(playerId, out effect) || effect == null)
-            {
-                CreateWelderEffect(character, welder, playerId);
-            }
-            else
-            {
-                effect.UserScale = 1f;
-                //Log(true, $"muzzle pos {welder.GetMuzzlePosition()}");
-            }
+            Vector3D playerpos = character.GetPosition();
+            var objforwardv = new Vector3(0, 0, 0);
+            var objupv = new Vector3(0, 4, 0);
+            double forwarddistance;
+            double rightdistance;
+            forwarddistance = 5;
+            rightdistance = 0;
+            Vector3D objectpos = new Vector3D(0, 0, 0);
+            var posforward = playerpos + character.PositionComp.WorldMatrixRef.Forward * forwarddistance;
+            var posright = playerpos + character.PositionComp.WorldMatrixRef.Right * rightdistance;
+            long creatureid = MyVisualScriptLogicProvider.SpawnBot(BotSubtype, posforward, objforwardv, objupv, Creaturename);
+            //Log(true, $"subtype {creatureid}");
+
         }
-        private void CreateWelderEffect(IMyCharacter character, IMyWelder welder, long playerId)
+        private void PressToSpawnAnimal()
         {
-            string effectName;
-            string enme = GetToolEffect(welder);
-            if (!WelderEffectLib.TryGetValue(enme, out effectName))
+            if (MyAPIGateway.Input.IsNewKeyPressed(MyKeys.T))
             {
-                WelderEffectLib.TryGetValue("Default", out effectName);
-                Log(true, $"weldereffect set to  {effectName}");
+                //SpawnTestAnimal("AquaShark_Bot", "White Shark");
             }
-            MatrixD matrix = MatrixD.Identity;
-            Vector3D pos = welder.GetMuzzlePosition();
-            MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(effectName, ref matrix, ref pos, welder.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
-            {
-                effect.WorldMatrix = matrix;
-                effect.Autodelete = false;
-                effect.UserScale = 1f;
-                Weldereffects[playerId] = effect;
-                //Log(true, $"Welder Effect Added count {Weldereffects.Count}");
-            }
-            else
-            {
-                //Log(true, $"Error in adding effect");
-            }
-        }
-        private void GlobalCleanup(IMyPlayer player)
-        {
-            foreach (var key in Weldereffects.Keys)
-            {
-                if (!IsPlayerValid(player.Character))
-                {
-                    if (key == player.IdentityId)
-                    { StopWelderEffectByPlayer(key); }
-                }
-            }
-        }
-        private string GetToolEffect(IMyWelder tool)
-        {
-            if (tool == null || tool.Closed || tool.MarkedForClose)
-                return "Default";
-            return "WelderSmall";
-        }
-        private void StopWelderEffectByPlayer(long playerId)
-        {
-            MyParticleEffect effect;
-            if (Weldereffects.TryGetValue(playerId, out effect))
-            {
-                effect?.Stop();
-                effect.Autodelete = true;
-                MyParticlesManager.RemoveParticleEffect(effect);
-                Weldereffects.Remove(playerId);
-                //Log(true, $"Welder Effect Stopped and Deleted Count {Weldereffects.Count}");
-            }
-        }
-        private bool IsPlayerValid(IMyCharacter character)
-        {
-            return character != null &&
-                   !character.Closed &&
-                   !character.MarkedForClose;
-        }
-        private void UpdatePlayerEffects(IMyPlayer player)
-        {
-            if (tick % 10 != 0)
-                return;
-            ProcessPlayerWelder(player.Character, player.IdentityId);
-            GlobalCleanup(player);
         }
         private string GetShipWelderEffect(IMyShipWelder block)
         {
             if (block == null || block.Closed || block.MarkedForClose || !block.IsFunctional)
-                return "Default";
+                return GlobalEffects.GetWelderEffect("Default");
             var subtype = block.BlockDefinition.SubtypeId;
             if (subtype.Contains("LargeShipWelder"))
-                return "WelderShip";
+                return GlobalEffects.GetWelderEffect("WelderShip");
             if (subtype.Contains("LargeShipWelderReskin"))
-                return "WelderShip";
+                return GlobalEffects.GetWelderEffect("WelderShip");
             if (subtype.Contains("SmallShipWelder"))
-                return "WelderShip2";
+                return GlobalEffects.GetWelderEffect("WelderShip2");
             if (subtype.Contains("SmallShipWelderReskin"))
-                return "WelderShip2";
-            return "Default";
-        }
-        private void CreateShipWelderEffect(IMyShipWelder block, float scale)
-        {
-            if (block == null || block.Closed || block.MarkedForClose)
-                return;
-            var grid = block.CubeGrid;
-            if (grid == null || grid.Closed)
-                return;
-            string EeffectName;
-            string enme = GetShipWelderEffect(block);
-            if (!WelderEffectLib.TryGetValue(enme, out EeffectName))
-            {
-                WelderEffectLib.TryGetValue("Default", out EeffectName);
-            }
-            MatrixD matrix = block.LocalMatrix;
-            Vector3D pos = block.GetPosition();
-            MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
-            {
-                effect.WorldMatrix = matrix;
-                effect.Autodelete = false;
-                effect.UserScale = scale;
-                WeldereffectsShip[block.EntityId] = effect;
-                //Log(true, $"added Ship effect");
-            }
-            else
-            {
-                //Log(true, $"Error in adding Ship Welder effect");
-            }
-        }
-        private void StopShipWelderEffect(IMyShipWelder block)
-        {
-            MyParticleEffect Eeffect;
-            if (WeldereffectsShip.TryGetValue(block.EntityId, out Eeffect))
-            {
-                Eeffect?.Stop();
-                Eeffect.Autodelete = true;
-                MyParticlesManager.RemoveParticleEffect(Eeffect);
-                WeldereffectsShip.Remove(block.EntityId);
-                //Log(true, "Welder Effect Stopped and Deleted");
-            }
+                return GlobalEffects.GetWelderEffect("WelderShip2");
+            return GlobalEffects.GetWelderEffect("Default");
         }
         private void ProcessShipWelderBlock(IMyShipWelder block)
         {
@@ -1694,7 +1616,8 @@ namespace AquaExpansion.Core
             //LOD 1
             if (dist > effectLod1disSq * effectLod1disSq)
             {
-                StopShipWelderEffect(block);
+                //StopShipWelderEffect(block);
+                GlobalEffects.StopShipWelderEffect(block.EntityId, WeldereffectsShip);
                 return;
             }
             bool isUnderwater = WaterModAPI.IsUnderwater(block.GetPosition());
@@ -1707,14 +1630,16 @@ namespace AquaExpansion.Core
             if (!isUnderwater || isBroken || !block.Enabled || !block.IsWorking || !block.IsActivated || 
                 (isUnderwater && ingridox > MIN_ENVOXYGENLEVEL))
             {
-                StopShipWelderEffect(block);
+                //StopShipWelderEffect(block);
+                GlobalEffects.StopShipWelderEffect(block.EntityId, WeldereffectsShip);
                 return;
             }
             // LOD 2
             scale = dist > effectLod2disSq * effectLod2disSq ? 0.5f : 1f;
             if (effect == null)
             {
-                CreateShipWelderEffect(block, scale);
+                //CreateShipWelderEffect(block, scale);
+                GlobalEffects.CreateShipWelderEffect(block,GetShipWelderEffect(block), scale, WeldereffectsShip);
             }
             else
             {
@@ -1757,7 +1682,7 @@ namespace AquaExpansion.Core
             {
                 foreach (var w in toRemove)
                 {
-                    StopShipWelderEffect(w);
+                    GlobalEffects.StopShipWelderEffect(w.EntityId, WeldereffectsShip);
                     TrackedShipWelders.Remove(w);
                 }
             }
@@ -1773,7 +1698,7 @@ namespace AquaExpansion.Core
                 if (isUnderwater && !TrackedShipWelders.Contains(welder))
                 {
                     TrackedShipWelders.Add(welder);
-                    CreateShipWelderEffect(welder, scale);
+                    GlobalEffects.CreateShipWelderEffect(welder, GetShipWelderEffect(welder),scale, WeldereffectsShip);
                 }
             }
         }
@@ -1789,6 +1714,295 @@ namespace AquaExpansion.Core
                 m.Up = Vector3D.Up;
                 effect.WorldMatrix = m;
             }
+        }
+        public int GetTick
+        {
+            get
+            {
+                return weapontick;
+            }
+        }
+        private void OnMessageEntered(string messageText, ref bool sendToOthers)
+        {
+            IMyPlayer player = MyAPIGateway.Session?.LocalHumanPlayer;
+            if (AllowModding(messageText, player,ref sendToOthers))
+                return;
+            if (AllowHydroAmmoModding(messageText,player,ref sendToOthers))
+                return;
+            if (DisableModding(messageText,player,ref sendToOthers))
+                return;
+            if (DisableHydroAmmoModding(messageText,player,ref sendToOthers))
+            return;
+            if (ChatTestSound(messageText,player,ref sendToOthers))
+            {
+                return;
+            }
+        }
+        private bool HasCommandPermission(IMyPlayer player,ChatCommandPermission permission)
+        {
+            if (player == null)
+                return false;
+            switch (permission)
+            {
+                case ChatCommandPermission.Public:
+                    return true;
+                case ChatCommandPermission.ServerOnly:
+                    return MyAPIGateway.Multiplayer.IsServer;
+                case ChatCommandPermission.AdminOnly:
+                    if (!MyAPIGateway.Multiplayer.IsServer)
+                        return false;
+                    return MyAPIGateway.Session.IsUserAdmin(player.SteamUserId);
+            }
+            return false;
+        }
+        private bool AllowModding(string chatMessage,IMyPlayer player, ref bool sendToOthers)
+        {
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            if (!chatMessage.Trim().Equals(AquaModdingNamesDatabase.GetModCommandByID(1), StringComparison.OrdinalIgnoreCase))
+                return false;
+            sendToOthers = false;
+            if (!HasCommandPermission(player,ChatCommandPermission.AdminOnly))
+            {
+                Log(true,AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            if (!ModdingAllowed)
+            {
+                ModdingAllowed = true;
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(5));
+            }
+            else
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(6));
+            }
+            return true;
+        }
+        private bool AllowHydroAmmoModding(string chatMessage, IMyPlayer player, ref bool sendToOthers)
+        {
+            if (balistics == null)
+                return false;
+            if (!ModdingAllowed)
+                return false;
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            string command = chatMessage.Trim();
+            if (!HasCommandPermission(player, ChatCommandPermission.AdminOnly))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            // Unlock Hydro ammo runtime balancing
+            if (!HydroAmmoModdingAllowed)
+            {
+                if (!command.Equals(AquaModdingNamesDatabase.GetModCommandByID(2), StringComparison.OrdinalIgnoreCase))
+                    return false;
+                sendToOthers = false;
+                HydroAmmoModdingAllowed = true;
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(7));
+                return true;
+            }
+            // Runtime balancing commands
+            if (command.StartsWith(AquaModdingNamesDatabase.GetModCommandByID(8), StringComparison.OrdinalIgnoreCase))
+            {
+                sendToOthers = false;
+                balistics.ChatHAmmo(command, sendToOthers);
+                return true;
+            }
+            return false;
+        }
+        private bool DisableModding(string chatMessage, IMyPlayer player, ref bool sendToOthers)
+        {
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            string command = chatMessage.Trim();
+            string disableCommand = AquaModdingNamesDatabase.GetModCommandByID(10);
+            if (!command.Equals(disableCommand,StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            // Do not send the modding command to other players.
+            sendToOthers = false;
+            if (!HasCommandPermission(player, ChatCommandPermission.AdminOnly))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            if (!ModdingAllowed)
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(14));
+                return true;
+            }
+            // Disable all modding features.
+            ModdingAllowed = false;
+            HydroAmmoModdingAllowed = false;
+            LogsEnabled = false;
+            RenderEnabled = false;
+            Log(true,AquaModdingNamesDatabase.GetModCommandByID(12));
+            return true;
+        }
+        private bool DisableHydroAmmoModding(string chatMessage, IMyPlayer player,ref bool sendToOthers)
+        {
+            if (balistics == null)
+                return false;
+            if (!ModdingAllowed)
+                return false;
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            string command = chatMessage.Trim();
+            string disableCommand = AquaModdingNamesDatabase.GetModCommandByID(11);
+            if (!command.Equals(disableCommand,StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            // Consume the command locally.
+            sendToOthers = false;
+            if (!HasCommandPermission(player, ChatCommandPermission.AdminOnly))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            if (!HydroAmmoModdingAllowed)
+            {
+                Log(true,AquaModdingNamesDatabase.GetModCommandByID(15));
+                return true;
+            }
+            HydroAmmoModdingAllowed = false;
+            LogsEnabled = false;
+            RenderEnabled = false;
+            Log(true,AquaModdingNamesDatabase.GetModCommandByID(13));
+            return true;
+        }
+        private bool ChatTestSound(string chatMessage, IMyPlayer player,ref bool sendToOthers)
+        {
+            if (!ModdingAllowed)
+                return false;
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            string command = chatMessage.Trim();
+            string prefix = AquaModdingNamesDatabase.GetModCommandByID(16);
+            if (!command.StartsWith(prefix,StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            // Consume the command locally.
+            sendToOthers = false;
+            if (!HasCommandPermission(player, ChatCommandPermission.AdminOnly))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            string soundName = command.Substring(prefix.Length).Trim();
+            if (string.IsNullOrWhiteSpace(soundName))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(17));
+                return true;
+            }
+            //IMyPlayer player = MyAPIGateway.Session?.LocalHumanPlayer;
+            var controlled = player?.Controller?.ControlledEntity?.Entity;
+            if (controlled == null)
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(18));
+                return true;
+            }
+            try
+            {
+                MyVisualScriptLogicProvider.PlaySingleSoundAtEntity(soundName,controlled.EntityId.ToString());
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(19) + soundName);
+                //MyAPIGateway.Utilities.ShowMessage(System,"Trying to play: " + soundName);
+            }
+            catch (Exception e)
+            {
+                MyLog.Default.WriteLine("[AquaExpansion] Sound command error: " + e);
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(20) + soundName);
+                //MyAPIGateway.Utilities.ShowMessage(System,"Failed to play sound: " + soundName);
+            }
+            return true;
+        }
+        private void InitModdingTools()
+        {
+            AquaModdingNamesDatabase.Init();
+            AquaModdingNamesDatabase.Validate();
+            HydroAmmoDatabase.Init();
+            UnderwaterWeaponBurstDatabase.Init();
+        }
+        private void InitDatabases()
+        {
+            GlobalEffects.Init();
+            AquaForbiddenComponentsDatabase.Init();
+            AquaForbiddenComponentsDatabase.Validate();
+            AquaHelpDatabase.Init();
+            AquaHelpDatabase.Validate();
+            AquaFarmItemsDatabase.Init();
+            AquaFarmItemsDatabase.Validate();
+            AquaFishItemsDatabase.Init();
+            AquaFishItemsDatabase.Validate();
+            AquaSeaAnchorItemsDatabase.Init();
+            AquaSeaAnchorItemsDatabase.Validate();
+            AquaPlantDatabase.Init();
+            AquaPlantDatabase.Validate();
+            AquaFishDatabase.Init();
+            AquaFishDatabase.Validate();
+            AquaSeaAnchorDatabase.Init();
+            AquaSeaAnchorDatabase.Validate();
+            AquaRecipeDatabase.Init();
+            AquaRecipeDatabase.Validate();
+            AquaFishingRecipeDatabase.Init();
+            AquaFishingRecipeDatabase.Validate();
+            AquaSeaAnchorEquipOrderDatabase.Init();
+            AquaSeaAnchorEquipOrderDatabase.Validate();
+        }
+        public bool isHydroModdingEnabled
+        {
+            get
+            {
+                return HydroAmmoModdingAllowed;
+            }
+        }
+        public bool isModdingEnabled
+        {
+            get
+            {
+                return ModdingAllowed;
+            }
+        }
+        public bool LogsEnabled { get; set; }
+        public bool RenderEnabled { get; set; }
+        public bool HasBalistics
+        {
+            get { return usebalisticsFallback; }
+        }
+        public void OnRegisterHandWeapon(IMyAutomaticRifleGun weapon)
+        {
+            RegisterHandWeapon?.Invoke(weapon);
+        }
+        public void OnUnregisterHandWeapon(IMyAutomaticRifleGun weapon)
+        {
+            UnregisterHandWeapon?.Invoke(weapon);
+        }
+        public void OnRegisterHandWelder(IMyWelder welder)
+        {
+            if (welder == null)
+                return;
+            Trackedhandwelders.Add(welder);
+            /*Log(
+            true,
+            $"REGISTER welder={welder.EntityId} " +
+            $"count={Trackedhandwelders.Count}");*/
+        }
+        public void OnUnRegisterHandWelder(IMyWelder welder)
+        {
+            if (welder == null)
+                return;
+            Trackedhandwelders.Remove(welder);
+            /*Log(
+            true,
+            $"UNREGISTER welder={welder.EntityId} " +
+            $"count={Trackedhandwelders.Count}");*/
+        }
+        private void UpdateHandTools()
+        {
+            ToolsProcessor.UpdateHandWelders(Trackedhandwelders, Weldereffects);
         }
         protected override void UnloadData()
         {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AquaExpansion.Core
+namespace AquaExpansionExperimental.Core
 {
     /// <summary>
     /// Created by YOYOMAN_MODDER

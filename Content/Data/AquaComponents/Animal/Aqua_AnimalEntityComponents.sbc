@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <EntityComponents>
+		<!-- Region Inventory-->
+		<!-- End Region Inventory-->
+		<!-- Region Mod Storage-->
+		<!-- End Region Mod Storage-->
+		<!-- Region Cnoveoir-->
+		<!--End Region Cnoveoir-->
+		<!-- Region Stats-->
+		<EntityComponent xsi:type="MyObjectBuilder_EntityStatComponentDefinition">
+			<Id>
+				<TypeId>CharacterStatComponent</TypeId>
+				<SubtypeId>AquaWhiteShark</SubtypeId>
+			</Id>
+			<Stats>
+				<Stat>
+					<TypeId>MyObjectBuilder_EntityStat</TypeId>
+					<SubtypeId>WhiteSharkHealth</SubtypeId>
+				</Stat>
+				<Stat>
+					<TypeId>MyObjectBuilder_EntityStat</TypeId>
+					<SubtypeId>WhiteSharkBridge</SubtypeId>
+				</Stat>
+			</Stats>
+			<Scripts>
+				<Script>SpaceStatEffect</Script>
+				<Script>SeaAnimalConnector</Script>
+			</Scripts>
+		</EntityComponent>
+		<!-- End Region Stats-->
+    </EntityComponents>
+</Definitions>

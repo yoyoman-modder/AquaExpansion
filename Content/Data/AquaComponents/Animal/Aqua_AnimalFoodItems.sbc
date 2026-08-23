@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <PhysicalItems> 
+		<!--Animal Raw Food-->
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaAnimalMeatRaw</SubtypeId>
+			</Id>
+			<DisplayName>Animal Raw Meat</DisplayName>
+			<Description>
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\Meat_mammal_raw.dds</Icon>
+			<IconSymbol>ANIMAL</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>1</Mass>
+			<Volume>1</Volume>
+			<Model>Models\Items\Meat_mammal_raw.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="BatteryCharge" Value="1.5" Time="1"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<!--End Animal Raw Food-->
+    </PhysicalItems>
+</Definitions>

@@ -39,7 +39,6 @@
 				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\WindTurbine_Construction2.mwm" />
 				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\WindTurbine_Construction3.mwm" />
 			</BuildProgressModels>
-			<!--<BlockPairName>LargeBlockUnderWaterTurbneB</BlockPairName>-->
 			<EdgeType>Light</EdgeType>
 			<BuildTimeSeconds>30</BuildTimeSeconds>
 			<DamageEffectId>214</DamageEffectId>
@@ -101,7 +100,6 @@
 				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\WindTurbineReskin_Construction_2.mwm" />
 				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\WindTurbineReskin_Construction_3.mwm" />
 			</BuildProgressModels>
-			<!--<BlockPairName>LargeBlockUnderWaterTurbneS</BlockPairName>-->
 			<EdgeType>Light</EdgeType>
 			<BuildTimeSeconds>30</BuildTimeSeconds>
 			<DamageEffectId>214</DamageEffectId>

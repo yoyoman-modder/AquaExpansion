@@ -1,10 +1,11 @@
-﻿using AquaExpansion.UnderwaterTurbine;
+﻿using AquaExpansion.Core;
+using AquaExpansion.UnderwaterTurbine;
 using Sandbox.ModAPI;
 using Sandbox.ModAPI.Interfaces.Terminal;
 using VRage.Game.Components;
 using VRage.Utils;
 
-namespace AquaExpansion.UnderwaterTurbine
+namespace AquaExpansionExperimental.UnderwaterTurbine
 {
     [MySessionComponentDescriptor(MyUpdateOrder.NoUpdate)]
     public class UnderWaterTurbineUI : MySessionComponentBase
@@ -42,7 +43,7 @@ namespace AquaExpansion.UnderwaterTurbine
             helpbutton.SupportsMultipleBlocks = false;
             helpbutton.Visible = CustomVisibleCondition;
             helpbutton.Enabled = HelpEnabled;
-            var htooltip = blocklogic.utils.GetHelpText(2);
+            var htooltip = AquaHelpDatabase.GetHelpLineByID(2);
             helpbutton.Tooltip = MyStringId.GetOrCompute(htooltip);
             helpbutton.Action = (b) =>
             {

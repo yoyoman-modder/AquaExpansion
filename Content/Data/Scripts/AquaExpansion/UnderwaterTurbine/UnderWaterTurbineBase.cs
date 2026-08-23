@@ -1,4 +1,5 @@
 ﻿using AquaExpansion.Core;
+using AquaExpansionExperimental.UnderwaterTurbine;
 using Jakaria.API;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI;
@@ -97,7 +98,7 @@ namespace AquaExpansion.UnderwaterTurbine
                 return;
             if (!grid.IsStatic)
                 return;
-            utils.SetupHelp();
+            //utils.SetupHelp();
             block.AppendingCustomInfo += AppendCustomInfo;
             SetTurbineRotor();
             UnderWaterTurbineUI.instance.ConnectToBlock(block);

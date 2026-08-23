@@ -66,6 +66,8 @@
 	  <BlockConfig TypeId="Thrust" SubtypeId="LargeBlockSmallAtmosphericThrustSciFi" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="SmallBlockLargeAtmosphericThrustSciFi" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="SmallBlockSmallAtmosphericThrustSciFi" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
+
+	  <!--<BlockConfig TypeId="SmallGatlingGun" SubtypeId="SmallGatlingGunWarfare2" Volume="0.3125" FunctionalUnderwater="true" FunctionalAboveWater="true" PlayDamageEffect="false" IsPressurized="false"/>-->
 	  <!--End Vanilla Blocks -->
   </BlockConfigs>
   <PlanetConfigs>

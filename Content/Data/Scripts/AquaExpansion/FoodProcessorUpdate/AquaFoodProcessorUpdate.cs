@@ -32,6 +32,7 @@ namespace AquaExpansion.FoodProcessorUpdate
             block.UpgradeValues.Add(upgradename, 0f);
             NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
         }
+
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -45,11 +46,13 @@ namespace AquaExpansion.FoodProcessorUpdate
             ResetVolume();
             base.UpdateOnceBeforeFrame();
         }
+
         private void UpgradesChanged()
         {
             var value = block.UpgradeValues[upgradename];
             SetCargoVolume(value);
         }
+
         private void ClearbyGrid()
         {
             if (block?.CubeGrid?.Physics != null)
@@ -57,6 +60,7 @@ namespace AquaExpansion.FoodProcessorUpdate
                 block.OnUpgradeValuesChanged -= UpgradesChanged;
             }
         }
+
         private void SetInventory()
         {
             blockinvIn = block.GetInventory(0) as IMyInventory;
@@ -64,6 +68,7 @@ namespace AquaExpansion.FoodProcessorUpdate
             invIn = blockinvIn   as MyInventory;
             invOut = blockinvOut as MyInventory;
         }
+
         private void ResetVolume()
         {
             if (invIn == null || invOut == null)
@@ -74,6 +79,7 @@ namespace AquaExpansion.FoodProcessorUpdate
             DefCargoVolumeIn = (MyFixedPoint)def.InventoryMaxVolume;
             DefCargoVolumeOut = (MyFixedPoint)def.InventoryMaxVolume;
         }
+
         private void SetCargoVolume(float value)
         {
             if (invIn == null || invOut == null)
@@ -83,6 +89,7 @@ namespace AquaExpansion.FoodProcessorUpdate
             invIn.MaxVolume = newCargoVolumeIn;
             invOut.MaxVolume = newCargoVolumeOut;
         }
+
         private void Clear()
         {
             invIn = null;
@@ -92,6 +99,7 @@ namespace AquaExpansion.FoodProcessorUpdate
             grid = null;
             block = null;
         }
+
         public override void Close()
         {
             ClearbyGrid();

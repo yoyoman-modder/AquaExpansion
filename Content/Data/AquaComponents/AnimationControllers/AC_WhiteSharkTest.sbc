@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Definition xsi:type="AnimationControllerDefinition">
+    <Id Type="MyObjectBuilder_AnimationControllerDefinition" Subtype="Aqua_WhiteSharkTest" />
+    <Layers>
+      <Layer>
+        <Name>Body</Name>
+        <Mode>Replace</Mode>
+        <StateMachine>SMWhiteSharkBody</StateMachine>
+        <InitialSMNode>Start</InitialSMNode>
+      </Layer>
+    </Layers>
+    <StateMachines>
+      <StateMachine>
+        <Name>SMWhiteSharkBody</Name>
+        <Nodes />
+        <Transitions />
+      </StateMachine>
+      <StateMachine>
+        <Name>SMWhiteSharkIdle</Name>
+        <Nodes />
+        <Transitions />
+      </StateMachine>
+    </StateMachines>
+    <IkIgnoredBones>
+      <Bone>HeadDummy</Bone>
+      <Bone>ThirdCameraDummy</Bone>
+    </IkIgnoredBones>
+  </Definition>
+</Definitions>

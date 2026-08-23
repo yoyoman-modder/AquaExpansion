@@ -102,7 +102,7 @@ namespace AquaExpansion.UnderwaterFarmPlot
             helpbutton.SupportsMultipleBlocks = false;
             helpbutton.Visible = CustomVisibleCondition;
             helpbutton.Enabled = HelpEnabled;
-            var htooltip = blocklogic.utils.GetHelpText(3);
+            var htooltip = AquaHelpDatabase.GetHelpLineByID(3);
             helpbutton.Tooltip = MyStringId.GetOrCompute(htooltip);
             helpbutton.Action = (b) =>
             {

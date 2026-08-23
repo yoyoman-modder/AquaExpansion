@@ -6,7 +6,7 @@ using VRage.Game.GUI.TextPanel;
 using VRage.Game.ModAPI;
 using VRageMath;
 
-namespace AquaExpansion.TSS
+namespace AquaExpansion.AquaExpansion.TSS
 {
     [MyTextSurfaceScript("AquaCompass", "Aqua Compass")]
     class AquaGridCompass : MyTSSCommon

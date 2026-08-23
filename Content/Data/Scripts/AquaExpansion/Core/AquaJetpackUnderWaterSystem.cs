@@ -11,6 +11,8 @@ using VRage.Input;
 using VRage.Utils;
 using VRageMath;
 
+
+
 namespace AquaExpansion.Core
 {
     public struct DivingGearData
@@ -30,7 +32,6 @@ namespace AquaExpansion.Core
         public double BuoyancyFactor;
         public double SwimForce;
         public double MaxseabedSpeed;
-
         public DivingGearData(
         int level,
         float maxSpeed,
@@ -148,7 +149,7 @@ namespace AquaExpansion.Core
                     MaxSinkSpeed = 1.5,
                     SinkBias = -0.5f,
                     HoverMinDepth = 2.0,
-                    HoverMaxDepth = 300.0,
+                    HoverMaxDepth = 100.0,
                     BuoyancyFactor = 0.1,
                     SwimForce = -0.1,
                     MaxseabedSpeed = 5.0
@@ -326,7 +327,7 @@ namespace AquaExpansion.Core
             {
                 move.Normalize();
                 Vector3D targetHorizontal = move * maxSpeed;
-                double t = 1.0 - Math.Exp(-5.0 * deltaTime);
+                double t = 1.0 - Math.Exp(-4.0 * deltaTime);
                 horizontalVel = Vector3D.Lerp(horizontalVel, targetHorizontal, t);
             }
             else
@@ -487,6 +488,7 @@ namespace AquaExpansion.Core
                     vel *= 0.98;
                     physics.LinearVelocity = horizontalVel + Vector3D.ProjectOnVector(ref vel,ref v);
                 }
+               
                 //AquaExpansionSession.Insance.Log(true, $"depth {depth:F1} maxSpeed {maxSpeed:F2} vel {vel.Length()}");
             }
             else
@@ -683,7 +685,6 @@ namespace AquaExpansion.Core
                         position,
                         null);
                 }
-
                 //debug
                 /*AquaExpansionSession.Insance.Log(true,
                    $"Depth {depthAbs:0.0} HoverRange {minHoverDepth}-{maxHoverDepth} InsideRange {insideHoverRange}" +

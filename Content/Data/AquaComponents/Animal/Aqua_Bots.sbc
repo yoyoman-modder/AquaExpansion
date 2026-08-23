@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Bots>
+		<Bot xsi:type="MyObjectBuilder_AnimalBotDefinition">
+			<Id>
+				<TypeId>MyObjectBuilder_AnimalBot</TypeId>
+				<SubtypeId>AquaShark_Bot</SubtypeId>
+			</Id>
+			<DisplayName>White Shark</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<BotModel>WhiteShark</BotModel>
+			<BotBehaviorTree Subtype="AquaDummyBT" />
+			<!-- Which behavior tree to use -->
+			<BehaviorType>Wolf</BehaviorType>
+			<!-- Which actions (and logic) class to use -->
+			<TargetType>Wolf</TargetType>
+			<Public>true</Public>
+			<AvailableInSurvival>false</AvailableInSurvival>
+			<RemoveAfterDeath>true</RemoveAfterDeath>
+			<InventoryContentGenerated>false</InventoryContentGenerated>
+			<FactionTag>UNKN</FactionTag>
+			<AttackLength>1000</AttackLength>
+			<AttackRadius>0.5</AttackRadius>
+			<CharacterDamage>12</CharacterDamage>
+			<GridDamage>0</GridDamage>
+			<TargetGrids>false</TargetGrids>
+			<TargetCharacters>false</TargetCharacters>
+			<AttackSound>ArcBotWolfAttack</AttackSound>
+		</Bot>
+	</Bots>
+</Definitions>

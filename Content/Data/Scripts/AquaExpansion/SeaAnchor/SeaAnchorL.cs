@@ -26,6 +26,7 @@ namespace AquaExpansion.SeaAnchor
         {
             base.SaveSeaAnchorData();
             SaveStats(SeaAnchorLKey);
+            //AquaExpansionSession.Insance.Log(true, $"save");
         }
     }
 }

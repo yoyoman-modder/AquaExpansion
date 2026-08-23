@@ -1,8 +1,10 @@
-﻿using ProtoBuf;
+﻿using AquaExpansion.UndewaterEngines;
+using ProtoBuf;
 using Sandbox.Definitions;
 using Sandbox.Game;
 using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
+using Sandbox.ModAPI.Weapons;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +28,7 @@ namespace AquaExpansion.Core
     public enum AquaDefinitionOB { Component, ConsumableItem };
     public enum AquaSeaAnchorState { Idle, Deploying, Deployed, Attached, Retracting }
     public enum AquaSeaAnchorType { S, L }
+    public enum AquaSoundWaterModPath {Audio, Splash, SplashUnderwater }
     /// <summary>
     /// Main utilite class
     /// </summary>
@@ -946,38 +949,14 @@ namespace AquaExpansion.Core
             switch (type)
             {
                 case AquaFarmingBlockType.UnderwaterFarmPlot:
-                    AquaFarmItemsDatabase.Init();
-                    AquaFarmItemsDatabase.Validate();
                     FillHashSubtypes();
-                    AquaPlantDatabase.Init();
-                    AquaPlantDatabase.Validate();
                     MapPlantData();
-                    AquaRecipeDatabase.Init();
-                    AquaRecipeDatabase.Validate();
-                    AquaHelpDatabase.Init();
-                    AquaHelpDatabase.Validate();
                     break;
                 case AquaFarmingBlockType.FishingBlock:
-                    AquaFishItemsDatabase.Init();
-                    AquaFishItemsDatabase.Validate();
                     FillFishingSubtypes();
-                    AquaFishDatabase.Init();
-                    AquaFishDatabase.Validate();
-                    AquaFishingRecipeDatabase.Init();
-                    AquaFishingRecipeDatabase.Validate();
-                    AquaHelpDatabase.Init();
-                    AquaHelpDatabase.Validate();
                     break;
                 case AquaFarmingBlockType.FishingBlockAdvance:
-                    AquaFishItemsDatabase.Init();
-                    AquaFishItemsDatabase.Validate();
                     FillFishingSubtypes();
-                    AquaFishDatabase.Init();
-                    AquaFishDatabase.Validate();
-                    AquaFishingRecipeDatabase.Init();
-                    AquaFishingRecipeDatabase.Validate();
-                    AquaHelpDatabase.Init();
-                    AquaHelpDatabase.Validate();
                     break;
             }
         }
@@ -990,26 +969,10 @@ namespace AquaExpansion.Core
             switch (type)
             {
                 case AquaSeaAnchorType.L:
-                    AquaSeaAnchorItemsDatabase.Init();
-                    AquaSeaAnchorItemsDatabase.Validate();
                     FillSeaAnchorSubtypes();
-                    AquaSeaAnchorDatabase.Init();
-                    AquaSeaAnchorDatabase.Validate();
-                    AquaSeaAnchorEquipOrderDatabase.Init();
-                    AquaSeaAnchorEquipOrderDatabase.Validate();
-                    AquaHelpDatabase.Init();
-                    AquaHelpDatabase.Validate();
                     break;
                 case AquaSeaAnchorType.S:
-                    AquaSeaAnchorItemsDatabase.Init();
-                    AquaSeaAnchorItemsDatabase.Validate();
                     FillSeaAnchorSubtypes();
-                    AquaSeaAnchorDatabase.Init();
-                    AquaSeaAnchorDatabase.Validate();
-                    AquaSeaAnchorEquipOrderDatabase.Init();
-                    AquaSeaAnchorEquipOrderDatabase.Validate();
-                    AquaHelpDatabase.Init();
-                    AquaHelpDatabase.Validate();
                     break;
             }
         }
@@ -1035,51 +998,23 @@ namespace AquaExpansion.Core
         /// </summary>
         private void FillHashSubtypes()
         {
-            SporeSubtypes.Add(AquaFarmItemsDatabase.GetSporebyID(1));
-            SporeSubtypes.Add(AquaFarmItemsDatabase.GetSporebyID(2));
-            SporeSubtypes.Add(AquaFarmItemsDatabase.GetSporebyID(3));
-            SeaweedSubtypes.Add(AquaFarmItemsDatabase.GetCropbyID(1));
-            SeaweedSubtypes.Add(AquaFarmItemsDatabase.GetCropbyID(2));
-            SeaweedSubtypes.Add(AquaFarmItemsDatabase.GetCropbyID(3));
+            SporeSubtypes = AquaFarmItemsDatabase.FillSpores();
+            SeaweedSubtypes = AquaFarmItemsDatabase.FillSpores();
         }
         /// <summary>
         /// Fill Fish Datahashes
         /// </summary>
         private void FillFishingSubtypes()
         {
-            BaitSubtypes.Add(AquaFishItemsDatabase.GetBaitbyID(1));
-            BaitSubtypes.Add(AquaFishItemsDatabase.GetBaitbyID(2));
-            BaitSubtypes.Add(AquaFishItemsDatabase.GetBaitbyID(3));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(1));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(2));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(3));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(4));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(5));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(6));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(7));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(8));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(9));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(10));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(11));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(12));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(13));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(14));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(15));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(16));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(17));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(18));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(19));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(20));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(21));
-            FishSubtypes.Add(AquaFishItemsDatabase.GetFishbyID(22));
+            BaitSubtypes = AquaFishItemsDatabase.FillBaits();
+            FishSubtypes = AquaFishItemsDatabase.FillFish();
         }
         /// <summary>
         /// Fill Anchor subtypes
         /// </summary>
         private void FillSeaAnchorSubtypes()
         {
-            Anchorsubtypes.Add(AquaSeaAnchorItemsDatabase.GetAnchorbyID(1));
-            Anchorsubtypes.Add(AquaSeaAnchorItemsDatabase.GetAnchorbyID(2));
+            Anchorsubtypes = AquaSeaAnchorItemsDatabase.FillAnchors();
         }
         /// <summary>
         /// Check Recipe Prerequisites
@@ -2040,10 +1975,38 @@ namespace AquaExpansion.Core
         private bool ValidateAnchor(IMyFunctionalBlock block, MyInventory inv, ref AquaSeaAnchorState state, ref AquaSeaAnchorInstance currentAnchor, ref AquaSeaAnchorEquipOrder currentOrder,
          ref bool armed)
         {
-            if (block == null || block.Closed || block.CubeGrid == null | block.CubeGrid.Closed || !block.IsFunctional || inv == null)
+            /*if (block == null)
             {
                 state = AquaSeaAnchorState.Idle;
                 ResetAnchorEquip(ref currentAnchor,ref currentOrder, ref armed);
+                armed = false;
+                OnFailedEquip(false);
+                //AquaExpansionSession.Insance.Log(true, "block null");
+                return false;
+            }
+            if (block == null || block.Closed || block.CubeGrid == null | block.CubeGrid.Closed)
+            {
+                state = AquaSeaAnchorState.Idle;
+                ResetAnchorEquip(ref currentAnchor, ref currentOrder, ref armed);
+                armed = false;
+                OnFailedEquip(false);
+                //AquaExpansionSession.Insance.Log(true, "Anchor terminated");
+                return false;
+            }
+            if (!block.IsFunctional || inv == null)
+            {
+                state = AquaSeaAnchorState.Idle;
+                ResetAnchorEquip(ref currentAnchor, ref currentOrder, ref armed);
+                armed = false;
+                OnFailedEquip(false);
+                //AquaExpansionSession.Insance.Log(true, "block not functional");
+                return false;
+            }
+            return true;*/
+            if (block == null || block.Closed || block.CubeGrid == null | block.CubeGrid.Closed || !block.IsFunctional || inv == null)
+            {
+                state = AquaSeaAnchorState.Idle;
+                ResetAnchorEquip(ref currentAnchor, ref currentOrder, ref armed);
                 armed = false;
                 OnFailedEquip(false);
                 //AquaExpansionSession.Insance.Log(true, "Anchor terminated");
@@ -4528,6 +4491,27 @@ namespace AquaExpansion.Core
             watermodpath = AquaExpansionSession.Insance.WatermodLink;
             return Path.Combine(watermodpath, "Models\\", model);
         }
+        public static string GetWaterSoundsPath(string sound, AquaSoundWaterModPath pathtype)
+        {
+            if (string.IsNullOrEmpty(sound))
+                return null;
+            string watermodpath = "";
+            string targetpath = "";
+            watermodpath = AquaExpansionSession.Insance.WatermodLink;
+            switch (pathtype)
+            {
+                case AquaSoundWaterModPath.Audio:
+                    targetpath = "Audio\\";
+                    break;
+                case AquaSoundWaterModPath.Splash:
+                    targetpath = "Audio\\Splash\\";
+                    break;
+                case AquaSoundWaterModPath.SplashUnderwater:
+                    targetpath = "Audio\\SplashUnderwater\\";
+                    break;
+            }
+            return Path.Combine(watermodpath, targetpath, sound);
+        }
         /// <summary>
         /// Get direct fish model path from recipe
         /// </summary>
@@ -4697,6 +4681,15 @@ namespace AquaExpansion.Core
         public static bool IsSpore(string subtype) => SporeItemsbyName.ContainsKey(subtype);
 
         public static bool IsCrop(string subtype) => CropItemsbyName.ContainsKey(subtype);
+
+        public static HashSet<string> FillSpores()
+        {
+            return new HashSet<string>(SporeItemsbyID.Values);
+        }
+        public static HashSet<string> FillCrops()
+        {
+            return new HashSet<string>(CropItemsbyID.Values);
+        }
 
         /// <summary>
         /// Validate Farm Items database
@@ -4900,6 +4893,14 @@ namespace AquaExpansion.Core
         /// <param name="subtype"></param>
         /// <returns></returns>
         public static bool IsFish(string subtype) => FishItemsbyName.ContainsKey(subtype);
+        public static HashSet<string> FillBaits()
+        {
+            return new HashSet<string>(BaitItemsbyID.Values);
+        }
+        public static HashSet<string> FillFish()
+        {
+            return new HashSet<string>(FishItemsbyID.Values);
+        }
         /// <summary>
         /// Validate
         /// </summary>
@@ -5027,6 +5028,10 @@ namespace AquaExpansion.Core
         /// <param name="subtype"></param>
         /// <returns></returns>
         public static bool IsAnchor(string subtype) => AnchorItemsbyName.ContainsKey(subtype);
+        public static HashSet<string> FillAnchors()
+        {
+            return new HashSet<string>(AnchorItemsbyID.Values);
+        }
         /// <summary>
         /// Validate
         /// </summary>
@@ -5113,6 +5118,411 @@ namespace AquaExpansion.Core
                     throw new Exception($"Help line ID {id} has null/empty line");
                 if (!usedHelpLines.Add(line))
                     throw new Exception($"Help line Duplicate line: {line}");
+            }
+        }
+    }
+    /// <summary>
+    /// Modding database
+    /// </summary>
+    public static class AquaModdingNamesDatabase
+    {
+        private static readonly Dictionary<int, string> modlinesbyID = new Dictionary<int, string>();
+        public static void Init()
+        {
+            RegisterModCommand(1, "/iknowmodding");
+            RegisterModCommand(2, "/iknowhydromodding");
+            RegisterModCommand(3, "Unknown ammo subtype: ");
+            RegisterModCommand(4, " restored to default.");
+            RegisterModCommand(5, "Runtime modding enabled.");
+            RegisterModCommand(6, "Runtime modding already enabled.");
+            RegisterModCommand(7, "HydroAmmoProfile runtime balancing enabled.");
+            RegisterModCommand(8, "/hammo");
+            RegisterModCommand(9, "All runtime ammo overrides cleared.");
+            RegisterModCommand(10, "/exitmodding");
+            RegisterModCommand(11, "/exithydromodding");
+            RegisterModCommand(12, "Runtime modding disabled.");
+            RegisterModCommand(13, "HydroAmmoProfile runtime balancing disabled.");
+            RegisterModCommand(14, "Runtime modding already disabled.");
+            RegisterModCommand(15, "HydroAmmoProfile runtime balancing already disabled.");
+            RegisterModCommand(16, "/sound ");
+            RegisterModCommand(17, "Usage: /sound SoundName");
+            RegisterModCommand(18, "You are not controlling a valid entity.");
+            RegisterModCommand(19, "Trying to play: ");
+            RegisterModCommand(20, "Failed to play sound: ");
+            RegisterModCommand(21, "HydroAmmoProfile Logs enabled");
+            RegisterModCommand(22, "HydroAmmoProfile Logs disabled");
+            RegisterModCommand(23, "You must be a server admin to use this command.");
+            RegisterModCommand(24, "HydroAmmoProfile Render Tracers enabled");
+            RegisterModCommand(25, "HydroAmmoProfile Render Tracers disabled");
+        }
+        private static void RegisterModCommand(int id, string line)
+        {
+            modlinesbyID[id] = line;
+        }
+        public static string GetModCommandByID(int id)
+        {
+            string line;
+            if (modlinesbyID.TryGetValue(id, out line))
+                return line;
+            AquaExpansionSession.Insance.Log(true, $"ModCommand NOT FOUND (id): {id}");
+            return null;
+        }
+        public static IEnumerable<string> GetAllModCommands()
+        {
+            return modlinesbyID.Values;
+        }
+        public static void Validate()
+        {
+            var usedmodcommands = new HashSet<string>();
+            foreach (var pair in modlinesbyID)
+            {
+                int id = pair.Key;
+                string line = pair.Value;
+                if (string.IsNullOrWhiteSpace(line))
+                    throw new Exception($"Mod Command ID {id} has null/empty line");
+                if (!usedmodcommands.Add(line))
+                    throw new Exception($"Mod Command Duplicate line: {line}");
+            }
+        }
+    }
+    /// <summary>
+    /// Global Effects class
+    /// </summary>
+    public static class GlobalEffects
+    {
+        private static readonly Dictionary<string, string> WelderEffectLib = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> EngineEffectLib = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> EffectLib = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> WeaponEffectLib = new Dictionary<string, string>();
+        public static void Init()
+        {
+            RegisterWelderEffect("WelderSmall", "AquaUnderwaterWelding");
+            RegisterWelderEffect("WelderShip", "AquaUnderwaterWeldingShip");
+            RegisterWelderEffect("WelderShip2", "AquaUnderwaterWeldingShip2");
+            RegisterEngineEffect("IddleSmall", "AquaEngineBubbles02Small");
+            RegisterEngineEffect("IddleFlatSmall", "AquaEngineBubbles02SmallFlat");
+            RegisterEngineEffect("IddleMedium", "AquaEngineBubbles02Medium");
+            RegisterEngineEffect("IddleFlatMedium", "AquaEngineBubbles02MediumFlat");
+            RegisterEngineEffect("IddleLarge", "AquaEngineBubbles02Large");
+            RegisterEngineEffect("IddleFlatLarge", "AquaEngineBubbles02LargeFlat");
+            RegisterEngineEffect("IddleXLarge", "AquaEngineBubbles02XLarge");
+            RegisterEngineEffect("IddleFlatXLarge", "AquaEngineBubbles02XLargeFlat");
+            RegisterEngineEffect("RunSmall", "AquaEngineBubbles02Small");
+            RegisterEngineEffect("RunFlatSmall", "AquaEngineBubbles02SmallFlat");
+            RegisterEngineEffect("RunMedium", "AquaEngineBubbles02Medium");
+            RegisterEngineEffect("RunFlatMedium", "AquaEngineBubbles02MediumFlat");
+            RegisterEngineEffect("RunLarge", "AquaEngineBubbles02Large");
+            RegisterEngineEffect("RunFlatLarge", "AquaEngineBubbles02LargeFlat");
+            RegisterEngineEffect("RunXLarge", "AquaEngineBubbles02XLarge");
+            RegisterEngineEffect("RunFlatXLarge", "AquaEngineBubbles02XLargeFlat");
+            RegisterEffect("Electric", "UnderwaterDamageElectrical");
+            RegisterEffect("ElectricSmall", "AquaUnderwaterDamageElectricalSmall");
+            RegisterEffect("ElectricMicro", "AquaUnderwaterDamageElectricalMicro");
+            RegisterEffect("Bubblespray", "AquaUnderwaterDamageBubblesspray");
+            RegisterWeaponEffect("Autocannon", "Muzzle_Flash_Autocannon");
+            RegisterWeaponEffect("GatlingGun", "Muzzle_Flash_Large_Aqua");
+            RegisterWeaponEffect("GatlingGunWarfare", "Muzzle_Flash_Large_Aqua");
+        }
+        private static void RegisterWelderEffect(string name, string effect)
+        {
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(effect))
+                return;
+            WelderEffectLib[name] = effect;
+        }
+        private static void RegisterEngineEffect(string name, string effect)
+        {
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(effect))
+                return;
+            EngineEffectLib[name] = effect;
+        }
+        private static void RegisterEffect(string name, string effect)
+        {
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(effect))
+                return;
+            EffectLib[name] = effect;
+        }
+        private static void RegisterWeaponEffect(string name, string effect)
+        {
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(effect))
+                return;
+            WeaponEffectLib[name] = effect;
+        }
+        public static string GetWelderEffect(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+            string e;
+            if (WelderEffectLib.TryGetValue(name, out e))
+                return e;
+            return DefaultWelderEffect();
+        }
+        public static string GetEngineEffect(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+            string e;
+            if (EngineEffectLib.TryGetValue(name, out e))
+                return e;
+            return DefaultEngineEffect();
+        }
+        public static string GetEffect(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+            string e;
+            if (EffectLib.TryGetValue(name, out e))
+                return e;
+            return DefaultEffect();
+        }
+        public static string GetWeaponEffect(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+            string e;
+            if (WeaponEffectLib.TryGetValue(name, out e))
+                return e;
+            return DefaultWeaponEffect();
+        }
+        private static string DefaultWelderEffect()
+        {
+            return "AquaUnderwaterWelding";
+        }
+        private static string DefaultEngineEffect()
+        {
+            return "AquaEngineBubbles02Small";
+        }
+        private static string DefaultEffect()
+        {
+            return "AquaUnderwaterDamageBubbles";
+        }
+        private static string DefaultWeaponEffect()
+        {
+            return "Muzzle_Flash_Large_Aqua";
+        }
+        public static void CreateToolEffect(IMyWelder welder, string effectName, float scale, Dictionary<long, MyParticleEffect> effects)
+        {
+            if (welder == null ||
+                 welder.Closed ||
+                welder.MarkedForClose)
+                return;
+            if (effects == null ||
+                string.IsNullOrWhiteSpace(effectName))
+                return;
+            if (effects.ContainsKey(welder.EntityId))
+                return;
+            MatrixD matrix = MatrixD.Identity;
+            Vector3D position = welder.GetMuzzlePosition();
+            MyParticleEffect effect;
+            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            bool created =
+                MyParticlesManager.TryCreateParticleEffect(
+                    effectName,
+                    ref matrix,
+                    ref position,
+                    welder.Render.GetRenderObjectID(),
+                    out effect,
+                    keepXFramesAhead);
+            if (!created || effect == null)
+                return;
+            effect.Autodelete = false;
+            effect.UserScale = scale;
+            effects[welder.EntityId] = effect;
+            /*AquaExpansionSession.Insance.Log(
+                true,
+                "Created welder effect: " +
+                welder.EntityId);*/
+        }
+        public static void StopToolEffect(long welderId, Dictionary<long, MyParticleEffect> effects)
+        {
+            if (effects == null)
+                return;
+            MyParticleEffect effect;
+            if (!effects.TryGetValue(welderId, out effect))
+                return;
+            effects.Remove(welderId);
+            if (effect == null)
+                return;
+            effect.Autodelete = true;
+            effect.Stop(true);
+            MyParticlesManager.RemoveParticleEffect(effect);
+            /*AquaExpansionSession.Insance.Log(
+                true,
+                "Stopped welder effect: " + welderId);*/
+        }
+        public static void CreateShipWelderEffect(IMyShipWelder block, string name ,float scale, Dictionary<long, MyParticleEffect> effects)
+        {
+            if (block == null || block.Closed || block.MarkedForClose)
+                return;
+            var grid = block.CubeGrid;
+            if (grid == null || grid.Closed)
+                return;
+            string EeffectName = name;
+            MatrixD matrix = block.LocalMatrix;
+            Vector3D pos = block.GetPosition();
+            MyParticleEffect effect;
+            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
+            {
+                effect.WorldMatrix = matrix;
+                effect.Autodelete = false;
+                effect.UserScale = scale;
+                effects[block.EntityId] = effect;
+                //Log(true, $"added Ship effect");
+            }
+        }
+        public static void StopShipWelderEffect(long welderId, Dictionary<long, MyParticleEffect> effects)
+        {
+            MyParticleEffect Eeffect;
+            if (effects.TryGetValue(welderId, out Eeffect))
+            {
+                Eeffect?.Stop();
+                Eeffect.Autodelete = true;
+                MyParticlesManager.RemoveParticleEffect(Eeffect);
+                effects.Remove(welderId);
+                //Log(true, "Welder Effect Stopped and Deleted");
+            }
+        }
+        public static void CreateEngineEffect(IMyThrust block,string name ,float scale, Dictionary<long, MyParticleEffect> effects)
+        {
+            if (block == null || block.Closed || block.MarkedForClose)
+                return;
+            var grid = block.CubeGrid;
+            if (grid == null || grid.Closed)
+                return;
+            string EeffectName = name;
+            var logic = block.GameLogic?.GetAs<UnderWaterEngineBase>();
+            if (logic == null)
+            {
+                //Log(true, $"Logic fail");
+                return;
+            }
+            MatrixD matrix = block.LocalMatrix;
+            Vector3D pos = logic.Flamepos;
+            MyParticleEffect effect;
+            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
+            {
+                effect.WorldMatrix = matrix;
+                effect.Autodelete = false;
+                effect.UserScale = scale;
+                effects[block.EntityId] = effect;
+                //Log(true, $"added Engine effect");
+            }
+        }
+        public static void StopEngineEffect(long blockid, Dictionary<long, MyParticleEffect> effects)
+        {
+            MyParticleEffect Eeffect;
+            if (effects.TryGetValue(blockid, out Eeffect))
+            {
+                Eeffect?.Stop();
+                Eeffect.Autodelete = true;
+                MyParticlesManager.RemoveParticleEffect(Eeffect);
+                effects.Remove(blockid);
+                //Log(true, "Engine Effect Stopped and Deleted");
+            }
+        }
+        public static void CreateEffect(IMyTerminalBlock block,string name,float scale, Dictionary<long, MyParticleEffect> effects)
+        {
+            if (block == null || block.Closed || block.MarkedForClose)
+                return;
+            var grid = block.CubeGrid;
+            if (grid == null || grid.Closed)
+                return;
+            string effectName = name;
+            MatrixD matrix = block.LocalMatrix;
+            Vector3D pos = block.GetPosition();
+            MyParticleEffect effect;
+            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            if (MyParticlesManager.TryCreateParticleEffect(effectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
+            {
+                effect.WorldMatrix = matrix;
+                effect.Autodelete = false;
+                effect.UserScale = scale;
+                effects[block.EntityId] = effect;
+            }
+        }
+        public static void StopEffect(long blockid, Dictionary<long, MyParticleEffect> effects)
+        {
+            MyParticleEffect effect;
+            if (effects.TryGetValue(blockid, out effect))
+            {
+                effect?.Stop();
+                effect.Autodelete = true;
+                MyParticlesManager.RemoveParticleEffect(effect);
+                effects.Remove(blockid);
+                //Log(true, "Effect Stopped and Deleted");
+            }
+        }
+    }
+    /// <summary>
+    /// Forbidden components class
+    /// </summary>
+    public static class AquaForbiddenComponentsDatabase
+    {
+        private static readonly Dictionary<int, string> componentsbyID = new Dictionary<int, string>();
+        private static readonly Dictionary<string, int> componentsbyName = new Dictionary<string, int>();
+        public static void Init()
+        {
+            RegisterComponent(1,"MySolarFoodGenerator");
+            RegisterComponent(2,"MyFarmPlotLogic");
+            RegisterComponent(3,"MyEntityCapacitorComponent");
+        }
+        private static void RegisterComponent(int id, string line)
+        {
+            componentsbyID[id] = line;
+            componentsbyName[line] = id;
+        }
+        public static string GetComponentByID(int id)
+        {
+            string line;
+            if (componentsbyID.TryGetValue(id, out line))
+                return line;
+            AquaExpansionSession.Insance.Log(true, $"Component NOT FOUND (id): {id}");
+            return null;
+        }
+        public static int GetComponentIDbyName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return -1;
+            int id;
+            name = name.Trim();
+            if (componentsbyName.TryGetValue(name, out id))
+                return id;
+            foreach (var key in componentsbyName.Keys)
+            {
+                if (string.Equals(key, name, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    AquaExpansionSession.Insance.Log(true, $"Case mismatch: '{name}' should be '{key}'");
+                    break;
+                }
+            }
+            AquaExpansionSession.Insance.Log(true, $"Component by name NOT FOUND: '{name}'");
+            return -1;
+        }
+        public static IEnumerable<string> GetAllComponents()
+        {
+            return componentsbyID.Values;
+        }
+        public static void Validate()
+        {
+            var usedComponentNames = new HashSet<string>();
+            foreach (var pair in componentsbyID)
+            {
+                int id = pair.Key;
+                int backId;
+                string subtype = pair.Value;
+                if (string.IsNullOrWhiteSpace(subtype))
+                    throw new Exception($"Component ID {id} has null/empty subtype");
+                if (!usedComponentNames.Add(subtype))
+                    throw new Exception($"Component Duplicate subtype: {subtype}");
+                if (!componentsbyName.TryGetValue(subtype, out backId))
+                    throw new Exception($"Component Missing reverse mapping for '{subtype}'");
+                if (backId != id)
+                    throw new Exception($"Component Mismatch: '{subtype}' → {backId}, expected {id}");
             }
         }
     }

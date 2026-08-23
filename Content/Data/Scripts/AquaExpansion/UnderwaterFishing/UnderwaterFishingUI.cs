@@ -112,7 +112,7 @@ namespace AquaExpansion.UnderwaterFishing
             helpbutton.SupportsMultipleBlocks = false;
             helpbutton.Visible = CustomVisibleCondition;
             helpbutton.Enabled = HelpEnabled;
-            var htooltip = blocklogic.utils.GetHelpText(4);
+            var htooltip = AquaHelpDatabase.GetHelpLineByID(4);
             helpbutton.Tooltip = MyStringId.GetOrCompute(htooltip);
             helpbutton.Action = (b) =>
             {
