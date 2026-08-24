@@ -1925,10 +1925,10 @@ namespace AquaExpansion.Core
             AquaModdingNamesDatabase.Validate();
             HydroAmmoDatabase.Init();
             UnderwaterWeaponBurstDatabase.Init();
+            GlobalEffects.Init();
         }
         private void InitDatabases()
         {
-            GlobalEffects.Init();
             AquaForbiddenComponentsDatabase.Init();
             AquaForbiddenComponentsDatabase.Validate();
             AquaHelpDatabase.Init();

@@ -1,4 +1,5 @@
-﻿using AquaExpansion.Core.Combat;
+﻿using AquaExpansion.Core;
+using AquaExpansion.Core.Combat;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -21,8 +22,8 @@ namespace AquaExpansion.API
         // EXTERNAL AMMO OWNERSHIP
         // =====================================================
         private readonly Dictionary<string, string> _externalAmmoOwners = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-
         private readonly Dictionary<string, string> _externalburstOwners = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, string> _externalweaponeffectOwners = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         // =====================================================
         // LOAD
         // =====================================================
@@ -33,6 +34,7 @@ namespace AquaExpansion.API
             _apiMethods.Clear();
             _externalAmmoOwners.Clear();
             _externalburstOwners.Clear();
+            _externalweaponeffectOwners.Clear();
             MyLog.Default.WriteLine(
                 "[AquaExpansion API] Provider LoadData.");
             BuildApiMethods();
@@ -81,6 +83,7 @@ namespace AquaExpansion.API
             _apiMethods.Clear();
             _externalAmmoOwners.Clear();
             _externalburstOwners.Clear();
+            _externalweaponeffectOwners.Clear();
             MyLog.Default.WriteLine(
                 "[AquaExpansion API] Provider unloaded.");
         }
@@ -99,6 +102,8 @@ namespace AquaExpansion.API
             _apiMethods.Add("HasMuzzleBurst", new Func<string, bool>(HasMuzzleBurst));
             _apiMethods.Add("GetMuzzleBurstOwner", new Func<string, string>(GetMuzzleBurstOwner));
             _apiMethods.Add("RegisterMuzzleBurst", new Func<Dictionary<string, object>, bool>(RegisterMuzzleBurst));
+            _apiMethods.Add("GetWeaponEffectOwner", new Func<string, string>(GetWeaponEffectOwner));
+            _apiMethods.Add("RegisterWeaponEffect", new Func<Dictionary<string, object>, bool>(RegisterWeaponEffect));
             MyLog.Default.WriteLine(
                 "[AquaExpansion API] API methods created: " +
                 _apiMethods.Count);
@@ -493,6 +498,110 @@ namespace AquaExpansion.API
                 MyLog.Default.WriteLine(
                     "[AquaExpansion API] " +
                     "Error registering external muzzle burst: " +
+                    subtypeId);
+                MyLog.Default.WriteLine(e.ToString());
+                return false;
+            }
+        }
+        //WeaponEffects
+        private string GetWeaponEffectOwner(string subtypeId)
+        {
+            if (_unloading)
+                return string.Empty;
+            if (string.IsNullOrWhiteSpace(subtypeId))
+            {
+                return string.Empty;
+            }
+            string owner;
+            if (_externalweaponeffectOwners.TryGetValue(subtypeId.Trim(), out owner))
+            {
+                return owner;
+            }
+            return string.Empty;
+        }
+        private bool RegisterWeaponEffect(Dictionary<string, object> data)
+        {
+            if (_unloading)
+                return false;
+            if (data == null)
+                return false;
+            string subtypeId = GetString(data, "SubtypeId");
+            string effect = GetString(data, "Effect");
+            string owner = GetString(data, "Owner");
+            if (string.IsNullOrWhiteSpace(subtypeId))
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "External weapon effect registration rejected: " +
+                    "empty SubtypeId.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(effect))
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "External weapon effect registration rejected: " +
+                    "empty Effect.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(owner))
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "External weapon effect registration rejected: " +
+                    "empty Owner.");
+                return false;
+            }
+            subtypeId = subtypeId.Trim();
+            effect = effect.Trim();
+            owner = owner.Trim();
+            // =================================================
+            // DUPLICATE / OWNERSHIP CHECK
+            // =================================================
+            string existingOwner;
+            if (_externalweaponeffectOwners.TryGetValue(subtypeId, out existingOwner))
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "Weapon effect registration REJECTED. " +
+                    "Subtype '" +
+                    subtypeId +
+                    "' is already owned by '" +
+                    existingOwner +
+                    "'. Requested by '" +
+                    owner +
+                    "'.");
+                return false;
+            }
+            // =================================================
+            // REGISTER
+            // =================================================
+            try
+            {
+                if (!GlobalEffects.RegisterExternalWeaponEffect(subtypeId, effect))
+                {
+                    MyLog.Default.WriteLine(
+                        "[AquaExpansion API] " +
+                        "Database rejected external Weapon effect: " +
+                        subtypeId);
+                    return false;
+                }
+                _externalweaponeffectOwners.Add(subtypeId, owner);
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "External weapon effect registered: " +
+                    subtypeId +
+                    " -> " +
+                    effect +
+                    " | Owner: " +
+                    owner);
+                return true;
+            }
+            catch (Exception e)
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "Error registering external weapon effect: " +
                     subtypeId);
                 MyLog.Default.WriteLine(e.ToString());
                 return false;

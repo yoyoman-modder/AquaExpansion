@@ -7,6 +7,7 @@ using Sandbox.ModAPI;
 using Sandbox.ModAPI.Weapons;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Text;
 using VRage;
@@ -5250,6 +5251,31 @@ namespace AquaExpansion.Core
                 string.IsNullOrWhiteSpace(effect))
                 return;
             WeaponEffectLib[name] = effect;
+        }
+        //API
+        public static bool RegisterExternalWeaponEffect(string name, string effect)
+        {
+            if (string.IsNullOrWhiteSpace(name) ||
+                string.IsNullOrWhiteSpace(effect))
+                return false;
+            string subtypeID = name.Trim();
+            string effectName = effect.Trim();
+            // Never allow duplicate registered subtype.
+            if (WeaponEffectLib.ContainsKey(subtypeID))
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion] Duplicate Weapon Effect rejected: "
+                    + subtypeID);
+                //AquaExpansionSession.Insance.Log(true,"Duplicate Weapon Effect rejected: " + subtypeID);
+                return false;
+            }
+            WeaponEffectLib.Add(subtypeID, effectName);
+            MyLog.Default.WriteLine(
+                "[AquaExpansion] External Weapon Effect registered: "
+                + subtypeID
+                + " -> "
+                + effectName);
+            return true;
         }
         public static string GetWelderEffect(string name)
         {

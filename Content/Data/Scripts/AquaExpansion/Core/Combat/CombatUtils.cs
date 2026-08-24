@@ -1723,7 +1723,7 @@ namespace AquaExpansion.Core.Combat
             Register(new HydroAmmoProfile(
                "LargeCalibreShell",
                 800f,
-                0.012f,
+                0.05f,
                 SplashType.Missile,
                 20f,
                 10f,
@@ -2051,10 +2051,10 @@ namespace AquaExpansion.Core.Combat
             Register("FireworkPink", "AquaMissileSplash", SplashType.Missile, WaterIntersectionType.Entry);
             Register("FireworkYellow", "AquaMissileSplash", SplashType.Missile, WaterIntersectionType.Entry);
             Register("FireworkRainbow", "AquaMissileSplash", SplashType.Missile, WaterIntersectionType.Entry);
-            Register("LargeCalibreShell", "AquaMissileSplash", SplashType.Shell, WaterIntersectionType.Entry);
-            Register("MediumCalibreShell", "AquaMissileSplash", SplashType.Shell, WaterIntersectionType.Entry);
-            Register("LargeRailgunSlug", "AquaMissileSplash", SplashType.Railgun, WaterIntersectionType.Entry);
-            Register("SmallRailgunSlug", "AquaMissileSplash", SplashType.Railgun, WaterIntersectionType.Entry);
+            Register("LargeCalibreShell", "AquaShellSplash", SplashType.Shell, WaterIntersectionType.Entry);
+            Register("MediumCalibreShell", "AquaShellSplash", SplashType.Shell, WaterIntersectionType.Entry);
+            Register("LargeRailgunSlug", "AquaRailSplash", SplashType.Railgun, WaterIntersectionType.Entry);
+            Register("SmallRailgunSlug", "AquaRailSplash", SplashType.Railgun, WaterIntersectionType.Entry);
             //exit missile
             Register("Missile", "AquaMissileSplashExit", SplashType.Missile, WaterIntersectionType.Exit);
             Register("Flare", "AquaMissileSplashExit", SplashType.Missile, WaterIntersectionType.Exit);
@@ -2064,10 +2064,10 @@ namespace AquaExpansion.Core.Combat
             Register("FireworkPink", "AquaMissileSplashExit", SplashType.Missile, WaterIntersectionType.Exit);
             Register("FireworkYellow", "AquaMissileSplashExit", SplashType.Missile, WaterIntersectionType.Exit);
             Register("FireworkRainbow", "AquaMissileSplashExit", SplashType.Missile, WaterIntersectionType.Exit);
-            Register("LargeCalibreShell", "AquaMissileSplashExit", SplashType.Shell, WaterIntersectionType.Exit);
-            Register("MediumCalibreShell", "AquaMissileSplashExit", SplashType.Shell, WaterIntersectionType.Exit);
-            Register("LargeRailgunSlug", "AquaMissileSplashExit", SplashType.Railgun, WaterIntersectionType.Exit);
-            Register("SmallRailgunSlug", "AquaMissileSplashExit", SplashType.Railgun, WaterIntersectionType.Exit);
+            Register("LargeCalibreShell", "AquaShellSplashExit", SplashType.Shell, WaterIntersectionType.Exit);
+            Register("MediumCalibreShell", "AquaShellSplashExit", SplashType.Shell, WaterIntersectionType.Exit);
+            Register("LargeRailgunSlug", "AquaRailSplashExit", SplashType.Railgun, WaterIntersectionType.Exit);
+            Register("SmallRailgunSlug", "AquaRailSplashExit", SplashType.Railgun, WaterIntersectionType.Exit);
         }
         private static void Register(string subtype, string impact, SplashType type, WaterIntersectionType water)
         {
@@ -2237,18 +2237,18 @@ namespace AquaExpansion.Core.Combat
                     switch (water)
                     {
                         case WaterIntersectionType.Entry:
-                            return "AquaMissileSplash";
+                            return "AquaShellSplash";
                         case WaterIntersectionType.Exit:
-                            return "AquaMissileSplashExit";
+                            return "AquaShellSplashExit";
                     }
                     break;
                 case SplashType.Railgun:
                     switch (water)
                     {
                         case WaterIntersectionType.Entry:
-                            return "AquaMissileSplash";
+                            return "AquaRailSplash";
                         case WaterIntersectionType.Exit:
-                            return "AquaMissileSplashExit";
+                            return "AquaRailSplashExit";
                     }
                     break;
             }
