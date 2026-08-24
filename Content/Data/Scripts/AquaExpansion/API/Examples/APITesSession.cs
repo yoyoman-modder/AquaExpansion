@@ -52,6 +52,10 @@ namespace AquaExpansionAPITestMod
             MyAPIGateway.Utilities.ShowMessage(System,"Ammo registration: " + result);
             bool bresult = AquaExpansionAPI.RegisterMuzzleBurst("MyHandWeapon", "MyBurstEffect");
             MyAPIGateway.Utilities.ShowMessage(System, "Muzzle registration: " + bresult);
+            if (AquaExpansionAPI.RegisterWeaponEffect("MySubtype","MyWeaponEffect"))
+            {
+                MyAPIGateway.Utilities.ShowMessage(System, "Weapon Effect registration: ");
+            }
         }
         //Unload
         protected override void UnloadData()

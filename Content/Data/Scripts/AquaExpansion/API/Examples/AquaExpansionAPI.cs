@@ -392,6 +392,58 @@ namespace AquaExpansion.API
                 return false;
             }
         }
+        public static string GetWeaponEffectOwner(string subtypeId)
+        {
+            if (!_available)
+                return string.Empty;
+            if (string.IsNullOrWhiteSpace(subtypeId))
+            {
+                return string.Empty;
+            }
+            Func<string, string> method = GetMethod<Func<string, string>>("GetWeaponEffectOwner");
+            if (method == null)
+                return string.Empty;
+            try
+            {
+                return method(subtypeId.Trim());
+            }
+            catch (Exception e)
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "GetWeaponEffectOwner error:");
+                MyLog.Default.WriteLine(e.ToString());
+                return string.Empty;
+            }
+        }
+        public static bool RegisterWeaponEffect(string subtypeId, string effect)
+        {
+            if (!_available)
+                return false;
+            if (string.IsNullOrWhiteSpace(subtypeId) ||
+                string.IsNullOrWhiteSpace(effect))
+                return false;
+            Func<Dictionary<string, object>, bool> method = GetMethod<Func<Dictionary<string, object>, bool>>("RegisterWeaponEffect");
+            if (method == null)
+                return false;
+            Dictionary<string, object> data = new Dictionary<string, object>();
+            data["SubtypeId"] = subtypeId;
+            data["Effect"] = effect;
+            // Owner is added automatically.
+            data["Owner"] = _ownerName;
+            try
+            {
+                return method(data);
+            }
+            catch (Exception e)
+            {
+                MyLog.Default.WriteLine(
+                    "[AquaExpansion API] " +
+                    "RegisterWeaponEffect error:");
+                MyLog.Default.WriteLine(e.ToString());
+                return false;
+            }
+        }
         // =====================================================
         // CLOSE
         // =====================================================
