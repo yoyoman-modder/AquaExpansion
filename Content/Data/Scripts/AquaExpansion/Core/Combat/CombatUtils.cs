@@ -21,7 +21,7 @@ namespace AquaExpansion.Core.Combat
     public enum WaterIntersectionType { Entry, Exit }
     public enum SplashType { Bullet, Missile, Exit,Shell,Railgun }
     public enum AquaWeaponBlockType { SmallGatlingGun,SmallMissileLauncher, SmallMissileLauncherReload }
-    public enum AquaSoundType { Bullet, Voxel,Character }
+    public enum AquaSoundType { Bullet, Voxel,Character, Selfdestructmissile }
     /// <summary>
     /// WaterTrajectoryResult represents the result of a projecile's trajectory relative to water
     /// </summary>
@@ -551,6 +551,15 @@ namespace AquaExpansion.Core.Combat
                             return "ArcWepShipGatlingImpGrass";
                         case WaterTrajectoryType.Underwater:
                             return "ArcWepShipGatlingImpGrass";
+                    }
+                    break;
+                case AquaSoundType.Selfdestructmissile:
+                    switch (waterstate)
+                    {
+                        case WaterTrajectoryType.Air:
+                            return "ArcPoofExplosionCat1";
+                        case WaterTrajectoryType.Underwater:
+                            return "ArcPoofExplosionCat1";
                     }
                     break;
             }
@@ -1325,60 +1334,32 @@ namespace AquaExpansion.Core.Combat
             effect.Autodelete = true;
             MyParticlesManager.RemoveParticleEffect(effect);
         }
-        private static void DrawMissileMass(IMyMissile missile, MissileState state)
-        {
-            float speed = missile.Physics.LinearVelocity.Length();
-            Vector4 color = new Vector4(0.95f, 0.98f, 1f, 0.9f);
-            float radius = MathHelper.Clamp(
-                state.Profile.Mass * 0.003f,
-                0.015f,
-                0.08f);
-            MyTransparentGeometry.AddPointBillboard(
-                MyStringId.GetOrCompute("WhiteDot"),
-                color,
-                missile.GetPosition(),
-                radius,
-                0);
-        }
-        private static void DrawMissileWake(IMyMissile missile, MissileState state)
+        public static bool MissileSelfDestruct(IMyMissile missile, MissileState state)
         {
             if (missile == null ||
-                missile.Physics == null)
-                return;
-            Vector3 velocity = missile.Physics.LinearVelocity;
-            float speed = velocity.Length();
-            if (speed < state.Profile.MinimumSpeed)
-                return;
-            Vector3D dir = Vector3D.Normalize((Vector3D)velocity);
-            float length =
-                MathHelper.Clamp(
-                    speed * 0.008f,
-                    0.25f,
-                    4.0f);
-            float thickness =
-                MathHelper.Clamp(
-                    state.Profile.Mass * 0.002f,
-                    0.015f,
-                    0.08f);
-            Vector4 color =
-                new Vector4(
-                    0.85f,
-                    0.95f,
-                    1.0f,
-                    0.25f);
-            MyTransparentGeometry.AddLineBillboard(
-                MyStringId.GetOrCompute("WeaponLaser"),
-                color,
-                missile.GetPosition(),
-                -dir,
-                length,
-                thickness,
-                MyBillboard.BlendTypeEnum.AdditiveTop);
-        }
-        public static void VisualizeMissile(IMyMissile missile, MissileState state)
-        {
-            DrawMissileMass(missile,state);
-            DrawMissileWake(missile,state);
+                missile.Closed ||
+                missile.MarkedForClose ||
+                state == null)
+                return false;
+            // Torpedoes are destroyed when they exit the water.
+            if (state.Profile.Torpedo != 0 &&
+                state.WaterState != WaterTrajectoryType.Underwater)
+            {
+                MyVisualScriptLogicProvider.CreateParticleEffectAtPosition(WeaponExplosionDatabase.Get(1),missile.GetPosition());
+                MyVisualScriptLogicProvider.PlaySingleSoundAtPosition(GetSoundFX(state.WaterState, AquaSoundType.Selfdestructmissile), missile.GetPosition());
+                missile.Destroy();
+                return true;
+            }
+            // Normal missiles are destroyed when they reach their configured underwater range.
+            if (state.Profile.Torpedo == 0 &&
+                state.WaterDistance >= state.Profile.MaxRange)
+            {
+                MyVisualScriptLogicProvider.CreateParticleEffectAtPosition(WeaponExplosionDatabase.Get(1), missile.GetPosition());
+                MyVisualScriptLogicProvider.PlaySingleSoundAtPosition(GetSoundFX(state.WaterState, AquaSoundType.Selfdestructmissile), missile.GetPosition());
+                missile.Destroy();
+                return true;
+            }
+            return false;
         }
     }
     /// <summary>
@@ -1514,7 +1495,7 @@ namespace AquaExpansion.Core.Combat
                   0f,                    //EngineTurn 
                   0f,                    //Engine Acceleration
                   0f,                    //Engine Multiplier
-                  0));                   //Torpedo mode
+                  0));                     //Torpedo mod)); 
             // small
             Register(new HydroAmmoProfile(
                 "SmallCaliber", 
@@ -1726,7 +1707,7 @@ namespace AquaExpansion.Core.Combat
                 0.05f,
                 SplashType.Missile,
                 20f,
-                10f,
+                20f,
                 0f,
                 0f,
                 0f,
@@ -1764,7 +1745,7 @@ namespace AquaExpansion.Core.Combat
                 0.006f,
                 SplashType.Missile,
                 20f,
-                20f,
+                100f,
                 0f,
                 0f,
                 0f,
@@ -1783,7 +1764,7 @@ namespace AquaExpansion.Core.Combat
                 0.009f,
                 SplashType.Missile,
                 20f,
-                20f,
+                100f,
                 0f,
                 0f,
                 0f,
@@ -1795,6 +1776,25 @@ namespace AquaExpansion.Core.Combat
                 0f,
                 0f,
                 0));
+            //torpedo
+            Register(new HydroAmmoProfile(
+              "Aqua_SmallTorpedo",
+               50f,
+               0.003f,
+               SplashType.Missile,
+               20f,
+               200f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               "AquaMissileTrail",
+               1f,
+               15f, //engine acceleration
+               1f,
+               1));
         }
         private static void Register(HydroAmmoProfile profile)
         {
@@ -2377,6 +2377,41 @@ namespace AquaExpansion.Core.Combat
                     throw new Exception($"Dummy ID {id} has null/empty line");
                 if (!dummies.Add(line))
                     throw new Exception($"Dummy Duplicate line: {line}");
+            }
+        }
+    }
+    public static class WeaponExplosionDatabase
+    {
+        private static readonly Dictionary<int, string> weaponexplosiobyID = new Dictionary<int, string>();
+        public static void Init()
+        {
+            Register(1, "Explosion_Debris");
+        }
+        private static void Register(int index, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return;
+            weaponexplosiobyID[index] = name;
+        }
+        public static string Get(int id)
+        {
+            string line;
+            if (weaponexplosiobyID.TryGetValue(id, out line))
+                return line;
+            AquaExpansionSession.Insance.Log(true, $"Exlosion NOT FOUND (id): {id}");
+            return null;
+        }
+        public static void Validate()
+        {
+            var dummies = new HashSet<string>();
+            foreach (var pair in weaponexplosiobyID)
+            {
+                int id = pair.Key;
+                string line = pair.Value;
+                if (string.IsNullOrWhiteSpace(line))
+                    throw new Exception($"Explosion ID {id} has null/empty line");
+                if (!dummies.Add(line))
+                    throw new Exception($"Explosion Duplicate line: {line}");
             }
         }
     }

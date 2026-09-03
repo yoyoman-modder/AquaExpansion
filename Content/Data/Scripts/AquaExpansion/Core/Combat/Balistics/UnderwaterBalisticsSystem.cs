@@ -30,6 +30,8 @@ namespace AquaExpansion.Core.Combat.Balistics
             UnderwaterWeaponBurstDatabase.Init();
             WeaponDummiesDatabase.Init();
             WeaponDummiesDatabase.Validate();
+            WeaponExplosionDatabase.Init();
+            WeaponExplosionDatabase.Validate();
         }
         public void Unload()
         {

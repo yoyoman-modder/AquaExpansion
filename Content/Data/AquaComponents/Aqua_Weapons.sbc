@@ -67,5 +67,35 @@
                 <AmmoMagazine Subtype="AutocannonClip" />
             </AmmoMagazines>
         </Weapon>
+		<Weapon>
+			<Id>
+				<TypeId>WeaponDefinition</TypeId>
+				<SubtypeId>SmallMissileLauncher</SubtypeId>
+			</Id>
+			<MissileAmmoData RateOfFire="60" ShootSoundName="WepShipSmallMissileShot" FlightSoundName="MissileFlightSound" ShotsInBurst="0" />
+			<DeviateShotAngle>0.1</DeviateShotAngle>
+			<DeviateShotAngleAiming>0.1</DeviateShotAngleAiming>
+			<NoAmmoSoundName>WepShipGatlingNoAmmo</NoAmmoSoundName>
+			<AmmoMagazines>
+				<AmmoMagazine Subtype="Missile200mm" />
+				<AmmoMagazine Subtype="AquaSmallTorpedo" />
+			</AmmoMagazines>
+			<SupportReloading>false</SupportReloading>
+		</Weapon>
+		<Weapon>
+			<Id>
+				<TypeId>WeaponDefinition</TypeId>
+				<SubtypeId>LargeMissileLauncher</SubtypeId>
+			</Id>
+			<MissileAmmoData RateOfFire="120" ShootSoundName="WepShipSmallMissileShot" FlightSoundName="MissileFlightSound" ShotsInBurst="19" />
+			<DeviateShotAngle>0.1</DeviateShotAngle>
+			<DeviateShotAngleAiming>0.1</DeviateShotAngleAiming>
+			<NoAmmoSoundName>WepShipGatlingNoAmmo</NoAmmoSoundName>
+			<AmmoMagazines>
+				<AmmoMagazine Subtype="Missile200mm" />
+				<AmmoMagazine Subtype="AquaSmallTorpedo" />
+			</AmmoMagazines>
+			<ReloadTime>4000</ReloadTime>
+		</Weapon>
 	</Weapons>
 </Definitions>

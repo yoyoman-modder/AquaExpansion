@@ -172,6 +172,16 @@ namespace AquaExpansion.Core.Combat.Balistics
                     state.LastVelocity = velocity;
                     state.LastSpeed = velocity.Length();
                 }
+                // --------------------------------------------------
+                // SELF DESTRUCT
+                // --------------------------------------------------
+                if (CombatUtils.MissileSelfDestruct(missile, state))
+                {
+                    if (remove == null)
+                        remove = new List<long>();
+                    remove.Add(pair.Key);
+                    continue;
+                }
                 // -------------------------------------------------
                 // Debug logging
                 // -------------------------------------------------
@@ -227,10 +237,6 @@ namespace AquaExpansion.Core.Combat.Balistics
             {
                 CombatUtils.LogMissileWaterPhysics(state.WaterState, missile.Physics.LinearVelocity.Length(), densityMultiplier, dragAcceleration, engineAcceleration);
             }
-            /*if (AquaExpansionSession.Insance.isModdingEnabled && AquaExpansionSession.Insance.isHydroModdingEnabled && AquaExpansionSession.Insance.RenderEnabled)
-            {
-                CombatUtils.VisualizeMissile(missile,state);
-            }*/
             //Quadratic drag model
             /*IMyMissile missile = state.Missile;
             if (missile == null || missile.Physics == null)

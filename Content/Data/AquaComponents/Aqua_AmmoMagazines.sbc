@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <AmmoMagazines>
+        <AmmoMagazine>
+            <Id>
+                <TypeId>AmmoMagazine</TypeId>
+                <SubtypeId>AquaSmallTorpedo</SubtypeId>
+            </Id>
+            <DisplayName>Small Torpedo</DisplayName>
+            <Icon>Textures\GUI\Icons\ammo\Small_Rocket.dds</Icon>
+			<IconSymbol>SEA</IconSymbol>
+            <Size>
+                <X>1.2</X>
+                <Y>0.2</Y>
+                <Z>0.2</Z>
+            </Size>
+            <Mass>50</Mass>
+            <Volume>50</Volume>
+            <Model>Models\Weapons\Projectile_Missile.mwm</Model>
+            <PhysicalMaterial>Ammo</PhysicalMaterial>
+            <Capacity>1</Capacity>
+            <AmmoDefinitionId Subtype="Aqua_SmallTorpedo" />
+            <MinimumOfferAmount>50</MinimumOfferAmount>
+            <MaximumOfferAmount>500</MaximumOfferAmount>
+            <MinimumOrderAmount>100</MinimumOrderAmount>
+            <MaximumOrderAmount>2000</MaximumOrderAmount>
+            <CanPlayerOrder>true</CanPlayerOrder>
+            <CanPlayerOffer>true</CanPlayerOffer>
+        </AmmoMagazine>
+    </AmmoMagazines>
+</Definitions>

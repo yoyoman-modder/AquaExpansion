@@ -197,6 +197,41 @@
 				</Entry>
 			</InputConstraint>
 		</EntityComponent>
+		<!-- Rockets Launchers -->
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>AmmoFilterSmallRocketLauncher</SubtypeId>
+			</Id>
+			<Size x="0.4" y="0.6" z="1" />
+			<InputConstraint Whitelist="true" Description="DisplayName_InventoryConstraint_BlockWeaponRocket" Icon="Textures\GUI\Icons\FilterMissile.dds">
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Missile200mm</SubtypeId>
+				</Entry>
+				<Entry>
+				<TypeId>AmmoMagazine</TypeId>
+				<SubtypeId>AquaSmallTorpedo</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>AmmoFilterLargeRocketLauncher</SubtypeId>
+			</Id>
+			<Size x="0.6" y="1.9" z="1" />
+			<InputConstraint Whitelist="true" Description="DisplayName_InventoryConstraint_BlockWeaponRocket" Icon="Textures\GUI\Icons\FilterMissile.dds">
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Missile200mm</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSmallTorpedo</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
 		<!-- End Region Inventory-->
 		<!-- Region Mod Storage-->
 		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">

@@ -1008,6 +1008,26 @@
 			<BaseProductionTimeInSeconds>12</BaseProductionTimeInSeconds>
 		</Blueprint>
 		<!--End Sea Gear-->
+		<!--Sea Weapons-->
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>AquaWeapon_SmallTorpedo</SubtypeId>
+			</Id>
+			<DisplayName>Small Torpedo</DisplayName>
+			<Icon>Textures\GUI\Icons\ammo\Small_Rocket.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<Prerequisites>
+				<Item Amount="25" TypeId="Ingot" SubtypeId="Iron" />
+				<Item Amount="3" TypeId="Ingot" SubtypeId="Nickel" />
+				<Item Amount="0.1" TypeId="Ingot" SubtypeId="Silicon" />
+				<Item Amount="0.5" TypeId="Ingot" SubtypeId="Magnesium" />
+				<Item Amount="1" TypeId="Component" SubtypeId="SaltPowerCell" />
+			</Prerequisites>
+			<Result Amount="1" TypeId="AmmoMagazine" SubtypeId="AquaSmallTorpedo" />
+			<BaseProductionTimeInSeconds>10</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<!--End Sea Weapons-->
 		<!-- End Aqua -->
     </Blueprints>
 </Definitions>
