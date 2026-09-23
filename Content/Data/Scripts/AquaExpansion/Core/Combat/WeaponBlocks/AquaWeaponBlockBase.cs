@@ -55,6 +55,8 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
                             gat.Closed ||
                             gat.MarkedForClose)
                             return;
+                        if (gat.Model == null)
+                            return;
                         gat.Model.GetDummies(dummies);
                         // Primary muzzle dummy
                         if (dummies.TryGetValue(WeaponDummiesDatabase.Get(1),out Muzzle))
@@ -235,6 +237,26 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
         public bool FireEffects { get; set; }
         private void SetGatlingEffectData()
         {
+            /*muzzleLocalMatrix = GetMuzzle.Matrix;
+            MatrixD muzzleWorldMatrix = muzzleLocalMatrix * gat.WorldMatrix;
+            Vector3D muzzlePosition = muzzleWorldMatrix.Translation;
+            Vector3D muzzleForward = muzzleWorldMatrix.Forward;
+            muzzleForward.Normalize();
+            double muzzleDistance = -MuzzleOffset.Z;
+            actualMuzzlePosition = muzzlePosition + muzzleForward * muzzleDistance;
+            var pos = Vector3D.Zero;
+            if (UseVirtualOffset)
+            {
+                pos = actualMuzzlePosition;
+            }
+            else
+            {
+                pos = muzzlePosition;
+            }*/
+            if (gat == null || gat.Closed || gat.MarkedForClose)
+                return;
+            if (Muzzle == null)
+                return;
             muzzleLocalMatrix = GetMuzzle.Matrix;
             MatrixD muzzleWorldMatrix = muzzleLocalMatrix * gat.WorldMatrix;
             Vector3D muzzlePosition = muzzleWorldMatrix.Translation;

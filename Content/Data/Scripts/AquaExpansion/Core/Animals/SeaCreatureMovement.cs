@@ -7,7 +7,7 @@ using VRage.Utils;
 using VRageMath;
 using VRageRender;
 
-namespace AquaExpansionExperimental.Core.Animals
+namespace AquaExpansion.Core.Animals
 {
     public static class SeaCreatureMovement
     {

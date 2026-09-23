@@ -1,7 +1,7 @@
 ﻿using VRage.Game.ModAPI;
 using VRageMath;
 
-namespace AquaExpansionExperimental.Core.Animals
+namespace AquaExpansion.Core.Animals
 {
     public class SeaCreatureNavigator
     {

@@ -12,7 +12,7 @@ using VRage.ModAPI;
 using VRage.ObjectBuilders;
 using VRageMath;
 
-namespace AquaExpansionExperimental.Core.Animals
+namespace AquaExpansion.Core.Animals
 {
     public abstract class SeaCreatureBase : MyGameLogicComponent
     {

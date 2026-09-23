@@ -1,4 +1,4 @@
-﻿namespace AquaExpansionExperimental.Core.Animals
+﻿namespace AquaExpansion.Core.Animals
 {
     public static class SeaAnimalDefinitions
     {

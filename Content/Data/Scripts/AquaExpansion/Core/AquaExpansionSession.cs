@@ -1,6 +1,6 @@
 ﻿using AquaExpansion.Core.Combat;
 using AquaExpansion.Core.Combat.Balistics;
-using AquaExpansionExperimental.Core.Animals;
+using AquaExpansion.Core.Animals;
 using Draygo.API;
 using Jakaria.API;
 using ProtoBuf;
@@ -1437,7 +1437,7 @@ namespace AquaExpansion.Core
         }
         public bool IsPlayerProtected(IMyPlayer player)
         {
-            var seat = player.Controller?.ControlledEntity?.Entity as IMyShipController;
+            /*var seat = player.Controller?.ControlledEntity?.Entity as IMyShipController;
             if (seat != null)
             {
                 var incocpit = seat as IMyCockpit;
@@ -1446,7 +1446,23 @@ namespace AquaExpansion.Core
                     return true;
                 }
             }
-            return false;
+            return false;*/
+            if (player == null)
+                return false;
+            if (player.Controller == null)
+                return false;
+            if (player.Controller.ControlledEntity == null)
+                return false;
+            var entity = player.Controller.ControlledEntity.Entity;
+            if (entity == null)
+                return false;
+            var seat = entity as IMyShipController;
+            if (seat == null)
+                return false;
+            var cockpit = seat as IMyCockpit;
+            if (cockpit == null)
+                return false;
+            return cockpit.OxygenFilledRatio > 0f;
         }
         public bool IsPlayerControlling(IMyPlayer player)
         {

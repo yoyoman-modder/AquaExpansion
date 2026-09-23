@@ -1,16 +1,8 @@
-﻿using AquaExpansion.Core;
-using Jakaria.API;
-using Sandbox.ModAPI;
-using System;
-using System.Drawing.Drawing2D;
-using VRage.Game;
+﻿using VRage.Game;
 using VRage.Game.Components;
-using VRage.Game.ModAPI;
 using VRage.ObjectBuilders;
-using VRage.Utils;
-using VRageMath;
 
-namespace AquaExpansionExperimental.Core.Animals
+namespace AquaExpansion.Core.Animals
 {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Character),false, "AquaWhiteShark")]
     public class SeaCreatureWhiteShark : SeaCreatureBase

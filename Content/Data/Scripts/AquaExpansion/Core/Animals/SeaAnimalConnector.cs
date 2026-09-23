@@ -7,7 +7,7 @@ using VRage.Game.ModAPI;
 using VRage.ObjectBuilders;
 using VRage.Utils;
 
-namespace AquaExpansionExperimental.Core.Animals
+namespace AquaExpansion.Core.Animals
 {
     [MyStatLogicDescriptor("SeaAnimalConnector")]
     public class SeaAnimalConnector : MyStatLogic
