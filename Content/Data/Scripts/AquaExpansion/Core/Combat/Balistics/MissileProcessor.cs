@@ -11,6 +11,11 @@ namespace AquaExpansion.Core.Combat.Balistics
     public static class MissileProcessor
     {
         private static readonly Dictionary<long, MyParticleEffect> missileeffects = new Dictionary<long, MyParticleEffect>();
+        private static readonly List<long> MissileUpdateIds = new List<long>();
+        private static readonly List<long> PendingMissileAdds = new List<long>();
+        private static readonly List<long> PendingMissileRemovals = new List<long>();
+        private static readonly Dictionary<long, MissileState> PendingMissileStates =new Dictionary<long, MissileState>();
+        private static bool UpdatingMissiles;
         public static void Process(IMyMissile missile, MissileState state)
         {
             if (missile == null || state == null)
@@ -35,7 +40,7 @@ namespace AquaExpansion.Core.Combat.Balistics
         }
         public static void OnMissileAdded(IMyMissile missile, Dictionary<long, MissileState> tracked)
         {
-            if (missile == null)
+            /*if (missile == null)
                 return;
             Vector3D position = missile.GetPosition();
             MyPlanet planet = CombatUtils.WaterPlanet(position);
@@ -55,11 +60,45 @@ namespace AquaExpansion.Core.Combat.Balistics
                 BubbleDistance = 0f,
                 
             };
+            tracked[missile.EntityId] = state;*/
+            if (missile == null || tracked == null)
+                return;
+            Vector3D position = missile.GetPosition();
+            MyPlanet planet = CombatUtils.WaterPlanet(position);
+            if (planet == null)
+                return;
+            HydroAmmoProfile profile = HydroAmmoDatabase.Get(missile.AmmoDefinition.Id.SubtypeId.String) ?? HydroAmmoDatabase.DefaultMissile();
+            MissileState state =
+                new MissileState
+                {
+                    Missile = missile,
+                    Profile = profile,
+                    PreviousPosition = position,
+                    WaterState =
+                        WaterModAPI.IsUnderwater(position)
+                            ? WaterTrajectoryType.Underwater
+                            : WaterTrajectoryType.Air,
+                    WaterDistance = 0f,
+                    BubbleDistance = 0f
+                };
+            if (UpdatingMissiles)
+            {
+                if (!PendingMissileStates.ContainsKey(missile.EntityId))
+                {
+                    PendingMissileStates.Add(missile.EntityId,state);
+                    PendingMissileAdds.Add(missile.EntityId);
+                }
+                return;
+            }
             tracked[missile.EntityId] = state;
+            if (!MissileUpdateIds.Contains(missile.EntityId))
+            {
+                MissileUpdateIds.Add(missile.EntityId);
+            }
         }
         public static void OnMissileKilled(IMyMissile missile, Dictionary<long,MissileState> tracked)
         {
-            if (missile == null)
+            /*if (missile == null)
                 return;
             MissileState state;
             if (!tracked.TryGetValue(missile.EntityId, out state))
@@ -70,11 +109,37 @@ namespace AquaExpansion.Core.Combat.Balistics
             { 
                 CombatUtils.LogKilledMissile(state.WaterState, state.WaterDistance, state.LastSpeed, state.FlyTime); 
             }
+            tracked.Remove(missile.EntityId);*/
+            if (missile == null || tracked == null)
+                return;
+            MissileState state;
+            if (!tracked.TryGetValue(missile.EntityId,out state))
+            {
+                return;
+            }
+            CombatUtils.StopMissileEffect(missile,missileeffects);
+            AquaExpansionSession session = AquaExpansionSession.Insance;
+            if (session != null &&
+                session.isModdingEnabled &&
+                session.isHydroModdingEnabled &&
+                session.LogsEnabled)
+            {
+                CombatUtils.LogKilledMissile(state.WaterState,state.WaterDistance,state.LastSpeed,state.FlyTime);
+            }
+            if (UpdatingMissiles)
+            {
+                if (!PendingMissileRemovals.Contains(missile.EntityId))
+                {
+                    PendingMissileRemovals.Add(missile.EntityId);
+                }
+                return;
+            }
             tracked.Remove(missile.EntityId);
+            MissileUpdateIds.Remove(missile.EntityId);
         }
         public static void UpdateMissiles(Dictionary<long, MissileState> tracked)
         {
-            float dt = (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            /*float dt = (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
             List<long> remove = null;
             foreach (var pair in tracked)
             {
@@ -200,7 +265,126 @@ namespace AquaExpansion.Core.Combat.Balistics
                 {
                     tracked.Remove(id);
                 }
+            }*/
+            if (tracked == null)
+                return;
+            float dt = (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            UpdatingMissiles = true;
+            int count = MissileUpdateIds.Count;
+            for (int i = 0; i < count; i++)
+            {
+                long id = MissileUpdateIds[i];
+                MissileState state;
+                if (!tracked.TryGetValue(id,out state))
+                {
+                    continue;
+                }
+                IMyMissile missile = state.Missile;
+                if (missile == null ||
+                    missile.Closed ||
+                    missile.MarkedForClose)
+                {
+                    if (missile != null)
+                    {
+                        CombatUtils.StopMissileEffect(missile,missileeffects);
+                    }
+                    if (!PendingMissileRemovals.Contains(id))
+                    {
+                        PendingMissileRemovals.Add(id);
+                    }
+                    continue;
+                }
+                state.FlyTime += dt;
+                Vector3D position = missile.GetPosition();
+                Vector3 velocity = missile.LinearVelocity;
+                WaterTrajectoryType newState =
+                    WaterModAPI.IsUnderwater(position)
+                        ? WaterTrajectoryType.Underwater
+                        : WaterTrajectoryType.Air;
+                if (newState != state.WaterState)
+                {
+                    if (newState == WaterTrajectoryType.Underwater)
+                    {
+                        state.WaterDistance = 0f;
+                        CombatUtils.CreateMissileSplash(state.Profile.SubtypeId,position,velocity,state.Profile.SplashType);
+                    }
+                    else
+                    {
+                        CombatUtils.CreateMissileExitSplash(state.Profile.SubtypeId,position,velocity,state.Profile.SplashType);
+                        CombatUtils.StopMissileEffect(missile,missileeffects);
+                    }
+                    state.WaterState = newState;
+                }
+                if (state.WaterState == WaterTrajectoryType.Underwater)
+                {
+                    CombatUtils.CreateMissileEffect(missile,state,1f,missileeffects);
+                }
+                float moved = (float)Vector3D.Distance(state.PreviousPosition,position);
+                state.PreviousPosition = position;
+                if (state.WaterState == WaterTrajectoryType.Underwater)
+                {
+                    state.WaterDistance += moved;
+                    ApplyMissileWaterPhysics(state,moved,dt);
+                }
+                if (missile.ParticleEffect != null)
+                {
+                    CombatUtils.UpdateMissileTrail(missile,state);
+                }
+                if (missile.Physics != null)
+                {
+                    state.LastVelocity = missile.Physics.LinearVelocity;
+                    state.LastSpeed = (float)state.LastVelocity.Length();
+                }
+                else
+                {
+                    state.LastVelocity = velocity;
+                    state.LastSpeed = velocity.Length();
+                }
+                if (CombatUtils.MissileSelfDestruct(missile,state))
+                {
+                    if (!PendingMissileRemovals.Contains(id))
+                    {
+                        PendingMissileRemovals.Add(id);
+                    }
+                    continue;
+                }
+                AquaExpansionSession session = AquaExpansionSession.Insance;
+                if (session != null &&
+                    session.isModdingEnabled &&
+                    session.isHydroModdingEnabled &&
+                    session.LogsEnabled)
+                {
+                    float scale = 0f;
+                    if (missile.ParticleEffect != null)
+                    {
+                        scale = missile.ParticleEffect.UserScale;
+                    }
+                    CombatUtils.LogRunningMissile(state.WaterState,state.WaterDistance,state.LastSpeed,state.FlyTime,scale);
+                }
             }
+            for (int i = 0;i < PendingMissileRemovals.Count;i++)
+            {
+                long id = PendingMissileRemovals[i];
+                tracked.Remove(id);
+                MissileUpdateIds.Remove(id);
+            }
+            PendingMissileRemovals.Clear();
+            for (int i = 0;i < PendingMissileAdds.Count;i++)
+            {
+                long id = PendingMissileAdds[i];
+                MissileState state;
+                if (PendingMissileStates.TryGetValue(id,out state))
+                {
+                    tracked[id] = state;
+                    if (!MissileUpdateIds.Contains(id))
+                    {
+                        MissileUpdateIds.Add(id);
+                    }
+                }
+            }
+            PendingMissileAdds.Clear();
+            PendingMissileStates.Clear();
+            UpdatingMissiles = false;
         }
         public static void ApplyMissileWaterPhysics(MissileState state, float moved, float dt)
         {
@@ -276,7 +460,7 @@ namespace AquaExpansion.Core.Combat.Balistics
                     profile.UnderwaterTurnMultiplier;
             }*/
         }
-        public static void ClearEffects()
+        private static void ClearEffects()
         {
             // Stop particle effects first
             foreach (MyParticleEffect effect in missileeffects.Values)
@@ -288,6 +472,14 @@ namespace AquaExpansion.Core.Combat.Balistics
                 MyParticlesManager.RemoveParticleEffect(effect);
             }
             missileeffects.Clear();
+        }
+        public static void ClearAll()
+        {
+            ClearEffects();
+            MissileUpdateIds.Clear();
+            PendingMissileAdds.Clear();
+            PendingMissileRemovals.Clear();
+            PendingMissileStates.Clear();
         }
     }
 }

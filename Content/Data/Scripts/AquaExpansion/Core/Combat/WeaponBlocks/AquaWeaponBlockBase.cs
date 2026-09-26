@@ -55,6 +55,7 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
                             gat.Closed ||
                             gat.MarkedForClose)
                             return;
+                        //first fix
                         if (gat.Model == null)
                             return;
                         gat.Model.GetDummies(dummies);
@@ -101,7 +102,6 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
             {
                 case AquaWeaponBlockType.SmallGatlingGun:
                     weapon = CombatUtils.LoadWeaponDefinition(gat);
-
                     break;
                 case AquaWeaponBlockType.SmallMissileLauncher:
                     weapon = CombatUtils.LoadWeaponDefinition(missile);
@@ -237,7 +237,9 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
         public bool FireEffects { get; set; }
         private void SetGatlingEffectData()
         {
-            /*muzzleLocalMatrix = GetMuzzle.Matrix;
+            /*if (gat == null || gat.Closed || gat.MarkedForClose)
+                return;
+            muzzleLocalMatrix = GetMuzzle.Matrix;
             MatrixD muzzleWorldMatrix = muzzleLocalMatrix * gat.WorldMatrix;
             Vector3D muzzlePosition = muzzleWorldMatrix.Translation;
             Vector3D muzzleForward = muzzleWorldMatrix.Forward;
@@ -273,6 +275,7 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
             {
                 pos = muzzlePosition;
             }
+            
         }
         private void FireEffect()
         {

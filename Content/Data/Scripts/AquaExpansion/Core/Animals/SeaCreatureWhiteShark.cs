@@ -1,70 +1,129 @@
-﻿using VRage.Game;
+﻿using AquaExpansion.Core.BT;
+using Jakaria.API;
+using VRage.Game;
 using VRage.Game.Components;
 using VRage.ObjectBuilders;
+using VRageMath;
 
 namespace AquaExpansion.Core.Animals
 {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Character),false, "AquaWhiteShark")]
     public class SeaCreatureWhiteShark : SeaCreatureBase
     {
+        /// <summary>
+        /// Init
+        /// </summary>
+        /// <param name="objectBuilder"></param>
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
-            AnimalEnergyFood = "AquaAnimalMeatRaw";
             base.Init(objectBuilder);
         }
-
+        /// <summary>
+        /// Behavior Tree
+        /// </summary>
+        /// <returns></returns>
+        protected override BehaviorTree BuildTree()
+        {
+            return new BehaviorTree(//root node
+                new LoopNode( // repeat forever child
+                    new SequenceNode(// run children in order until one fails
+                        new SelectorNode(//ticks its children sequentually until one succeeds
+                            new SequenceNode(
+                                new DangerDepth(4, Sensor),//checks if depth not danger for animal
+                                new HealthAbove(100),//checks health above  value
+                                new SelectorNode(
+                                    new SequenceNode(
+                                        new HealthAbove(50),
+                                        new DetectPlayer(100),//detect random player from nearby targets store target to chase
+                                        new ChaseTarget(100, 1.5f, 4, Sensor)//chase player target
+                                    ),
+                                    new RandomSelectorNode(
+                                        new Wander(5, Deffinition.DesiredDepth, 6, Sensor),//wander random swimming
+                                        new SwimAway(3),
+                                        new Wander(10, Deffinition.DesiredDepth, 6, Sensor)//wander random swimming
+                                    )
+                                )
+                            ),
+                            new RandomSelectorNode(
+                                new SwimAway(3),
+                                new SwimAway(5),
+                                new SwimAway(10)
+                            )
+                        )
+                    )
+                )
+            );
+        }
+        /// <summary>
+        /// Update
+        /// </summary>
         protected override void UpdateCreature()
         {
             base.UpdateCreature();
-            // Assign target once
-            /*Movement.TurnSpeed = 0.02f;
-            Movement.TurnForce = 0.8f;
-            Movement.DesiredSpeed = 2f;
-            Movement.ForwardForce = 100f;
-            Movement.Acceleration = 10f;
-            Movement.DepthGain = 50f;
-            Movement.MaxBuoyancyForce = 500f;
-            Movement.VerticalDamping = 20f;
-            desireddepth = Movement.DesiredDepth;
-            if (!SeaNavigator.HasTarget)
+            if (!IsValid() ||
+                Character.IsDead)
+                return;
+            if (Character.Physics == null)
+                return;
+            if (!WaterModAPI.IsUnderwater(Character.GetPosition()))
             {
-                IMyPlayer player = MyAPIGateway.Session?.Player;
-                if (player?.Character != null)
+                Movement.IsMoving = false;
+                return;
+            }
+            SetMovementData();
+            SetAttackData();
+            if (BT != null &&
+                BT.Blackboard != null)
+            {
+                if (BT.Blackboard.Has("DesiredDirection"))
                 {
-                    Vector3D playerPosition = player.Character.GetPosition();
-                    SeaNavigator.TargetPosition = playerPosition;
-                    float targetDepth = (float)Math.Abs((double)WaterModAPI.GetDepth(playerPosition));
-                    Movement.DesiredDepth = targetDepth - 2f;
-                    SeaNavigator.HasTarget = true;
-                    AquaExpansionSession.Insance.Log(true, $"{Movement.DesiredDepth}");
+                    Vector3 desiredDirection = BT.Blackboard.Get<Vector3>("DesiredDirection");
+                    if (desiredDirection.LengthSquared() > 0.001f)
+                    {
+                        desiredDirection.Normalize();
+                        Movement.DesiredDirection = desiredDirection;
+                    }
                 }
-            }*/
-            /*Movement.IsMoving = true;
-            Movement.TurnSpeed = 0.03f;
-            Movement.DesiredSpeed = 2f;
-            Movement.MaxSpeed = 4f;
-            Movement.UseDepthControl = true;
-            if (!SeaNavigator.HasTarget)
-            {
-                IMyPlayer player = MyAPIGateway.Session?.Player;
-                if (player?.Character != null)
+                if (BT.Blackboard.Has("DesiredSpeed"))
                 {
-                    var pos  = player.Character.GetPosition();
-                    SeaNavigator.TargetPosition = pos;
-                    float depth = Math.Abs(AquaExpansionSession.Insance.GetWaterDepthbyCharacter(player.Character));
-                    Movement.DesiredDepth = depth - 2f;
-                    SeaNavigator.HasTarget = true;
+                    Movement.DesiredSpeed = BT.Blackboard.Get<float>("DesiredSpeed");
+                }
+                if (BT.Blackboard.Has("DesiredDepth"))
+                {
+                    Movement.DesiredDepth = BT.Blackboard.Get<float>("DesiredDepth");
                 }
             }
-            SeaNavigator.Update(Character,Movement);
-            desireddepth = Movement.DesiredDepth;
-            SeaCreatureMovement.Update(Character,Movement,true);
-            SeaCreatureMovement.Debug(Character, Movement, true);*/
+            SeaCreatureMovement.Update(Character,Movement,Sensor,Movement.IsMoving,GetAnimalTick);
         }
-
-        protected override SeaCreatureDefinition GetDefinition()
+        /// <summary>
+        /// Set movement
+        /// </summary>
+        protected override void SetMovementData()
         {
-            return SeaAnimalDefinitions.Shark;
+            base.SetMovementData();
+            Movement.IsMoving = true;
+            Movement.DesiredSpeed = Deffinition.DesiredSpeed;
+            Movement.DesiredDepth = Deffinition.DesiredDepth;
+            Movement.MaxSpeed = Deffinition.MaxSpeed;
+            Movement.Acceleration = Deffinition.Acceleration;
+            Movement.ForwardForce = Deffinition.ForwardForce;
+            Movement.TurnSpeed = Deffinition.TurnSpeed;
+            Movement.DepthGain = Deffinition.DepthGain;
+            Movement.MaxBuoyancyForce = Deffinition.MaxBuoyancyForce;
+            Movement.VerticalDamping = Deffinition.VerticalDamping;
+            Movement.UseDepthControl = true;
+        }
+        /// <summary>
+        /// Set Attack
+        /// </summary>
+        protected override void SetAttackData()
+        {
+            base.SetAttackData();
+            Attack.AttackRadius = Deffinition.AttackRadius;
+            Attack.AttackInterval = Deffinition.AttackInterval;
+            Attack.HealhDamage = Deffinition.HealthDamage;
+            Attack.AttackCenter = Deffinition.AttackCenter;
+            Attack.Agression = Deffinition.Agression;
         }
     }
 }

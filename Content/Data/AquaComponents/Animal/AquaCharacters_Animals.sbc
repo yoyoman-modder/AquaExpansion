@@ -10,7 +10,7 @@
 			<AnimationController>Aqua_WhiteShark</AnimationController>
             <Name>WhiteShark</Name>
             <Model>Models\Characters\WhiteShark.mwm</Model>
-			<DeathSoundName>BotWolfDeath</DeathSoundName>
+			<!--<DeathSoundName>BotWolfDeath</DeathSoundName>-->
 			<HeadServerOffset>0.25</HeadServerOffset>
             <LoopingFootsteps>true</LoopingFootsteps>
             <PhysicalMaterial>Wolf</PhysicalMaterial>

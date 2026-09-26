@@ -167,7 +167,7 @@ namespace AquaExpansion.Core.Combat
         /// <param name="damagehealth"></param>
         public static void LogAquaProjectileWaterPhysics(float mass,WaterTrajectoryType type, float water, float speed, float density, float drag, float dec, float damagemass, float damagehealth, float eloss)
         {
-            AquaExpansionSession.Insance.Log(true,
+           AquaExpansionSession.Insance.Log(true,
            string.Format(
             "AquaProjectile Data\n" +
             "Mass          : {0:0.00}\n" +
@@ -1215,15 +1215,14 @@ namespace AquaExpansion.Core.Combat
             Vector3D position = matrix.Translation;
             MatrixD identity = weapon.GunBase.GetMuzzleLocalMatrix();
             MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            //int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
             bool created =
                 MyParticlesManager.TryCreateParticleEffect(
                     effectName,
                     ref identity,
                     ref position,
                     weapon.Render.GetRenderObjectID(),
-                    out effect,
-                    keepXFramesAhead);
+                    out effect);
             /*AquaExpansionSession.Insance.Log(
                 true,
                 $"Rifle particle created={created} " +
@@ -1296,15 +1295,14 @@ namespace AquaExpansion.Core.Combat
             Vector3D position = pos;
             MatrixD identity = matrix;
             MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            //int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
             bool created =
                  MyParticlesManager.TryCreateParticleEffect(
                     effectName,
                     ref identity,
                     ref position,
                     weapon.Render.GetRenderObjectID(),
-                    out effect,
-                    keepXFramesAhead);
+                    out effect);
             /*AquaExpansionSession.Insance.Log(
                 true,
                 $"Rifle particle created={created} " +
@@ -1856,7 +1854,7 @@ namespace AquaExpansion.Core.Combat
                 34f,
                 0.92f,
                 0.85f,
-                "AquaBulletTrailSmall",
+                "",
                 0f,
                 0f,
                 0f,
@@ -1877,7 +1875,7 @@ namespace AquaExpansion.Core.Combat
                 0f,
                 0f,
                 0f,
-                "AquaBulletTrailSmall",
+                "AquaMissileTrail",
                 0.40f,
                 0.1f, //engine acceleration
                 0.10f,

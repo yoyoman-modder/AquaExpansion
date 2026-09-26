@@ -53,6 +53,7 @@ namespace AquaExpansion.UnderwaterTurbine
         private float Boost = 0f;
         long originalGridId;
         public AquaExpansionUtils utils;
+        private bool disabledByWaterRules;
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -75,7 +76,7 @@ namespace AquaExpansion.UnderwaterTurbine
         {
             if (block != null && !block.Closed)
             {
-                if (block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()) && (grid != null || !grid.Closed) && grid.IsStatic)
+                if (block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()) && (grid != null && !grid.Closed) && grid.IsStatic)
                 {
                     info.AppendLine(Ttitle);
                     SetInfo(info);
@@ -109,14 +110,14 @@ namespace AquaExpansion.UnderwaterTurbine
         {
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
-            //if (grid == null || grid.Closed || grid.MarkedForClose)
-                //return;
+            if (grid == null || grid.Closed || grid.MarkedForClose)
+                return;
             if (grid.Physics == null)
                 return;
-            //if (!grid.IsStatic)
-                //return;
-            if (!WaterModAPI.IsUnderwater(block.GetPosition()) || !grid.IsStatic || grid == null || grid.Closed || grid.MarkedForClose)
-                block.Enabled = false;
+            if (!grid.IsStatic)
+                return;
+            if (Rotor == null || Rotor.Closed)
+                SetTurbineRotor();
             UpdateTurbineBlades();
             base.UpdateBeforeSimulation();
         }
@@ -188,7 +189,7 @@ namespace AquaExpansion.UnderwaterTurbine
         }
         private void UpdatePowerSource()
         {
-            if (block == null || !block.Enabled || !block.IsFunctional || source == null || block.Closed)
+            /*if (block == null || !block.Enabled || !block.IsFunctional || source == null || block.Closed)
             {
                 source.SetMaxOutputByType(MyResourceDistributorComponent.ElectricityId, 0f);
             }
@@ -196,7 +197,17 @@ namespace AquaExpansion.UnderwaterTurbine
             {
                 WaterEfficiency = CalculatePowerOutput();
                 source.SetMaxOutputByType(MyResourceDistributorComponent.ElectricityId, WaterEfficiency);
+            }*/
+            if (source == null)
+                return;
+            if (block == null || block.Closed || !block.Enabled || !block.IsFunctional)
+            {
+                WaterEfficiency = 0f;
+                source.SetMaxOutputByType(MyResourceDistributorComponent.ElectricityId,0f);
+                return;
             }
+            WaterEfficiency = CalculatePowerOutput();
+            source.SetMaxOutputByType(MyResourceDistributorComponent.ElectricityId,WaterEfficiency);
         }
         private void SetInfo(StringBuilder info)
         {
@@ -220,9 +231,22 @@ namespace AquaExpansion.UnderwaterTurbine
         }
         private void UpdateTurbineBlades()
         {
-            if (Rotor == null || block == null || block.Closed || !block.IsFunctional || !block.Enabled)
-            return;
-            float deltaTime = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            /*if (Rotor == null || block == null || block.Closed)
+                return;
+            if (!block.IsFunctional || !block.Enabled)
+            {
+                currentRPM = 0f;
+                targetRPM = 0f;
+                return;
+            }
+            if (source == null)
+                return;
+            /*if (Rotor == null || block == null || block.Closed || !block.IsFunctional || !block.Enabled)
+            {
+                AquaExpansionSession.Insance.Log(true,$"Turbile disabled func {block.IsFunctional} enabled {block.Enabled}");
+                return;
+            }*/
+            /*float deltaTime = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
             // --- SAFE POWER RATIO ---
             float maxOutput = Math.Max(source.MaxOutput, 0.0001f);
             float curretOutput = Math.Max(source.CurrentOutput, 0f);
@@ -253,6 +277,42 @@ namespace AquaExpansion.UnderwaterTurbine
             targetRPM = currentRPM * noise;
             // --- APPLY ROTATION ---
             Matrix rotation = Matrix.CreateFromAxisAngle(rotorBaseMatrix.Up, angle);
+            Matrix finalMatrix = rotation * rotorBaseMatrix;
+            Rotor.PositionComp.SetLocalMatrix(ref finalMatrix);*/
+            if (block == null || block.Closed)
+                return;
+            if (!block.IsFunctional || !block.Enabled)
+            {
+                currentRPM = 0f;
+                targetRPM = 0f;
+                return;
+            }
+            if (Rotor == null || Rotor.Closed)
+            {
+                SetTurbineRotor();
+                if (Rotor == null)
+                    return;
+            }
+            if (source == null)
+                return;
+            float deltaTime = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            float maxOutput = Math.Max(source.MaxOutput, 0.0001f);
+            float powerRatio = MathHelper.Clamp(WaterEfficiency / maxOutput,0f,1f);
+            float LBoost = (saltLevel - 1f) / 2f;
+            float rpmBoost = 1f + LBoost * 0.2f;
+            targetRPM = MAX_RPM * powerRatio * rpmBoost;
+            if (powerRatio > 0.01f)
+                targetRPM = Math.Max(targetRPM, 2f);
+            float accelBoost = 1f + ((LBoost - 1f) * 0.4f);
+            float lerpSpeed = targetRPM > currentRPM ? ACCELERATION * accelBoost : DECELERATION;
+            currentRPM = MathHelper.Lerp(currentRPM,targetRPM,lerpSpeed * deltaTime);
+            if (float.IsNaN(currentRPM) || float.IsInfinity(currentRPM))
+                currentRPM = 0f;
+            float angularSpeed = currentRPM * MathHelper.TwoPi / 60f;
+            angle += angularSpeed * deltaTime;
+            if (angle > MathHelper.TwoPi)
+                angle -= MathHelper.TwoPi;
+            Matrix rotation = Matrix.CreateFromAxisAngle(rotorBaseMatrix.Up,angle);
             Matrix finalMatrix = rotation * rotorBaseMatrix;
             Rotor.PositionComp.SetLocalMatrix(ref finalMatrix);
         }

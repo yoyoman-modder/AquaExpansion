@@ -1,6 +1,7 @@
-﻿using AquaExpansion.Core.Combat;
+﻿using AquaExpansion.Core.Animals;
+using AquaExpansion.Core.Animals.System;
+using AquaExpansion.Core.Combat;
 using AquaExpansion.Core.Combat.Balistics;
-using AquaExpansion.Core.Animals;
 using Draygo.API;
 using Jakaria.API;
 using ProtoBuf;
@@ -84,22 +85,39 @@ namespace AquaExpansion.Core
         //modding
         private bool ModdingAllowed = false;
         private bool HydroAmmoModdingAllowed = false;
+        private bool AnimalModdingAllowed = false;
+        //animals
+        private SeaAnimalSpawner SeaAnimalSpawner;
         private enum ChatCommandPermission { Public,ServerOnly,AdminOnly }
         public override void LoadData()
         {
             Insance = this;
             InitModdingTools();
+            TextAPI = new HudAPIv2(onRegisteredCallback);
             JetpackUnderWaterSystem = new AquaJetpackUnderWaterSystem();
             latentScheduler = new LatentScheduler();
-            TextAPI = new HudAPIv2(onRegisteredCallback);
             balistics = new UnderwaterBalisticsSystem();
+            SeaAnimalSpawner = new SeaAnimalSpawner();
             MyAPIGateway.Entities.OnEntityAdd += OnEntityAdd;
             MyAPIGateway.Entities.OnEntityRemove += OnEntityRemove;
             MyAPIGateway.Utilities.MessageEntered += OnMessageEntered;
             GetMods();
             InitDatabases();
+            InitAnimalSpawner();
             CheckBalisticFallback();
             base.LoadData();
+        }
+        private void UpdateSharedSystems()
+        {
+            
+        }
+        private void UpdateClientSystems()
+        {
+            
+        }
+        private void UpdateServerSystems()
+        {
+            
         }
         private  void LogFilteredBlocks()
         {
@@ -134,7 +152,7 @@ namespace AquaExpansion.Core
         }
         private void GetWCConnected()
         {
-            Log(true, $"WeaponCore Found! Balistics System disabled!");
+            //Log(true, $"WeaponCore Found");
             usebalisticsFallback = false;
         }
         private void CheckBalisticFallback()
@@ -230,16 +248,6 @@ namespace AquaExpansion.Core
         }
         private void RegisterGrid(IMyCubeGrid grid)
         {
-            /*if (grid == null || grid.Closed || TrackedGrids.Contains(grid))
-                return;
-            TrackedGrids.Add(grid);
-            grid.OnBlockAdded += OnBlockAdded;
-            grid.OnBlockRemoved += OnBlockRemoved;
-            // collect existing blocks
-            var blocks = new List<IMySlimBlock>();
-            grid.GetBlocks(blocks);
-            foreach (var slim in blocks)
-                AddBlock(slim.FatBlock as IMyTerminalBlock);*/
             if (grid == null ||
                 grid.Closed ||
                 grid.MarkedForClose ||
@@ -256,14 +264,10 @@ namespace AquaExpansion.Core
         }
         private void RemoveBlock(IMyTerminalBlock block)
         {
-            /*if (block == null || block.Closed)
-                return;
-            TerminalTracedBlocks.Remove(block);
-            GlobalEffects.StopEffect(block.EntityId, effects);*/
             if (block == null)
                 return;
             TerminalTracedBlocks.Remove(block);
-            GlobalEffects.StopEffect(block.EntityId,effects);
+            GlobalEffects.StopEffect(block.EntityId, effects);
         }
         private void OnBlockAdded(IMySlimBlock block)
         {
@@ -274,17 +278,11 @@ namespace AquaExpansion.Core
             if (block == null || block.Closed || TerminalTracedBlocks.Contains(block))
                 return;
             TerminalTracedBlocks.Add(block);
-            GlobalEffects.CreateEffect(block, GetEffectByBlockType(block),scale, effects);
+            GlobalEffects.CreateEffect(block, GetEffectByBlockType(block), scale, effects);
         }
         private void OnEntityRemove(IMyEntity entity)
         {
             var grid = entity as IMyCubeGrid;
-            /*if (grid != null && TrackedGrids.Contains(grid))
-            {
-                grid.OnBlockAdded -= OnBlockAdded;
-                grid.OnBlockRemoved -= OnBlockRemoved;
-                TrackedGrids.Remove(grid);
-            }*/
             UnRegisterGrid(grid);
         }
         private void UnRegisterGrid(IMyCubeGrid grid)
@@ -320,7 +318,7 @@ namespace AquaExpansion.Core
             {
                 if (block == null || block.Closed || block.MarkedForClose)
                     continue;
-                ProcessEngineBlock(block);
+                    ProcessEngineBlock(block);
             }
             //Log(true, $"Engine blocks {TrackedThrusters.Count}");
         }
@@ -339,7 +337,6 @@ namespace AquaExpansion.Core
                 {
                     if (toRemove == null)
                         toRemove = new List<IMyThrust>();
-
                     toRemove.Add(thruster);
                 }
             }
@@ -347,8 +344,7 @@ namespace AquaExpansion.Core
             {
                 foreach (var t in toRemove)
                 {
-                    //StopEngineEffect(t);
-                    GlobalEffects.StopEngineEffect(t.EntityId,Engineeffects);
+                    GlobalEffects.StopEngineEffect(t.EntityId, Engineeffects);
                     TrackedThrusters.Remove(t);
                 }
             }
@@ -360,7 +356,10 @@ namespace AquaExpansion.Core
                 bool isUnderwater = WaterModAPI.IsUnderwater(thrust.GetPosition());
                 if (!isUnderwater)
                 {
-                    thrust.Enabled = true;
+                    if (IsServer)
+                    {
+                        thrust.Enabled = true;
+                    }
                     return true;
                 }
                 return false;
@@ -388,20 +387,29 @@ namespace AquaExpansion.Core
                 {
                     if (!BannedThrusters.Contains(thruster))
                     {
-                        thruster.Enabled = false;
+                        if (IsServer)
+                        {
+                            thruster.Enabled = false;
+                        }
                         BannedThrusters.Add(thruster);
                     }
                     if (thruster.Enabled)
                     {
-                        thruster.Enabled = false;
-                        thruster.ThrustOverridePercentage = 0f;
+                        if (IsServer)
+                        {
+                            thruster.Enabled = false;
+                            thruster.ThrustOverridePercentage = 0f;
+                        }
                     }
                 }
                 else
                 {
                     if (BannedThrusters.Contains(thruster))
                     {
-                        thruster.Enabled = true;
+                        if (IsServer)
+                        {
+                            thruster.Enabled = true;
+                        }
                         BannedThrusters.Remove(thruster);
                     }
                 }
@@ -431,7 +439,6 @@ namespace AquaExpansion.Core
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
             CheckUnderwaterBlockRules(block, false);
-
         }
         private void ControllFarms(IMyFunctionalBlock block)
         {
@@ -456,7 +463,6 @@ namespace AquaExpansion.Core
                 {
                     if (toRemove == null)
                         toRemove = new List<IMyFunctionalBlock>();
-
                     toRemove.Add(farm);
                 }
             }
@@ -572,12 +578,14 @@ namespace AquaExpansion.Core
                 bool isUnderwater = WaterModAPI.IsUnderwater(turbine.GetPosition());
                 if (!isUnderwater)
                 {
-                    turbine.Enabled = true;
+                    if (IsServer)
+                    {
+                        turbine.Enabled = true;
+                    }
                     return true;
                 }
                 return false;
             });
-
             // Cleanup + restore solars
             BannedSolars.RemoveWhere(solar =>
             {
@@ -586,12 +594,14 @@ namespace AquaExpansion.Core
                 bool isUnderwater = WaterModAPI.IsUnderwater(solar.GetPosition());
                 if (!isUnderwater)
                 {
-                    solar.Enabled = true;
+                    if (IsServer)
+                    {
+                        solar.Enabled = true;
+                    } 
                     return true;
                 }
                 return false;
             });
-
             // Main scan
             foreach (var block in TerminalTracedBlocks)
             {
@@ -607,11 +617,19 @@ namespace AquaExpansion.Core
                         if (!BannedTurbines.Contains(turbine))
                             BannedTurbines.Add(turbine);
                         if (turbine.Enabled)
-                            turbine.Enabled = false;
+                        {
+                            if (IsServer)
+                            {
+                                turbine.Enabled = false;
+                            }
+                        }  
                     }
                     else if (BannedTurbines.Contains(turbine))
                     {
-                        turbine.Enabled = true;
+                        if (IsServer)
+                        {
+                            turbine.Enabled = true;
+                        }
                         BannedTurbines.Remove(turbine);
                     }
                     continue;
@@ -625,11 +643,19 @@ namespace AquaExpansion.Core
                         if (!BannedSolars.Contains(solar))
                             BannedSolars.Add(solar);
                         if (solar.Enabled)
-                            solar.Enabled = false;
+                        {
+                            if (IsServer)
+                            {
+                                solar.Enabled = false;
+                            }
+                        } 
                     }
                     else if (BannedSolars.Contains(solar))
                     {
-                        solar.Enabled = true;
+                        if (IsServer)
+                        {
+                            solar.Enabled = true;
+                        }
                         BannedSolars.Remove(solar);
                     }
                     continue;
@@ -663,7 +689,6 @@ namespace AquaExpansion.Core
             scale = dist > effectLod2disSq * effectLod2disSq ? 0.5f : 1f;
             if (effect == null)
             {
-                //CreateEffect(block, scale);
                 GlobalEffects.CreateEffect(block, GetEffectByBlockType(block), scale, effects);
             }
             else
@@ -682,7 +707,6 @@ namespace AquaExpansion.Core
             //LOD 1
             if (dist > effectLod1disSq * effectLod1disSq)
             {
-                //StopEngineEffect(block);
                 GlobalEffects.StopEngineEffect(block.EntityId, Engineeffects);
                 return;
             }
@@ -692,7 +716,6 @@ namespace AquaExpansion.Core
             Engineeffects.TryGetValue(block.EntityId, out effect);
             if (!isUnderwater || isBroken || !block.Enabled || !block.IsWorking)
             {
-                //StopEngineEffect(block);
                 GlobalEffects.StopEngineEffect(block.EntityId, Engineeffects);
                 return;
             }
@@ -700,8 +723,8 @@ namespace AquaExpansion.Core
             scale = dist > effectLod2disSq * effectLod2disSq ? 0.5f : 1f;
             if (effect == null)
             {
-                //CreateEngineEffect(block, scale);
-                GlobalEffects.CreateEngineEffect(block, GetEngineEffect(block),scale,Engineeffects);
+                
+                GlobalEffects.CreateEngineEffect(block, GetEngineEffect(block), scale, Engineeffects);
             }
             else
             {
@@ -763,13 +786,23 @@ namespace AquaExpansion.Core
             if (grid != null)
                 RegisterGrid(grid);
         }
+        /// <summary>
+        /// Init
+        /// </summary>
+        /// <param name="sessionComponent"></param>
         public override void Init(MyObjectBuilder_SessionComponent sessionComponent)
         {
             base.Init(sessionComponent);
             LineAnimationManager.Init(ticksPerUpdate);
+            if (IsClient)
+            {
+                EnviromentHighlightControll();
+            }
+            if (IsServer)
+            {
+                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, BeforeDamage);
+            }
             Log(true, $"Welcome back!");
-            EnviromentHighlightControll();
-            MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, BeforeDamage);
         }
         /// <summary>
         /// Cancel Asphyxia damage underwater for seaanimals
@@ -814,6 +847,7 @@ namespace AquaExpansion.Core
             latentScheduler.Update();
             SetDephbasedColor();
             UpdateBalisticsFallback();
+            SeaAnimalSpawner.Update(latentScheduler);
             base.UpdateBeforeSimulation();
             //LogFilteredBlocks();
         }
@@ -1412,14 +1446,16 @@ namespace AquaExpansion.Core
             bool isUnderwater = WaterModAPI.IsUnderwater(block.GetPosition());
             if (!isUnderwater)
                 return;
-
             if (OnlyinAirtight)
             {
                 float ingridox;
                 GetBlockInAirtightGrid(block, out ingridox);
                 if (isUnderwater && ingridox < MIN_ENVOXYGENLEVEL)
                 {
-                    block.Enabled = false;
+                    if (IsServer)
+                    {
+                        block.Enabled = false;
+                    }
                     //AquaExpansionSession.Insance.Log(true, $"{block.EntityId} disabled by underwater rules");
                     return;
                 }
@@ -1429,7 +1465,10 @@ namespace AquaExpansion.Core
                 var depth = GetWaterDepth(block);
                 if (isUnderwater && depth < -ApexFarmMaxworkDepth)
                 {
-                    block.Enabled = false;
+                    if (IsServer)
+                    {
+                        block.Enabled = false;
+                    }
                     //AquaExpansionSession.Insance.Log(true, $"{block.EntityId} disabled by underwater rules: depth > -{ApexFarmMaxworkDepth} m");
                     return;
                 }
@@ -1437,16 +1476,6 @@ namespace AquaExpansion.Core
         }
         public bool IsPlayerProtected(IMyPlayer player)
         {
-            /*var seat = player.Controller?.ControlledEntity?.Entity as IMyShipController;
-            if (seat != null)
-            {
-                var incocpit = seat as IMyCockpit;
-                if (incocpit != null && incocpit.OxygenFilledRatio > 0)
-                {
-                    return true;
-                }
-            }
-            return false;*/
             if (player == null)
                 return false;
             if (player.Controller == null)
@@ -1466,6 +1495,8 @@ namespace AquaExpansion.Core
         }
         public bool IsPlayerControlling(IMyPlayer player)
         {
+            if (player == null)
+                return false;
             var controlled = player.Controller?.ControlledEntity?.Entity;
             // Large or small turret
             if (controlled is IMyLargeTurretBase)
@@ -1572,6 +1603,7 @@ namespace AquaExpansion.Core
             TextAPI.Close();
             ClearBalisticksFallback();
             balistics = null;
+            ClearAnimalSpawner();
             Insance = null;
         }
         private void SpawnTestAnimal(String BotSubtype, string Creaturename)
@@ -1601,10 +1633,10 @@ namespace AquaExpansion.Core
         }
         private void PressToSpawnAnimal()
         {
-            if (MyAPIGateway.Input.IsNewKeyPressed(MyKeys.T))
+            /*if (MyAPIGateway.Input.IsNewKeyPressed(MyKeys.Control))
             {
-                //SpawnTestAnimal("AquaShark_Bot", "White Shark");
-            }
+                SpawnTestAnimal("AquaShark_Bot", "White Shark");
+            }*/
         }
         private string GetShipWelderEffect(IMyShipWelder block)
         {
@@ -1632,7 +1664,6 @@ namespace AquaExpansion.Core
             //LOD 1
             if (dist > effectLod1disSq * effectLod1disSq)
             {
-                //StopShipWelderEffect(block);
                 GlobalEffects.StopShipWelderEffect(block.EntityId, WeldereffectsShip);
                 return;
             }
@@ -1646,7 +1677,6 @@ namespace AquaExpansion.Core
             if (!isUnderwater || isBroken || !block.Enabled || !block.IsWorking || !block.IsActivated || 
                 (isUnderwater && ingridox > MIN_ENVOXYGENLEVEL))
             {
-                //StopShipWelderEffect(block);
                 GlobalEffects.StopShipWelderEffect(block.EntityId, WeldereffectsShip);
                 return;
             }
@@ -1654,7 +1684,6 @@ namespace AquaExpansion.Core
             scale = dist > effectLod2disSq * effectLod2disSq ? 0.5f : 1f;
             if (effect == null)
             {
-                //CreateShipWelderEffect(block, scale);
                 GlobalEffects.CreateShipWelderEffect(block,GetShipWelderEffect(block), scale, WeldereffectsShip);
             }
             else
@@ -1670,8 +1699,11 @@ namespace AquaExpansion.Core
             {
                 if (block == null || block.Closed || block.MarkedForClose)
                     continue;
-                ProcessShipWelderBlock(block);
-                UpdateShipWelderEffects();
+                if (IsClient)
+                {
+                    ProcessShipWelderBlock(block);
+                    UpdateShipWelderEffects();
+                }
             }
             //Log(true, $"Ship Welder blocks {TrackedShipWelders.Count}");
         }
@@ -1690,7 +1722,6 @@ namespace AquaExpansion.Core
                 {
                     if (toRemove == null)
                         toRemove = new List<IMyShipWelder>();
-
                     toRemove.Add(welder);
                 }
             }
@@ -1698,7 +1729,10 @@ namespace AquaExpansion.Core
             {
                 foreach (var w in toRemove)
                 {
-                    GlobalEffects.StopShipWelderEffect(w.EntityId, WeldereffectsShip);
+                    if (IsClient)
+                    {
+                        GlobalEffects.StopShipWelderEffect(w.EntityId, WeldereffectsShip);
+                    }
                     TrackedShipWelders.Remove(w);
                 }
             }
@@ -1714,7 +1748,10 @@ namespace AquaExpansion.Core
                 if (isUnderwater && !TrackedShipWelders.Contains(welder))
                 {
                     TrackedShipWelders.Add(welder);
-                    GlobalEffects.CreateShipWelderEffect(welder, GetShipWelderEffect(welder),scale, WeldereffectsShip);
+                    if (IsClient)
+                    {
+                        GlobalEffects.CreateShipWelderEffect(welder, GetShipWelderEffect(welder), scale, WeldereffectsShip);
+                    }
                 }
             }
         }
@@ -1748,7 +1785,11 @@ namespace AquaExpansion.Core
             if (DisableModding(messageText,player,ref sendToOthers))
                 return;
             if (DisableHydroAmmoModding(messageText,player,ref sendToOthers))
-            return;
+                return;
+            if (AllowAnimalModding(messageText, player, ref sendToOthers))
+                return;
+            if (DisableAnimalModding(messageText, player, ref sendToOthers))
+                return;
             if (ChatTestSound(messageText,player,ref sendToOthers))
             {
                 return;
@@ -1854,6 +1895,11 @@ namespace AquaExpansion.Core
             HydroAmmoModdingAllowed = false;
             LogsEnabled = false;
             RenderEnabled = false;
+            AnimalModdingAllowed = false;
+            AnimalDebugEnabled = false;
+            AnimalDebugRenderEnabled = false;
+            AnimalSensorRenderEnabled = false;
+            AnimalBTDebugEnabled = false;
             Log(true,AquaModdingNamesDatabase.GetModCommandByID(12));
             return true;
         }
@@ -1935,6 +1981,123 @@ namespace AquaExpansion.Core
             }
             return true;
         }
+        private bool AllowAnimalModding(string chatMessage, IMyPlayer player, ref bool sendToOthers)
+        {
+            if (!ModdingAllowed)
+                return false;
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            string command = chatMessage.Trim();
+            if (!HasCommandPermission(player, ChatCommandPermission.AdminOnly))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            if (!AnimalModdingAllowed)
+            {
+                if (!command.Equals(AquaModdingNamesDatabase.GetModCommandByID(26), StringComparison.OrdinalIgnoreCase))
+                    return false;
+                sendToOthers = false;
+                AnimalModdingAllowed = true;
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(28));
+                return true;
+            }
+            // Runtime balancing commands
+            if (command.StartsWith(AquaModdingNamesDatabase.GetModCommandByID(31), StringComparison.OrdinalIgnoreCase))
+            {
+                sendToOthers = false;
+                ChatAnimal(command, sendToOthers);
+                return true;
+            }
+            return false;
+        }
+        private void ChatAnimal(string chatMessage, bool sendToOthers)
+        {
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return;
+            string[] args = chatMessage.Split(
+                new[] { ' ' },
+                StringSplitOptions.RemoveEmptyEntries);
+            if (args.Length < 2)
+            {
+                AnimalUtils.ShowAnimalHelp();
+                return;
+            }
+            string command = args[1].ToLower();
+            switch (command)
+            {
+                case "help":
+                    AnimalUtils.ShowAnimalHelp();
+                    return;
+                case "clear":
+                    SeaAnimalDatabase.ClearRuntime();
+                    MyAPIGateway.Utilities.ShowMessage(AquaAPI,
+                    AquaModdingNamesDatabase.GetModCommandByID(32));
+                    return;
+                case "log":
+                    AnimalDebugEnabled = !AnimalDebugEnabled;
+                    MyAPIGateway.Utilities.ShowMessage(AquaAPI,
+                    AquaModdingNamesDatabase.GetModCommandByID(AnimalDebugEnabled ? 34 : 35));
+                    return;
+                case "list":
+                    AnimalUtils.ListAllAnimalData();
+                    return;
+                case "vis":
+                    AnimalDebugRenderEnabled = !AnimalDebugRenderEnabled;
+                    MyAPIGateway.Utilities.ShowMessage(AquaAPI,
+                    AquaModdingNamesDatabase.GetModCommandByID(AnimalDebugRenderEnabled ? 36 : 37));
+                    return;
+                case "sensor":
+                    AnimalSensorRenderEnabled = !AnimalSensorRenderEnabled;
+                    MyAPIGateway.Utilities.ShowMessage(AquaAPI,
+                    AquaModdingNamesDatabase.GetModCommandByID(AnimalSensorRenderEnabled ? 38 : 39));
+                    return;
+                case "bt":
+                    AnimalBTDebugEnabled = !AnimalBTDebugEnabled;
+                    MyAPIGateway.Utilities.ShowMessage(AquaAPI,
+                    AquaModdingNamesDatabase.GetModCommandByID(AnimalBTDebugEnabled ? 40 : 41));
+                    return;
+            }
+            // Animal-specific commands
+            if (args.Length < 3)
+            {
+                AnimalUtils.ShowAnimalHelp();
+                return;
+            }
+            AnimalUtils.ExecuteAnimalCommand(args);
+        }
+        private bool DisableAnimalModding(string chatMessage, IMyPlayer player, ref bool sendToOthers)
+        {
+            if (!ModdingAllowed)
+                return false;
+            if (string.IsNullOrWhiteSpace(chatMessage))
+                return false;
+            string command = chatMessage.Trim();
+            string disableCommand = AquaModdingNamesDatabase.GetModCommandByID(27);
+            if (!command.Equals(disableCommand, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+            // Consume the command locally.
+            sendToOthers = false;
+            if (!HasCommandPermission(player, ChatCommandPermission.AdminOnly))
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(23));
+                return true;
+            }
+            if (!AnimalModdingAllowed)
+            {
+                Log(true, AquaModdingNamesDatabase.GetModCommandByID(30));
+                return true;
+            }
+            AnimalModdingAllowed = false;
+            AnimalDebugEnabled = false;
+            AnimalDebugRenderEnabled = false;
+            AnimalSensorRenderEnabled = false;
+            AnimalBTDebugEnabled = false;
+            Log(true, AquaModdingNamesDatabase.GetModCommandByID(29));
+            return true;
+        }
         private void InitModdingTools()
         {
             AquaModdingNamesDatabase.Init();
@@ -1942,6 +2105,13 @@ namespace AquaExpansion.Core
             HydroAmmoDatabase.Init();
             UnderwaterWeaponBurstDatabase.Init();
             GlobalEffects.Init();
+            InitAnimalModdingTools();
+        }
+        private void InitAnimalModdingTools()
+        {
+            SeaAnimalComponentDatabase.Init();
+            SeaAnimalFoodItemsDatabase.Init();
+            SeaAnimalDatabase.Init();
         }
         private void InitDatabases()
         {
@@ -1984,6 +2154,14 @@ namespace AquaExpansion.Core
         }
         public bool LogsEnabled { get; set; }
         public bool RenderEnabled { get; set; }
+        public bool isAnimalModdingEnabled
+        {
+            get { return AnimalModdingAllowed; }
+        }
+        public bool AnimalDebugEnabled { get; set; }
+        public bool AnimalDebugRenderEnabled { get; set; }
+        public bool AnimalBTDebugEnabled { get; set; }
+        public bool AnimalSensorRenderEnabled { get; set; }
         public bool HasBalistics
         {
             get { return usebalisticsFallback; }
@@ -2019,6 +2197,41 @@ namespace AquaExpansion.Core
         private void UpdateHandTools()
         {
             ToolsProcessor.UpdateHandWelders(Trackedhandwelders, Weldereffects);
+        }
+        private void InitAnimalSpawner()
+        {
+            SeaAnimalSpawner.Init();
+        }
+        private void ClearAnimalSpawner()
+        {
+            if (SeaAnimalSpawner != null)
+            {
+                SeaAnimalSpawner.Close();
+                SeaAnimalSpawner = null;
+            }
+            SeaAnimalSpawner = null;
+        }
+        //Server
+        private bool IsServer
+        {
+            get
+            {
+                return MyAPIGateway.Multiplayer.IsServer;
+            }
+        }
+        private bool IsDedicated
+        {
+            get
+            {
+                return MyAPIGateway.Utilities.IsDedicated;
+            }
+        }
+        private bool IsClient
+        {
+            get
+            {
+                return !MyAPIGateway.Multiplayer.IsServer;
+            }
         }
         protected override void UnloadData()
         {

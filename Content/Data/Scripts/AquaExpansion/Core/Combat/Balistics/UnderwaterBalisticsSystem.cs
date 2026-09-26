@@ -93,7 +93,7 @@ namespace AquaExpansion.Core.Combat.Balistics
             TrackedRailguns.Clear();
             TrackedTurrets.Clear();
             ProjectileProcessor.Clear();
-            MissileProcessor.ClearEffects();
+            MissileProcessor.ClearAll();
             HydroAmmoDatabase.ClearRuntime();
         }
         public void ChatHAmmo(string chatMessage, bool sendToOthers)

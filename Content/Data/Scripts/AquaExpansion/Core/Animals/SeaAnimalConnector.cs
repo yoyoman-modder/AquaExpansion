@@ -16,6 +16,9 @@ namespace AquaExpansion.Core.Animals
         private bool ready = false;
         private BioLatentScheduler Biobuffer;
         private Dictionary<string, Func<MyGameLogicComponent>> SeaAnimalsLogicData = new Dictionary<string, Func<MyGameLogicComponent>>();
+        /// <summary>
+        /// SeaAnimalbridge stat
+        /// </summary>
         public MyEntityStat SeaAnimalBridge
         {
             get 
@@ -28,7 +31,12 @@ namespace AquaExpansion.Core.Animals
                 return animalbridge;
             }
         }
-
+        /// <summary>
+        /// Init 
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="stats"></param>
+        /// <param name="scriptName"></param>
         public override void Init(IMyCharacter character, Dictionary<MyStringHash, MyEntityStat> stats, string scriptName)
         {
             base.Init(character, stats, scriptName);
@@ -39,23 +47,23 @@ namespace AquaExpansion.Core.Animals
                 {
                     ConstructSeaAnimalData();
                 }
-                if (animalbridge.MaxValue == 2)
-                {
-                    ConstructModSeaAnimalData();
-                }
             }
             Biobuffer = new BioLatentScheduler();
         }
-
+        /// <summary>
+        /// Connect component to SeaAnimal
+        /// </summary>
         private void ConnectToAnimal()
         {
             if (ready)
                 return;
             ready = true;
-            Biobuffer.Schedule(GetSeaAnimal, 2);
+            Biobuffer.Schedule(GetSeaAnimal, 2,false,0);
 
         }
-
+        /// <summary>
+        /// Add bridge cmponent to SeaAnimal
+        /// </summary>
         private void GetSeaAnimal()
         {
             if (base.Character != null && !base.Character.Closed && !base.Character.IsDead)
@@ -68,17 +76,18 @@ namespace AquaExpansion.Core.Animals
                 }
             }
         }
-
+        /// <summary>
+        /// Fill the dictionary with all the SeaAnimal component that can be attached to the SeaAnimal by SubtypeiD
+        /// </summary>
         private void ConstructSeaAnimalData()
         {
-            SeaAnimalsLogicData.Add("AquaWhiteShark", () => new SeaCreatureWhiteShark());
+            SeaAnimalsLogicData = SeaAnimalComponentDatabase.FillAnimalComponents();
         }
-
-        private void ConstructModSeaAnimalData()
-        {
-            
-        }
-
+        /// <summary>
+        /// Create and Add SeaAnimal bridge Component
+        /// </summary>
+        /// <param name="animal"></param>
+        /// <param name="typekey"></param>
         private void AddAnimalComponent(IMyCharacter animal, string typekey)
         {
             if (animal == null || animal.MarkedForClose || animal.IsDead)
@@ -106,14 +115,18 @@ namespace AquaExpansion.Core.Animals
                 //AquaExpansionSession.Insance.Log(true, $"Attached {newComp.GetType().Name} to {animal.Definition.Id.SubtypeName}");
             }
         }
-
+        /// <summary>
+        /// Update
+        /// </summary>
         public override void Update()
         {
             ConnectToAnimal();
             Biobuffer.Update();
             base.Update();
         }
-
+        /// <summary>
+        /// Close
+        /// </summary>
         public override void Close()
         {
             MyEntityStat animalbridge = this.SeaAnimalBridge;

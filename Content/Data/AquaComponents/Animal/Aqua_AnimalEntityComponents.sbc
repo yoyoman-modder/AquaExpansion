@@ -5,6 +5,15 @@
 		<!-- Region Inventory-->
 		<!-- End Region Inventory-->
 		<!-- Region Mod Storage-->
+		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
+			<Id>
+				<TypeId>ModStorageComponent</TypeId>
+				<SubtypeId>AquaWhiteShark</SubtypeId>
+			</Id>
+			<RegisteredStorageGuids>
+				<guid>D33FD442-888A-4BF4-A41E-8F016FF10484</guid>
+			</RegisteredStorageGuids>
+		</EntityComponent>
 		<!-- End Region Mod Storage-->
 		<!-- Region Cnoveoir-->
 		<!--End Region Cnoveoir-->

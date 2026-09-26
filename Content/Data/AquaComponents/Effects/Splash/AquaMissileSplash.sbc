@@ -263,7 +263,7 @@
               <ValueFloat>1</ValueFloat>
             </Property>
             <Property AnimationType="Const" Name="Enabled" Type="Bool">
-              <ValueBool>true</ValueBool>
+              <ValueBool>false</ValueBool>
             </Property>
             <Property AnimationType="Animated" Name="Particles per second" Type="Float">
               <Keys>
@@ -707,7 +707,7 @@
               <ValueFloat>1</ValueFloat>
             </Property>
             <Property AnimationType="Const" Name="Enabled" Type="Bool">
-              <ValueBool>true</ValueBool>
+              <ValueBool>false</ValueBool>
             </Property>
             <Property AnimationType="Animated" Name="Particles per second" Type="Float">
               <Keys>
@@ -1151,7 +1151,7 @@
               <ValueFloat>1</ValueFloat>
             </Property>
             <Property AnimationType="Const" Name="Enabled" Type="Bool">
-              <ValueBool>true</ValueBool>
+              <ValueBool>false</ValueBool>
             </Property>
             <Property AnimationType="Animated" Name="Particles per second" Type="Float">
               <Keys>
@@ -1595,7 +1595,7 @@
               <ValueFloat>1</ValueFloat>
             </Property>
             <Property AnimationType="Const" Name="Enabled" Type="Bool">
-              <ValueBool>true</ValueBool>
+              <ValueBool>false</ValueBool>
             </Property>
             <Property AnimationType="Animated" Name="Particles per second" Type="Float">
               <Keys>
@@ -1910,7 +1910,7 @@
               <ValueVector3>
                 <X>0</X>
                 <Y>0</Y>
-                <Z>-1</Z>
+                <Z>1</Z>
               </ValueVector3>
             </Property>
             <Property AnimationType="Animated" Name="Velocity" Type="Float">
@@ -2793,7 +2793,7 @@
               <ValueVector3>
                 <X>0</X>
                 <Y>0</Y>
-                <Z>-1</Z>
+                <Z>0</Z>
               </ValueVector3>
             </Property>
             <Property AnimationType="Animated" Name="Velocity" Type="Float">
@@ -4184,7 +4184,7 @@
               <ValueVector3>
                 <X>0</X>
                 <Y>0</Y>
-                <Z>-1</Z>
+                <Z>1</Z>
               </ValueVector3>
             </Property>
             <Property AnimationType="Animated" Name="Velocity" Type="Float">

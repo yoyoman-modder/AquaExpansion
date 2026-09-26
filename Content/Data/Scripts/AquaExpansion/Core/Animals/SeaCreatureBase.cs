@@ -1,4 +1,5 @@
-﻿using AquaExpansion.Core;
+﻿using AquaExpansion.Core.BT;
+using Jakaria.API;
 using Sandbox.Game;
 using Sandbox.Game.Components;
 using Sandbox.ModAPI;
@@ -10,6 +11,7 @@ using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 using VRage.ObjectBuilders;
+using VRage.Utils;
 using VRageMath;
 
 namespace AquaExpansion.Core.Animals
@@ -24,13 +26,26 @@ namespace AquaExpansion.Core.Animals
         private MyInventory inv;
         private IMyInventory chinv;
         private HashSet<string> AnimalFoodSubtypes = new HashSet<string>();
-        protected string AnimalEnergyFood = "food";
+        private HashSet<string> AnimalWasteSubtypes = new HashSet<string>();
         private MyFixedPoint FoodAmount = new MyFixedPoint();
         private int FoodCount;
         protected SeadCreatureMovementData Movement;
-        protected float speed = 0.0f;
-        protected float desireddepth;
         protected SeaCreatureNavigator SeaNavigator;
+        protected SeaCreatureDefinition Deffinition;
+        protected AnimalSensor Sensor;
+        private int animalTick;
+        private IMyGps AnimalBTmarker;
+        //Behavior Tree integration
+        protected BehaviorTree BT;
+        protected Blackboard BB;
+        private bool BTInitializationScheduled = false;
+        private bool BTready = false;
+        private BioLatentScheduler biobuffer;
+        protected SeaCreatureAttackData Attack;
+        /// <summary>
+        /// Init Sea Creature
+        /// </summary>
+        /// <param name="objectBuilder"></param>
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -40,42 +55,75 @@ namespace AquaExpansion.Core.Animals
             showmarker = true;
             GetAnimalInventory();
             FillFoodSubtypes();
+            FillWasteSubtypes();
+            biobuffer = new BioLatentScheduler();
             scheduler = new LatentScheduler();
             Movement = new SeadCreatureMovementData();
-            Movement.Definition = GetDefinition();
             SeaNavigator = new SeaCreatureNavigator();
-            //AquaExpansionSession.Insance.Log(true, $"Init start in {GetType().Name}");
-            /*foreach (var comp in Character.Components)
-            {
-                AquaExpansionSession.Insance.Log(true, comp.GetType().Name);
-            }*/
+            Sensor = new AnimalSensor();
+            Attack = new SeaCreatureAttackData();
             NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
         }
-        public override void UpdateAfterSimulation()
+        /// <summary>
+        /// Update internal
+        /// </summary>
+        public override void UpdateBeforeSimulation()
         {
+            UpdateAnimalTick();
+            BehaviorTreeRun();
             if (!IsValid())
                 return;
+            UpdateSeaCreatureDeffinition();
             UpdateMarker();
+            UpdateAnimalSensor();
+            // Executes delayed callbacks.
+            biobuffer.Update();
+            // Runs BT if initialization has completed.
+            UpdateBehaviorTree();
+            // Applies movement/state produced by BT.
+            UpdateBTMarker();
             UpdateCreature();
+            AnimalCauseDeath();
+            AnimalAttackSphere();
             scheduler.Update();
-            base.UpdateAfterSimulation();
+            base.UpdateBeforeSimulation();
         }
-        public override void UpdateAfterSimulation10()
+        public override void UpdateBeforeSimulation10()
         {
-            if (!IsValid())
+            if (!IsValid() || Character.IsDead)
                 return;
             LifeSupport(true);
             CountInventoryFood(out FoodCount);
-            base.UpdateAfterSimulation10();
+            base.UpdateBeforeSimulation10();
         }
         /// <summary>
-        /// Update
+        /// Update internal Animal Tick
+        /// </summary>
+        private void UpdateAnimalTick()
+        {
+            animalTick++;
+        }
+        /// <summary>
+        /// Component Main Update
         /// </summary>
         protected virtual void UpdateCreature()
         {
            
         }
-        protected abstract SeaCreatureDefinition GetDefinition();
+        /// <summary>
+        /// Set Attack Data
+        /// </summary>
+        protected virtual void SetAttackData()
+        {
+            
+        }
+        /// <summary>
+        /// Set MovementData
+        /// </summary>
+        protected virtual void SetMovementData()
+        {
+            
+        }
         /// <summary>
         /// Update debug marker
         /// </summary>
@@ -95,6 +143,24 @@ namespace AquaExpansion.Core.Animals
             }
         }
         /// <summary>
+        /// Update BehaviorTree marker
+        /// </summary>
+        private void UpdateBTMarker()
+        {
+            if (!IsValid() || Character.IsDead)
+            {
+                if (AnimalBTmarker != null)
+                {
+                    RemoveBTMarker(AnimalBTmarker);
+                    AnimalBTmarker = null;
+                }
+            }
+            else
+            {
+                UpdateBTRunMarker();
+            }
+        }
+        /// <summary>
         /// Remove marker
         /// </summary>
         /// <param name="marker"></param>
@@ -105,19 +171,14 @@ namespace AquaExpansion.Core.Animals
             MyAPIGateway.Session.GPS.RemoveLocalGps(marker);
         }
         /// <summary>
-        /// Crate Dead marker
+        /// Remove BehaviorTree marker
         /// </summary>
-        private void CreateDeadmarker()
+        /// <param name="marker"></param>
+        private void RemoveBTMarker(IMyGps marker)
         {
-            if (Animalinfomarker == null)
-            {
-                Vector3D deadpos = Character.GetPosition();
-                Animalinfomarker = CreateInfoMarker();
-                Animalinfomarker.Name = "DEAD";
-                Animalinfomarker.GPSColor = Color.White;
-                Animalinfomarker.Coords = deadpos;
-                Animalinfomarker.ShowOnHud = true;
-            }
+            MyAPIGateway.Session.GPS.AddLocalGps(marker);
+            marker.ShowOnHud = true;
+            MyAPIGateway.Session.GPS.RemoveLocalGps(marker);
         }
         /// <summary>
         /// Create Debug marker
@@ -132,16 +193,28 @@ namespace AquaExpansion.Core.Animals
             return animalgps;
         }
         /// <summary>
+        /// Create Debug BehaviorTree marker
+        /// </summary>
+        /// <returns></returns>
+        private IMyGps CreateBTMarker()
+        {
+            IMyGps btgps = MyAPIGateway.Session.GPS.Create(string.Empty, string.Empty, Vector3D.Zero, true, false);
+            MyAPIGateway.Session.GPS.AddLocalGps(btgps);
+            btgps.ShowOnHud = false;
+            MyAPIGateway.Session.GPS.RemoveLocalGps(btgps);
+            return btgps;
+        }
+        /// <summary>
         /// Update Info marker
         /// </summary>
-        public void UpdateInfoMarker()
+        private void UpdateInfoMarker()
         {
             if (!IsValid())
                 return;
             Vector3D pos = Character.GetPosition();
             Vector3D up = Character.WorldMatrix.Up;
             float height = 1f;
-            if (showmarker)
+            if (AquaExpansionSession.Insance.AnimalDebugRenderEnabled)
             {
                 if (Animalinfomarker == null)
                 {
@@ -153,7 +226,7 @@ namespace AquaExpansion.Core.Animals
                 float energyvalue = AnimalEnergy();
                 string AnimalName = Character.DisplayName;
                 float depth = AquaExpansionSession.Insance.GetWaterDepthbyCharacter(Character);
-                speed = Character.Physics.LinearVelocity.Length();
+                float speed = Character.Physics.LinearVelocity.Length();
                 Animalinfomarker.Name = $"{AnimalName}\nHealth {healthvalue} Energy {energyvalue:0}% Food {FoodCount}\n" +
                     $"Speed {Math.Round(speed)} m/s Depth {Math.Round(depth)}m";
                 Animalinfomarker.GPSColor = Color.PaleGreen;
@@ -164,6 +237,37 @@ namespace AquaExpansion.Core.Animals
                 {
                     RemoveMarker(Animalinfomarker);
                     Animalinfomarker = null;
+                }
+            }
+        }
+        /// <summary>
+        /// Update BehaviorTree Running marker
+        /// </summary>
+        private void UpdateBTRunMarker()
+        {
+            if (!IsValid())
+                return;
+            Vector3D pos = Character.GetPosition();
+            Vector3D f = Character.WorldMatrix.Forward;
+            float length = 2f;
+            if (AquaExpansionSession.Insance.AnimalBTDebugEnabled)
+            {
+                if (AnimalBTmarker == null)
+                {
+                    AnimalBTmarker = CreateBTMarker();
+                }
+                AnimalBTmarker.Coords = pos + (f * length);
+                AnimalBTmarker.ShowOnHud = true;
+                AnimalBTmarker.Name = $"BT Run\n" +
+                (BT?.CurrentNodeName ?? "None");
+                AnimalBTmarker.GPSColor = Color.PaleGreen;
+            }
+            else
+            {
+                if (AnimalBTmarker != null)
+                {
+                    RemoveBTMarker(AnimalBTmarker);
+                    AnimalBTmarker = null;
                 }
             }
         }
@@ -202,7 +306,7 @@ namespace AquaExpansion.Core.Animals
         /// Validate Character
         /// </summary>
         /// <returns></returns>
-        private bool IsValid()
+        protected bool IsValid()
         {
             return Character != null
                 && Character.Physics != null
@@ -214,7 +318,14 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void FillFoodSubtypes()
         {
-            AnimalFoodSubtypes.Add("AquaAnimalMeatRaw");
+            AnimalFoodSubtypes = SeaAnimalFoodItemsDatabase.FillAnimalFoodItems();
+        }
+        /// <summary>
+        /// Fill Waste subtypes
+        /// </summary>
+        private void FillWasteSubtypes()
+        {
+            AnimalWasteSubtypes = SeaAnimalFoodItemsDatabase.FillAnimalWasteData();
         }
         /// <summary>
         /// Animal Get Food
@@ -225,10 +336,10 @@ namespace AquaExpansion.Core.Animals
                 return;
             if (inv == null || chinv == null || inv.IsFull)
                 return;
-            if (string.IsNullOrEmpty(AnimalEnergyFood) || !AnimalFoodSubtypes.Contains(AnimalEnergyFood))
+            if (string.IsNullOrEmpty(Deffinition.Food) || !AnimalFoodSubtypes.Contains(Deffinition.Food))
                 return;
             FoodAmount = 1;
-            var itemdef = GetSubtypebyObjectBuilder(AnimalEnergyFood);
+            var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
             var obj = (MyObjectBuilder_PhysicalObject)MyObjectBuilderSerializer.CreateNewObject(itemdef);
             inv.AddItems(FoodAmount, obj);
             ready = false;
@@ -272,7 +383,7 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void AnimalGetEnergy()
         {
-            var itemdef = GetSubtypebyObjectBuilder(AnimalEnergyFood);
+            var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
             inv.ConsumeItem(itemdef, 1, Character.EntityId);
             //AquaExpansionSession.Insance.Log(true, $"Animal get Energy");
         }
@@ -317,23 +428,275 @@ namespace AquaExpansion.Core.Animals
             }
         }
         /// <summary>
-        /// Clear
+        /// Get AnimalTick
         /// </summary>
-        protected void DebugAnimaState()
+        protected int GetAnimalTick
         {
-            if (Character != null)
+            get 
             {
-                string animation = Character.CurrentMovementState.ToString();
-                AquaExpansionSession.Insance.Log(true, ($"Movement state: {animation}"));
+                return animalTick;
             }
         }
+        /// <summary>
+        /// Init Sea Creature Deffinition
+        /// </summary>
+        private void UpdateSeaCreatureDeffinition()
+        {
+            Deffinition = SeaAnimalDatabase.Get(Character.Definition.Id.SubtypeId.String) ?? SeaAnimalDatabase.DefaultAnimal();
+        }
+        /// <summary>
+        /// Animal Death by Enviroment
+        /// </summary>
+        private void AnimalCauseDeath()
+        {
+            if (animalTick % 30 != 0)
+                return;
+            if (!IsValid() || Character.IsDead)
+                return;
+            if (!WaterModAPI.IsUnderwater(Character.GetPosition()))
+            {
+                Movement.IsMoving = false;
+                Character.DoDamage(20f, MyStringHash.GetOrCompute("Asphyxia"),true);
+                return;
+            }
+            bool voxelCollision = false;
+            bool gridCollision = false;
+            if (Sensor != null)
+            {
+                if (Sensor.IsGroundDetected &&
+                    Sensor.GroundDistance >= 0f &&
+                    Sensor.GroundDistance <= 0.1f)
+                {
+                    IMyVoxelBase voxel =
+                        Sensor.GroundHitEntity as IMyVoxelBase;
+
+                    if (voxel != null)
+                        voxelCollision = true;
+                }
+                if (Sensor.FrontObstacleDetected &&
+                    Sensor.FrontObstacleDistance <= 0.1f)
+                {
+                    gridCollision = true;
+                }
+                if (Sensor.LeftObstacleDetected &&
+                    Sensor.LeftObstacleDistance <= 0.1f)
+                {
+                    gridCollision = true;
+                }
+                if (Sensor.RightObstacleDetected &&
+                    Sensor.RightObstacleDistance <= 0.1f)
+                {
+                    gridCollision = true;
+                }
+                if (Sensor.UpGridObstacleDetected &&
+                    Sensor.UpGridObstacleDistance <= 0.1f)
+                {
+                    gridCollision = true;
+                }
+                if (Sensor.DownGridObstacleDetected &&
+                    Sensor.DownGridObstacleDistance <= 0.1f)
+                {
+                    gridCollision = true;
+                }
+            }
+            if (voxelCollision)
+            {
+                Character.DoDamage(2f,MyStringHash.GetOrCompute("Enviroment"),true);
+            }
+            if (gridCollision)
+            {
+                Character.DoDamage(2f,MyStringHash.GetOrCompute("Enviroment"),true);
+            }
+
+        }
+        /// <summary>
+        /// Animal Attack
+        /// </summary>
+        private void AnimalAttackSphere()
+        {
+            if (!IsValid() || Character.IsDead)
+                return;
+            if (Deffinition == null)
+                return;
+            if (Deffinition.Behavior != SeaAnimalBehavior.Predator)
+                return;
+            if (Attack == null)
+                return;
+            if (Attack.AttackInterval <= 0)
+                return;
+            if (animalTick % Attack.AttackInterval != 0)
+                return;
+            Vector3D animalPosition = Character.GetPosition();
+            Vector3D forward = Character.WorldMatrix.Forward;
+            forward.Normalize();
+            Vector3D spherePosition = animalPosition + forward * Deffinition.AttackCenter;
+            float radius = Attack.AttackRadius;
+            BoundingSphereD sphere = new BoundingSphereD(spherePosition,radius);
+            AnimalUtils.DebugSphere(spherePosition, Color.Red, radius);
+            List<IMyEntity> entities = MyAPIGateway.Entities.GetTopMostEntitiesInSphere(ref sphere);
+            if (entities == null)
+                return;
+            IMyCharacter closestTarget = null;
+            double closestDistanceSquared = double.MaxValue;
+            double radiusSquared = radius * radius;
+            foreach (IMyEntity entity in entities)
+            {
+                if (entity == null ||
+                    entity == Character ||
+                    entity.MarkedForClose)
+                    continue;
+                IMyCharacter target = entity as IMyCharacter;
+                if (target == null ||
+                    target.IsDead ||
+                    target.MarkedForClose)
+                    continue;
+                Vector3D closestPoint = AnimalUtils.GetClosestPointOnAABB(target.PositionComp.WorldAABB,spherePosition);
+                double distanceSquared = Vector3D.DistanceSquared(spherePosition,closestPoint);
+                if (distanceSquared > radiusSquared)
+                    continue;
+                if (distanceSquared < closestDistanceSquared)
+                {
+                    closestDistanceSquared = distanceSquared;
+                    closestTarget = target;
+                }
+            }
+            if (closestTarget == null)
+                return;
+            closestTarget.DoDamage(Attack.HealhDamage,MyStringHash.GetOrCompute("Enviroment"),true,null,Character.EntityId);
+        }
+        /// <summary>
+        /// Update Animal Sensor
+        /// </summary>
+        private void UpdateAnimalSensor()
+        {
+            if (!IsValid() || Character.IsDead || Sensor == null)
+                return;
+            if (AquaExpansionSession.Insance.isModdingEnabled && AquaExpansionSession.Insance.isAnimalModdingEnabled && AquaExpansionSession.Insance.AnimalSensorRenderEnabled)
+            {
+                Sensor.Render = true;
+            }
+            else
+            {
+                Sensor.Render = false;
+            }
+                Sensor.Update(Character);
+        }
+        /// <summary>
+        /// BehaviorTree Run init on update
+        /// </summary>
+        private void BehaviorTreeRun()
+        {
+            if (BTready || BTInitializationScheduled)
+                return;
+            BTInitializationScheduled = true;
+            biobuffer.Schedule(TryInitializeBT, 2,false,0);
+        }
+        /// <summary>
+        /// Try init BehaviorTree in later update
+        /// </summary>
+        /// <returns></returns>
+        private void TryInitializeBT()
+        {
+            BTInitializationScheduled = false;
+            if (Entity == null)
+            {
+                BTready = false;
+                AquaExpansionSession.Insance.Log(true,$"Failed to init for {Entity?.DisplayName}");
+                return;
+            }
+            Character = Entity as IMyCharacter;
+            if (!IsValid() || Character.IsDead)
+            {
+                BTready = false;
+                AquaExpansionSession.Insance.Log(true, $"Failed to init for {Character?.Definition.Id.SubtypeId}");
+                return;
+            }
+            BT = BuildTree();
+            if (BT == null)
+            {
+                BTready = false;
+                AquaExpansionSession.Insance.Log(true, $"BuildTree() returned null for {Entity?.DisplayName}");
+                return;
+            }
+            BTready = true;
+            AquaExpansionSession.Insance.Log(true, $"BuildTree() Initialized {Entity?.DisplayName ?? "Entity"}");
+        }
+        /// <summary>
+        /// Construct Behavior Tree in Child Classes
+        /// </summary>
+        /// <returns></returns>
+        protected abstract BehaviorTree BuildTree();
+        /// <summary>
+        /// Update behavior Tree Tick
+        /// </summary>
+        protected virtual void UpdateBehaviorTree()
+        {
+            // Never assume non-null, guard again
+            if (!BTready || BT == null || !IsValid() || Character.IsDead)
+                return;
+            float deltaTime = (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            BT.Update(Character, deltaTime);
+        }
+        /// <summary>
+        /// Clear Behavior Tree
+        /// </summary>
+        /// <param name="node"></param>
+        private void ClearTree(BehaviorNode node)
+        {
+            if (node == null)
+                return;
+            SelectorNode sel = node as SelectorNode;
+            if (sel != null)
+            {
+                for (int i = 0; i < sel.children.Count; i++)
+                {
+                    ClearTree(sel.children[i]);
+                }
+                sel.children.Clear();
+                return;
+            }
+            SequenceNode seq = node as SequenceNode;
+            if (seq != null)
+            {
+                for (int i = 0; i < seq.children.Count; i++)
+                {
+                    ClearTree(seq.children[i]);
+                }
+                seq.children.Clear();
+                return;
+            }
+        }
+        /// <summary>
+        /// Close Tree
+        /// </summary>
+        private void CloseBehaviorTree()
+        {
+            if (BT != null)
+            {
+                ClearTree(BT.root);
+                BT = null;
+            }
+            BB = null;
+        }
+        /// <summary>
+        /// Clear
+        /// </summary>
         private void Clear()
         {
+            CloseBehaviorTree();
+            biobuffer.Clear();
+            scheduler.Clear();
+            Attack = null;
+            Sensor = null;
             SeaNavigator = null;
             Movement = null;
+            biobuffer = null;
             scheduler = null;
             Character = null;
         }
+        /// <summary>
+        /// Close
+        /// </summary>
         public override void Close()
         {
             Clear();

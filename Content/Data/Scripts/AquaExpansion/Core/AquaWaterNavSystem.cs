@@ -93,7 +93,7 @@ namespace AquaExpansionExperimental.Core
         public override void UpdateBeforeSimulation()
         {
             base.UpdateBeforeSimulation();
-            Update();
+            //Update();
         }
         /// <summary>
         /// Update system by streaming sectors around the player.

@@ -5155,6 +5155,22 @@ namespace AquaExpansion.Core
             RegisterModCommand(23, "You must be a server admin to use this command.");
             RegisterModCommand(24, "HydroAmmoProfile Render Tracers enabled");
             RegisterModCommand(25, "HydroAmmoProfile Render Tracers disabled");
+            RegisterModCommand(26, "/iknowanimalmodding");
+            RegisterModCommand(27, "/exitanimalmodding");
+            RegisterModCommand(28, "Animal runtime balancing enabled.");
+            RegisterModCommand(29, "Animal runtime balancing disabled.");
+            RegisterModCommand(30, "Animal runtime balancing already disabled.");
+            RegisterModCommand(31, "/animal");
+            RegisterModCommand(32, "All runtime animal overrides cleared.");
+            RegisterModCommand(33, "Unknown animal subtype: ");
+            RegisterModCommand(34, "Animal Debug enabled");
+            RegisterModCommand(35, "Animal Debug disabled");
+            RegisterModCommand(36, "Animal Render Debug enabled");
+            RegisterModCommand(37, "Animal Render Debug disabled");
+            RegisterModCommand(38, "Animal Sensor Debug enabled");
+            RegisterModCommand(39, "Animal Sensor Debug disabled");
+            RegisterModCommand(40, "Animal BehaviorTree Debug enabled");
+            RegisterModCommand(41, "Animal BehaviorTree Debug disabled");
         }
         private static void RegisterModCommand(int id, string line)
         {
@@ -5343,15 +5359,14 @@ namespace AquaExpansion.Core
             MatrixD matrix = MatrixD.Identity;
             Vector3D position = welder.GetMuzzlePosition();
             MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            //int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
             bool created =
                 MyParticlesManager.TryCreateParticleEffect(
                     effectName,
                     ref matrix,
                     ref position,
                     welder.Render.GetRenderObjectID(),
-                    out effect,
-                    keepXFramesAhead);
+                    out effect);
             if (!created || effect == null)
                 return;
             effect.Autodelete = false;
@@ -5390,8 +5405,8 @@ namespace AquaExpansion.Core
             MatrixD matrix = block.LocalMatrix;
             Vector3D pos = block.GetPosition();
             MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
+            //int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect))
             {
                 effect.WorldMatrix = matrix;
                 effect.Autodelete = false;
@@ -5427,10 +5442,10 @@ namespace AquaExpansion.Core
                 return;
             }
             MatrixD matrix = block.LocalMatrix;
-            Vector3D pos = logic.Flamepos;
+            Vector3D pos = block.GetPosition();
             MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
+            //int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            if (MyParticlesManager.TryCreateParticleEffect(EeffectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect))
             {
                 effect.WorldMatrix = matrix;
                 effect.Autodelete = false;
@@ -5462,8 +5477,8 @@ namespace AquaExpansion.Core
             MatrixD matrix = block.LocalMatrix;
             Vector3D pos = block.GetPosition();
             MyParticleEffect effect;
-            int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
-            if (MyParticlesManager.TryCreateParticleEffect(effectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect, keepXFramesAhead))
+            //int keepXFramesAhead = MyAPIGateway.Session.IsServer ? 0 : 1;
+            if (MyParticlesManager.TryCreateParticleEffect(effectName, ref matrix, ref pos, grid.Render.GetRenderObjectID(), out effect))
             {
                 effect.WorldMatrix = matrix;
                 effect.Autodelete = false;

@@ -141,28 +141,8 @@ namespace AquaExpansion.Core.Combat.Balistics
                 mis.MarkedForClose)
                 return;
             AquaWeaponBlockBase handler = mis.GameLogic.GetAs<AquaWeaponBlockBase>();
-            /*if (handler == null ||
-                !handler.HasMuzzle ||
-                handler.GetMuzzle == null)
-                return;*/
             if (handler == null)
                 return;
-            /*Vector3D muzzlePosition = Vector3D.Transform(handler.GetMuzzle.Matrix.Translation, mis.WorldMatrix);
-            Vector3D muzzleForward = Vector3D.TransformNormal(handler.GetMuzzle.Matrix.Forward, mis.WorldMatrix);
-            muzzleForward.Normalize();
-            Vector3D offset = handler.MuzzleOffset;
-            double muzzleDistance = -offset.Z;
-            Vector3D actualMuzzlePosition = muzzlePosition + muzzleForward * muzzleDistance;
-            CombatUtils.DebugPoint(
-                muzzlePosition,
-                Color.Red,
-                0.15f);
-            CombatUtils.DebugPoint(
-                actualMuzzlePosition,
-                Color.Green,
-                0.15f);
-            if (!WaterModAPI.IsUnderwater(actualMuzzlePosition))
-                return;*/
             if (!mis.Enabled)
                 mis.Enabled = true;
         }
