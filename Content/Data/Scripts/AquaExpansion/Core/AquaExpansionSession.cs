@@ -152,7 +152,6 @@ namespace AquaExpansion.Core
         }
         private void GetWCConnected()
         {
-            //Log(true, $"WeaponCore Found");
             usebalisticsFallback = false;
         }
         private void CheckBalisticFallback()
@@ -160,7 +159,6 @@ namespace AquaExpansion.Core
             if (usebalisticsFallback)
             {
                 balistics.Load();
-                //Log(true, $"Balistics System init");
             }
         }
         private void ClearBalisticksFallback()
@@ -308,7 +306,6 @@ namespace AquaExpansion.Core
                     continue;
                 ProcessBlock(block);
             }
-            //Log(true, $" Terminal blocks {TerminalTracedBlocks.Count}");
         }
         private void UpdateEngineBlocks()
         {
@@ -320,7 +317,6 @@ namespace AquaExpansion.Core
                     continue;
                     ProcessEngineBlock(block);
             }
-            //Log(true, $"Engine blocks {TrackedThrusters.Count}");
         }
         private void FilterThrusters()
         {
@@ -822,7 +818,6 @@ namespace AquaExpansion.Core
                 {
                     info.Amount = 0f;
                 }
-                //AquaExpansionSession.Insance.Log(true, $"Damage  {info.Type}");
             }
         }
         private void onRegisteredCallback()
@@ -849,7 +844,6 @@ namespace AquaExpansion.Core
             UpdateBalisticsFallback();
             SeaAnimalSpawner.Update(latentScheduler);
             base.UpdateBeforeSimulation();
-            //LogFilteredBlocks();
         }
         public override void UpdateAfterSimulation()
         {
@@ -865,8 +859,6 @@ namespace AquaExpansion.Core
             if (enviromentdef != null)
             {
                 OriginalInteractionColor = enviromentdef.ContourHighlightColor;
-                //Log(true, $" envdata {OriginalInteractionColor.ToVector4()}");
-                
             }
         }
         private void SetDephbasedColor()
@@ -875,7 +867,6 @@ namespace AquaExpansion.Core
             {
                 UpdateGlobalHUDColor();
                 Vector4 linearColor = RGBtoXYZW(GlobaldepthbasedHUDColor);
-                //Log(true, $"current color is {GlobaldepthbasedHUDColor} to linear {linearColor}");
                 Vector4 hcolor = new Vector4(linearColor.X, linearColor.Y, linearColor.Z, linearColor.W);
                 enviromentdef.ContourHighlightColor = hcolor;
             }
@@ -1165,8 +1156,13 @@ namespace AquaExpansion.Core
         {
             foreach (var player in GetPlayersWithCharacters())
             {
-                JetpackUnderWaterSystem.SetDiverMode(player.Character, player.IdentityId, tick);
-                JetpackUnderWaterSystem.AddPID(player.IdentityId);
+                if (player == null ||
+                    player.Character == null)
+                    continue;
+                JetpackUnderWaterSystem.SetDiverMode(
+                    player.Character,
+                    player.IdentityId,
+                    tick);
             }
         }
         private void ConstructHUD()
@@ -1174,83 +1170,106 @@ namespace AquaExpansion.Core
             if (!Heartbeat)
                 return;
             var player = MyAPIGateway.Session?.Player;
-            var character = player?.Character;
-            if (character == null || character.Closed || character.IsDead)
+            if (player == null)
+            {
+                HideHUD();
+                return;
+            }
+            var character = player.Character;
+            if (character == null ||
+                character.Closed ||
+                character.IsDead)
+            {
+                HideHUD();
+                return;
+            }
+            int gear = 0;
+            bool O2refil = false;
+            if (!JetpackUnderWaterSystem.TryGetPlayerState(player.IdentityId,out gear,out O2refil))
             {
                 HideHUD();
                 return;
             }
             bool isUnderwater = WaterModAPI.IsUnderwater(character.GetPosition());
-            float Fullunderwater = GetUnderWaterPercent(character);
-            var energy = MyVisualScriptLogicProvider.GetPlayersEnergyLevel(player.IdentityId);
-            var helmet = MyVisualScriptLogicProvider.GetPlayersHelmetStatus(player.IdentityId);
-            var eox = MyAPIGateway.Session.OxygenProviderSystem.GetOxygenInPoint(character.GetPosition());
+            float fullUnderwater = GetUnderWaterPercent(character);
+            var oxygenProvider = MyAPIGateway.Session.OxygenProviderSystem;
+            if (oxygenProvider == null)
+            {
+                HideHUD();
+                return;
+            }
+            float energy = MyVisualScriptLogicProvider.GetPlayersEnergyLevel(player.IdentityId);
+            bool helmet = MyVisualScriptLogicProvider.GetPlayersHelmetStatus(player.IdentityId);
+            float eox = oxygenProvider.GetOxygenInPoint(character.GetPosition());
             float ingridox;
-            GetInAirtightGrid(character, out ingridox);
-            if (!isUnderwater || Fullunderwater < 1f || energy <= 0f || !helmet)
+            GetInAirtightGrid(character,out ingridox);
+            if (!isUnderwater ||
+                fullUnderwater < 1f ||
+                energy <= 0f ||
+                !helmet)
             {
                 HideHUD();
                 return;
             }
-            if (eox > MIN_ENVOXYGENLEVEL || ingridox > MIN_ENVOXYGENLEVEL || IsPlayerProtected(player))
+            if (eox > MIN_ENVOXYGENLEVEL ||
+                ingridox > MIN_ENVOXYGENLEVEL ||
+                IsPlayerProtected(player))
             {
                 HideHUD();
                 return;
             }
-            if (IsPlayerControlling(player) || isPlayeUseCamera())
+            if (IsPlayerControlling(player) ||
+                isPlayeUseCamera())
             {
                 HideHUD();
                 return;
             }
-            // --- INIT ---
             if (PressureHUD == null)
             {
-                PressureHUD = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
-                PressureHUD.Origin = new Vector2D(0, 1); // Left/Bottom
+                PressureHUD = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
+                PressureHUD.Origin = new Vector2D(0, 1);
                 PressureHUD.Offset = new Vector2D(0.25, -0.95);
             }
             if (SaltHUD == null)
             {
-                SaltHUD = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
-                SaltHUD.Origin = new Vector2D(0, 1); // Right/Bottom
+                SaltHUD = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
+                SaltHUD.Origin = new Vector2D(0, 1);
                 SaltHUD.Offset = new Vector2D(0.25, -1.0);
             }
             if (gearHUD == null)
             {
-                gearHUD = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
-                gearHUD.Origin = new Vector2D(0, 1); // Center/Bottom
+                gearHUD = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
+                gearHUD.Origin = new Vector2D(0, 1);
                 gearHUD.Offset = new Vector2D(0.25, -0.85);
             }
             if (OxygenHUD == null)
             {
-                OxygenHUD = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
+                OxygenHUD = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
                 OxygenHUD.Origin = new Vector2D(0, 1);
                 OxygenHUD.Offset = new Vector2D(0.25, -1.05);
             }
             if (DirectionLHUD == null)
             {
-                DirectionLHUD = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
+                DirectionLHUD = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
                 DirectionLHUD.Origin = new Vector2D(0, 1);
                 DirectionLHUD.Offset = new Vector2D(-0.15, -1.5);
             }
             if (DirectionRHUD == null)
             {
-                DirectionRHUD = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
+                DirectionRHUD = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
                 DirectionRHUD.Origin = new Vector2D(0, 1);
                 DirectionRHUD.Offset = new Vector2D(0.15, -1.5);
             }
             if (compassBar == null)
             {
-                compassBar = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
-                //compassBar.Origin = new Vector2D(0.5, 0.5);
-                compassBar.Offset = new Vector2D(-compassBar.GetTextLength().X / 2, -0.5);
+                compassBar = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
+                compassBar.Offset = new Vector2D(-compassBar.GetTextLength().X / 2,-0.5);
             }
             if (geardepthmeter == null)
             {
-                geardepthmeter = new HudAPIv2.HUDMessage(new StringBuilder(""), Vector2D.Zero);
-                geardepthmeter.Offset = new Vector2D(-geardepthmeter.GetTextLength().X / 2, 0);
+                geardepthmeter = new HudAPIv2.HUDMessage(new StringBuilder(""),Vector2D.Zero);
+                geardepthmeter.Offset = new Vector2D(-geardepthmeter.GetTextLength().X / 2,0);
             }
-            // --- VISIBLE ---
             PressureHUD.Visible = true;
             SaltHUD.Visible = true;
             gearHUD.Visible = true;
@@ -1259,63 +1278,51 @@ namespace AquaExpansion.Core
             DirectionRHUD.Visible = true;
             compassBar.Visible = true;
             geardepthmeter.Visible = true;
-            // --- DATA ---
             float pressure = GetPressurebyPlayer(character);
             float depth = GetWaterDepthbyCharacter(character);
-            float saltlevel = GetSaltlevelbyPlayer(character, depth);
+            float saltlevel = GetSaltlevelbyPlayer(character,depth);
             float saltP = SaltToPercent(saltlevel);
-            int gear = JetpackUnderWaterSystem.PlayerGearlevelIndx;
-            bool O2refil = JetpackUnderWaterSystem.PlayerOxygenRefillActive;
             float O2F = O2refil ? 1f : 0f;
-            // --- TEXT ---
             if (gear > 0)
             {
                 PressureHUD.Message.Clear().Append($"Pressure {pressure:0.0} Kpa");
                 SaltHUD.Message.Clear().Append($"Salt {saltP:0}%");
                 string gearName =
-                   gear == 0 ? "No Gear" :
-                   gear == 1 ? "T1" :
-                   gear == 2 ? "T2" : 
-                   gear == 3 ? "T3" : "T4";
+                    gear == 1 ? "T1" :
+                    gear == 2 ? "T2" :
+                    gear == 3 ? "T3" :
+                    "T4";
                 gearHUD.Message.Clear().Append($"Dive Gear {gearName}");
                 string O2Status = O2refil ? "ON" : "OFF";
                 OxygenHUD.Message.Clear().Append($"O2 Refill {O2Status}");
-                DirectionLHUD.Message.Clear().Append($"{LineAnimationManager.GetFrame("Ldirection")}");
-                DirectionRHUD.Message.Clear().Append($"{LineAnimationManager.GetFrame("Rdirection")}");
+                DirectionLHUD.Message.Clear().Append(LineAnimationManager.GetFrame("Ldirection"));
+                DirectionRHUD.Message.Clear().Append(LineAnimationManager.GetFrame("Rdirection"));
                 UpdateCompassBar();
                 geardepthmeter.Message.Clear().Append($"\n\n\nDepth {Math.Round(depth)}m");
             }
             else
             {
-                PressureHUD.Message.Clear().Append($"");
-                SaltHUD.Message.Clear().Append($"");
-                OxygenHUD.Message.Clear().Append($"");
-                gearHUD.Message.Clear().Append($"");
-                DirectionLHUD.Message.Clear().Append($"");
-                DirectionRHUD.Message.Clear().Append($"");
-                compassBar.Message.Clear().Append($"");
-                geardepthmeter.Message.Clear().Append($"");
+                PressureHUD.Message.Clear();
+                SaltHUD.Message.Clear();
+                OxygenHUD.Message.Clear();
+                gearHUD.Message.Clear();
+                DirectionLHUD.Message.Clear();
+                DirectionRHUD.Message.Clear();
+                compassBar.Message.Clear();
+                geardepthmeter.Message.Clear();
             }
-            // --- COLORS ---
-            // depth base color //
             float adepth = Math.Abs(depth);
-            float tintfactor = MathHelper.Clamp(adepth / maxSaltDepth, 0f, 1f);
-            Color finaltint = Color.Lerp(new Color(80, 255, 120),   // shallow green
-            new Color(0, 120, 255),  // deep blue
-            tintfactor);
-            float pressureT = MathHelper.Clamp(pressure, 0f, 1f);
-            PressureHUD.InitialColor = Color.Lerp(finaltint, finaltint, pressureT);
-            float saltT = MathHelper.Clamp(saltP, 0f, 1f);
-            SaltHUD.InitialColor = Color.Lerp(finaltint, finaltint, saltT);
-            float gearT = MathHelper.Clamp(gear / 3f, 0f, 1f);
-            gearHUD.InitialColor = Color.Lerp(finaltint, finaltint, gearT);
-            float O2T = MathHelper.Clamp(O2F, 0f, 1f);
-            float depthT = MathHelper.Clamp(depth, 0f, 1f);
-            OxygenHUD.InitialColor = Color.Lerp(Color.OrangeRed, finaltint, O2T);
-            DirectionLHUD.InitialColor = Color.Lerp(finaltint, finaltint, 0.5f);
-            DirectionRHUD.InitialColor = Color.Lerp(finaltint, finaltint, 0.5f);
-            compassBar.InitialColor = Color.Lerp(finaltint, finaltint, 0.5f);
-            geardepthmeter.InitialColor = Color.Lerp(finaltint, finaltint, depthT);
+            float tintfactor = MathHelper.Clamp(adepth / maxSaltDepth,0f,1f);
+            Color finaltint = Color.Lerp(new Color(80, 255, 120),new Color(0, 120, 255),tintfactor);
+            PressureHUD.InitialColor = finaltint;
+            SaltHUD.InitialColor = finaltint;
+            float gearT = MathHelper.Clamp(gear / 3f,0f,1f);
+            gearHUD.InitialColor = finaltint;
+            OxygenHUD.InitialColor = Color.Lerp(Color.OrangeRed,finaltint,O2F);
+            DirectionLHUD.InitialColor = finaltint;
+            DirectionRHUD.InitialColor = finaltint;
+            compassBar.InitialColor = finaltint;
+            geardepthmeter.InitialColor = finaltint;
         }
         private void UpdateGlobalHUDColor()
         {
@@ -1328,7 +1335,6 @@ namespace AquaExpansion.Core
             if (!isUnderwater || isUnderwater && Fullunderwater < 1.0f)
             {
                 GlobaldepthbasedHUDColor = OriginalInteractionColor;
-                //Log(true, $"revert to original color {GlobaldepthbasedHUDColor.ToVector4().ToString()}");
                 return;
             }
             float depth = GetWaterDepthbyCharacter(character);
@@ -1342,14 +1348,22 @@ namespace AquaExpansion.Core
         }
         private void HideHUD()
         {
-            if (PressureHUD != null) PressureHUD.Visible = false;
-            if (gearHUD != null) gearHUD.Visible = false;
-            if (SaltHUD != null) SaltHUD.Visible = false;
-            if (OxygenHUD != null) OxygenHUD.Visible = false;
-            if (DirectionLHUD != null) DirectionLHUD.Visible = false;
-            if (DirectionRHUD != null) DirectionRHUD.Visible = false;
-            if (compassBar != null) compassBar.Visible = false;
-            if (geardepthmeter != null) geardepthmeter.Visible = false;
+            if (PressureHUD != null)
+                PressureHUD.Visible = false;
+            if (gearHUD != null)
+                gearHUD.Visible = false;
+            if (SaltHUD != null)
+                SaltHUD.Visible = false;
+            if (OxygenHUD != null)
+                OxygenHUD.Visible = false;
+            if (DirectionLHUD != null)
+                DirectionLHUD.Visible = false;
+            if (DirectionRHUD != null)
+                DirectionRHUD.Visible = false;
+            if (compassBar != null)
+                compassBar.Visible = false;
+            if (geardepthmeter != null)
+                geardepthmeter.Visible = false;
         }
         private void UpdateAll()
         {
@@ -1598,6 +1612,7 @@ namespace AquaExpansion.Core
             MyAPIGateway.Entities.OnEntityRemove -= OnEntityRemove;
             MyAPIGateway.Utilities.MessageEntered -= OnMessageEntered;
             ClearTrackedBlocks();
+            JetpackUnderWaterSystem.Clear();
             latentScheduler = null;
             JetpackUnderWaterSystem = null;
             TextAPI.Close();
@@ -1705,7 +1720,6 @@ namespace AquaExpansion.Core
                     UpdateShipWelderEffects();
                 }
             }
-            //Log(true, $"Ship Welder blocks {TrackedShipWelders.Count}");
         }
         private void FilterShipWelders()
         {
@@ -2179,20 +2193,12 @@ namespace AquaExpansion.Core
             if (welder == null)
                 return;
             Trackedhandwelders.Add(welder);
-            /*Log(
-            true,
-            $"REGISTER welder={welder.EntityId} " +
-            $"count={Trackedhandwelders.Count}");*/
         }
         public void OnUnRegisterHandWelder(IMyWelder welder)
         {
             if (welder == null)
                 return;
             Trackedhandwelders.Remove(welder);
-            /*Log(
-            true,
-            $"UNREGISTER welder={welder.EntityId} " +
-            $"count={Trackedhandwelders.Count}");*/
         }
         private void UpdateHandTools()
         {
