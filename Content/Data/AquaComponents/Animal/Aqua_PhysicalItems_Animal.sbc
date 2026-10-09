@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <PhysicalItems>
+		<!--Shark Raw-->
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaAnimalRaw_WhiteSharkMeat_Raw</SubtypeId>
+			</Id>
+			<DisplayName>Toxic White Shark Meat (Raw)</DisplayName>
+			<Description>
+				Raw meat from a massive ocean predator.
+				Extremely toxic and dangerous for consumption.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\CreatureOrgans.dds</Icon>
+			<IconSymbol>SHARK</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>100.0</Mass>
+			<Volume>100.0</Volume>
+			<Model>Models\Items\CreatureOrgans.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.050" Time="30"/>
+				<Stat Name="Food" Value="0.120" Time="30"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<!--End Shark Raw-->
+    </PhysicalItems>
+</Definitions>

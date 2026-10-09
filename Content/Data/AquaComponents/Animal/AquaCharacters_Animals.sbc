@@ -16,7 +16,7 @@
             <PhysicalMaterial>Wolf</PhysicalMaterial>
             <Mass>300</Mass>
             <MaxHealth>200</MaxHealth>
-            <LootingTime>100</LootingTime>
+            <LootingTime>200</LootingTime>
             <Skeleton>Arachnid</Skeleton>
             <SpineBone>SpineCenter</SpineBone>
             <EnableFirstPersonView>false</EnableFirstPersonView>

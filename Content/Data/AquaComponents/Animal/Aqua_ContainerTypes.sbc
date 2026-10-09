@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <ContainerTypes>
+	
+	<!-- Aqua Sea Animals Loot -->
+        <ContainerType CountMin="2" CountMax="3">
+            <Id>
+                <TypeId>ContainerTypeDefinition</TypeId>
+                <SubtypeId>Aqua_WhiteSharkLoot</SubtypeId>
+            </Id>
+            <Items>
+                <Item AmountMin="1" AmountMax="2">
+                    <Frequency>1.0</Frequency>
+                    <Id>
+                        <TypeId>ConsumableItem</TypeId>
+                        <SubtypeId>AquaAnimalRaw_WhiteSharkMeat_Raw</SubtypeId>
+                    </Id>
+                </Item>
+            </Items>
+        </ContainerType>
+    </ContainerTypes>
+</Definitions>

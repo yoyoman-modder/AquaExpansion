@@ -1,8 +1,8 @@
-﻿using Jakaria.API;
+﻿using AquaExpansion.Core.Combat;
+using Jakaria.API;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
 using VRage;
 using VRage.Game;
@@ -15,6 +15,9 @@ using VRageRender;
 
 namespace AquaExpansion.Core.Animals
 {
+    /// <summary>
+    /// Animal type
+    /// </summary>
     public enum SeaAnimalType
     {
         Shark,
@@ -26,6 +29,9 @@ namespace AquaExpansion.Core.Animals
         Crustacean,
         Reptile
     }
+    /// <summary>
+    /// Animal behavior type
+    /// </summary>
     public enum SeaAnimalBehavior { Predator,Passive }
     public enum SeaAnimalFoodSystemStage
     { Idle,Processing,Finished,Full }
@@ -238,10 +244,11 @@ namespace AquaExpansion.Core.Animals
                 @"GLOBAL
                 /animal help
                 /animal clear
-                /animal log
+                /animal hits
                 /animal list
                 /animal vis
                 /animal sensor
+                /animal bt
 
                 ANIMAL DATA
                 /animal <SubtypeId> show
@@ -249,7 +256,6 @@ namespace AquaExpansion.Core.Animals
                 /animal <SubtypeId> reset
 
                 MOVEMENT DATA
-                /animal <SubtypeId> desiredspeed <value>
                 /animal <SubtypeId> maxspeed <value>
                 /animal <SubtypeId> desiredepth <value>
                 /animal <SubtypeId> turnspeed <value>
@@ -410,10 +416,6 @@ namespace AquaExpansion.Core.Animals
             }
             switch (command)
             {
-                case "desiredspeed":
-                    if (TryGetFloat(args, 3, out value))
-                        profile.DesiredSpeed = value;
-                    break;
                 case "maxspeed":
                     if (TryGetFloat(args, 3, out value))
                         profile.MaxSpeed = value;
@@ -507,7 +509,6 @@ namespace AquaExpansion.Core.Animals
                 return true;
             return false;
         }
-
     }
     /// <summary>
     /// Animal Movement Data
@@ -1826,6 +1827,7 @@ namespace AquaExpansion.Core.Animals
         public int SpawnInterval;
         public float DespawnDistance;
         public string Name;
+        public float SpawnSafetyRadius;
         public SeaAnimalSpawnDefinition(
             string subtypeId,
             string botsubtype,
@@ -1836,7 +1838,8 @@ namespace AquaExpansion.Core.Animals
             float maxSpawnDistance,
             int spawnInterval,
             float despawnDistance,
-            string name)
+            string name,
+            float spawnSafetyRadius)
         {
             SubtypeId = subtypeId;
             BotSubtype = botsubtype;
@@ -1849,19 +1852,26 @@ namespace AquaExpansion.Core.Animals
             SpawnInterval = spawnInterval;
             DespawnDistance = despawnDistance;
             Name = name;
+            SpawnSafetyRadius = spawnSafetyRadius;
         }
     }
+    /// <summary>
+    /// Animal Spawn Record
+    /// </summary>
     public class SeaAnimalSpawnRecord
     {
         public readonly long EntityId;
+        public readonly long WaterPlanetId;
         public readonly string SubtypeId;
         public readonly Vector3D SpawnPosition;
         public SeaAnimalSpawnRecord(
             long entityId,
+             long waterPlanetId,
             string subtypeId,
             Vector3D spawnPosition)
         {
             EntityId = entityId;
+            WaterPlanetId = waterPlanetId;
             SubtypeId = subtypeId;
             SpawnPosition = spawnPosition;
         }
@@ -1875,17 +1885,18 @@ namespace AquaExpansion.Core.Animals
         public static void Init()
         {
             Register(new SeaAnimalSpawnDefinition(
-                 "AquaWhiteShark",
-                 "AquaShark_Bot",//subtypeId
+                 "AquaWhiteShark",// SubtypeId
+                 "AquaShark_Bot",// botSubtype
                   8,// max population
                 10f, // min spawn depth
                 20f, // max spawn depth
-                100f, // min spawn distance
-                500f, // max spawn distance
-                5, //spawn interval
-                1000f,
-                "White Shark") // despawn distance
-                );
+                50f, // min spawn distance
+                100f, // max spawn distance
+                30, //spawn interval
+                1000f, // despawn distance
+                "White Shark", // bot name
+                5f // spawn safety radius
+                ));
         }
         private static void Register(SeaAnimalSpawnDefinition definition)
         {
@@ -1912,6 +1923,9 @@ namespace AquaExpansion.Core.Animals
             return definitions.Values;
         }
     }
+    /// <summary>
+    /// Animal Guid Database
+    /// </summary>
     public static class SeaAnimalGuidDatabase
     {
         private static readonly Dictionary<string, Guid> animalguids = new Dictionary<string, Guid>();
@@ -1954,6 +1968,325 @@ namespace AquaExpansion.Core.Animals
         public static IEnumerable<KeyValuePair<string, Guid>> GetAllAnimalGuidsFull()
         {
             return animalguids;
+        }
+    }
+    /// <summary>
+    /// Animal population data for a specific water planet and animal subtype.
+    /// </summary>
+    public class SeaAnimalPopulationData
+    {
+        public long WaterPlanetId;
+        public string SubtypeId;
+        public int Population;
+        public SeaAnimalPopulationData()
+        {
+        }
+        public SeaAnimalPopulationData(
+            long waterPlanetId,
+            string subtypeId,
+            int population)
+        {
+            WaterPlanetId = waterPlanetId;
+            SubtypeId = subtypeId;
+            Population = population;
+        }
+    }
+    /// <summary>
+    /// Animal task keys database
+    /// </summary>
+    public static class SeaAnimalTaskKeysDatabase
+    {
+        private static readonly Dictionary<int, string> taskkeysbyID = new Dictionary<int, string>();
+        public static void Init()
+        {
+            Register(1, "SeaAnimalSpawner_");
+            Register(2, "SeaAnimalSpawner_Tracking");
+            Register(3, "SeaAnimalSpawner_SavePopulation");
+        }
+        private static void Register(int id, string taskkey)
+        {
+            if (string.IsNullOrEmpty(taskkey))
+                return;
+            taskkeysbyID[id] = taskkey;
+        }
+        public static string Get(int id)
+        {
+            string key;
+            if (taskkeysbyID.TryGetValue(id, out key))
+                return key;
+            AquaExpansionSession.Insance.Log(true, $"Taskkey NOT FOUND (id): {id}");
+            return null;
+        }
+        public static IEnumerable<string> GetAllKeys()
+        {
+            return taskkeysbyID.Values;
+        }
+    }
+    /// <summary>
+    /// Animal HitZone
+    /// </summary>
+    public class AnimalHitZone
+    {
+        public SeaCreatureBase Host;
+        public string Name;
+        public Vector3D LocalPosition;
+        public Vector3D WorldPosition;
+        public float Radius;
+        public float DamageMultiplier;
+        public BoundingSphereD BoundingSphere;
+        public AnimalHitZone(SeaCreatureBase host,string name,Vector3D localPosition,float radius,float damageMultiplier)
+        {
+            Host = host;
+            Name = name;
+            LocalPosition = localPosition;
+            Radius = radius;
+            DamageMultiplier = damageMultiplier;
+            BoundingSphere = new BoundingSphereD(Vector3D.Zero,radius);
+        }
+    }
+    /// <summary>
+    /// Animal HitZone Definition
+    /// </summary>
+    public class AnimalHitZoneDefinition
+    {
+        public string Name;
+        public Vector3D LocalPosition;
+        public float Radius;
+        public float DamageMultiplier;
+        public AnimalHitZoneDefinition(string name, Vector3D localposition, float radius, float damageMultiplier)
+        {
+            Name = name;
+            LocalPosition = localposition;
+            Radius = radius;
+            DamageMultiplier = damageMultiplier;
+        }
+    }
+    /// <summary>
+    /// Animal HitZone Utils
+    /// </summary>
+    public static class AnimalHitZoneUtils
+    {
+        private static readonly MyDynamicAABBTreeD zoneTree = new MyDynamicAABBTreeD();
+        private static readonly Dictionary<AnimalHitZone, int> zoneProxies = new Dictionary<AnimalHitZone, int>();
+        private static readonly List<MyLineSegmentOverlapResult<AnimalHitZone>> results = new List<MyLineSegmentOverlapResult<AnimalHitZone>>();
+        public static void AddZone(List<AnimalHitZone> ownerZones,SeaCreatureBase host,string name,Vector3D localPosition,float radius,float damageMultiplier)
+        {
+            if (ownerZones == null ||
+                host == null ||
+                radius <= 0.0f)
+            {
+                return;
+            }
+            AnimalHitZone zone =
+                new AnimalHitZone(
+                    host,
+                    name,
+                    localPosition,
+                    radius,
+                    damageMultiplier);
+            ownerZones.Add(zone);
+            IMyCharacter character = host.GetCharacter();
+            if (character != null)
+            {
+                zone.WorldPosition = Vector3D.Transform(zone.LocalPosition,character.WorldMatrix);
+                zone.BoundingSphere.Center = zone.WorldPosition;
+            }
+            BoundingBoxD box = zone.BoundingSphere.GetBoundingBox();
+            int proxyId = zoneTree.AddProxy(ref box,zone,0);
+            zoneProxies.Add(zone,proxyId);
+        }
+        public static void UpdateZone(AnimalHitZone zone)
+        {
+            if (zone == null ||
+                zone.Host == null)
+            {
+                return;
+            }
+            IMyCharacter character = zone.Host.GetCharacter();
+            if (character == null ||
+                character.IsDead)
+            {
+                return;
+            }
+            zone.WorldPosition = Vector3D.Transform(zone.LocalPosition,character.WorldMatrix);
+            zone.BoundingSphere.Center = zone.WorldPosition;
+            int proxyId;
+            if (!zoneProxies.TryGetValue(zone,out proxyId))
+            {
+                return;
+            }
+            BoundingBoxD box = zone.BoundingSphere.GetBoundingBox();
+            zoneTree.MoveProxy(proxyId,ref box,Vector3D.Zero);
+        }
+        public static bool QueryProjectile(AquaProjectile projectile,out AnimalHitZone hitZone,out Vector3D hitPosition,out double hitDistance)
+        {
+            hitZone = null;
+            hitPosition = Vector3D.Zero;
+            hitDistance = double.MaxValue;
+            if (projectile == null ||
+                !projectile.Alive)
+            {
+                return false;
+            }
+            Vector3D movement = projectile.Position - projectile.PreviousPosition;
+            double segmentLength = movement.Length();
+            if (segmentLength <= 0.000001)
+            {
+                return false;
+            }
+            Vector3D direction = movement / segmentLength;
+            LineD line = new LineD(projectile.PreviousPosition,projectile.Position);
+            RayD ray = new RayD(projectile.PreviousPosition,direction);
+            results.Clear();
+            zoneTree.OverlapAllLineSegment(ref line,results);
+            for (int i = 0; i < results.Count; i++)
+            {
+                AnimalHitZone zone = results[i].Element;
+                if (zone == null)
+                    continue;
+                if (zone.Host == null)
+                    continue;
+                IMyCharacter character = zone.Host.GetCharacter();
+                if (character == null ||
+                    character.IsDead)
+                {
+                    continue;
+                }
+                double min;
+                double max;
+                if (!zone.BoundingSphere.IntersectRaySphere(
+                    ray,
+                    out min,
+                    out max))
+                {
+                    continue;
+                }
+                if (min < 0.0)
+                {
+                    min = max;
+                }
+                if (min < 0.0 ||
+                    min > segmentLength)
+                {
+                    continue;
+                }
+                if (min >= hitDistance)
+                {
+                    continue;
+                }
+                hitDistance = min;
+                hitZone = zone;
+                hitPosition = ray.Position + ray.Direction * min;
+            }
+            results.Clear();
+            return hitZone != null;
+        }
+        public static void RemoveZone(List<AnimalHitZone> ownerZones,AnimalHitZone zone)
+        {
+            if (zone == null)
+                return;
+            if (ownerZones != null)
+            {
+                ownerZones.Remove(zone);
+            }
+            int proxyId;
+            if (!zoneProxies.TryGetValue(zone,out proxyId))
+            {
+                return;
+            }
+            zoneProxies.Remove(zone);
+            zoneTree.RemoveProxy(proxyId);
+        }
+        public static void RemoveZones(List<AnimalHitZone> ownerZones)
+        {
+            if (ownerZones == null)
+                return;
+            for (int i = 0; i < ownerZones.Count; i++)
+            {
+                AnimalHitZone zone = ownerZones[i];
+                if (zone == null)
+                    continue;
+                int proxyId;
+                if (zoneProxies.TryGetValue(zone,out proxyId))
+                {
+                    zoneProxies.Remove(zone);
+                    zoneTree.RemoveProxy(proxyId);
+                }
+            }
+            ownerZones.Clear();
+        }
+        public static void Clear()
+        {
+            zoneTree.Clear();
+            zoneProxies.Clear();
+            results.Clear();
+        }
+        public static void DebugDrawZone(AnimalHitZone zone,Color color,bool render)
+        {
+            if (!render ||
+                zone == null)
+            {
+                return;
+            }
+            MatrixD matrix = MatrixD.CreateTranslation(zone.WorldPosition);
+            MySimpleObjectDraw.DrawTransparentSphere(
+                ref matrix,
+                zone.Radius,
+                ref color,
+                MySimpleObjectRasterizer.Solid,
+                30,
+                MyStringId.GetOrCompute("Square"),
+                MyStringId.GetOrCompute("Square"),
+                0.01f);
+        }
+    }
+    /// <summary>
+    /// Animal HitZone Database
+    /// </summary>
+    public static class SeaAnimalHitZoneDatabase
+    {
+        private static readonly Dictionary<string, Dictionary<int, AnimalHitZoneDefinition>> zonedefinitions = new Dictionary<string, Dictionary<int, AnimalHitZoneDefinition>>();
+        public static void Init()
+        {
+            Register("AquaWhiteShark", 1, new AnimalHitZoneDefinition(
+                "Head",
+                new Vector3D(0.0, 0.0, -1.5),
+                0.3f,
+                2.0f));
+            Register("AquaWhiteShark", 2, new AnimalHitZoneDefinition(
+                "Body",
+                new Vector3D(0.0, 0.0, -0.8),
+                0.3f,
+                1.0f));
+            Register("AquaWhiteShark", 3, new AnimalHitZoneDefinition(
+                "Tail",
+                new Vector3D(0.0, 0.0, 1.0),
+                0.2f,
+                0.75f));
+        }
+        private static void Register(string subtype, int id, AnimalHitZoneDefinition definition)
+        {
+            if (string.IsNullOrWhiteSpace(subtype) || definition == null)
+                return;
+            Dictionary<int, AnimalHitZoneDefinition> subdict;
+            if (!zonedefinitions.TryGetValue(subtype, out subdict))
+            { 
+                subdict = new Dictionary<int, AnimalHitZoneDefinition>();
+                zonedefinitions[subtype] = subdict;
+            }
+            subdict[id] = definition;
+        }
+        public static AnimalHitZoneDefinition Get(string subtype, int id)
+        {
+            if (string.IsNullOrEmpty(subtype))
+                return null;
+            Dictionary<int, AnimalHitZoneDefinition> subdict;
+            if (!zonedefinitions.TryGetValue(subtype, out subdict))
+                return null;
+            AnimalHitZoneDefinition definition;
+            if (!subdict.TryGetValue(id, out definition))
+                return null;
+            return definition;
         }
     }
 }

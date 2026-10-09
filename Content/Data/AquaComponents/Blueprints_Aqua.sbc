@@ -948,6 +948,26 @@
 			<BaseProductionTimeInSeconds>15</BaseProductionTimeInSeconds>
 		</Blueprint>
 		<!--End Fish Food Big Fish-->
+		<!--Animal-->
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Animal_WhiteShark</SubtypeId>
+			</Id>
+			<DisplayName>Toxic White Shark Meat Processing</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaAnimalRaw_WhiteSharkMeat_Raw" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="5" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+				<Item Amount="3" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>8</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<!--End Animal-->
 		<!--Drinks-->
 		<Blueprint>
 			<Id>

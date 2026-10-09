@@ -129,5 +129,6 @@
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Sea_Turtle" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Bottlenose_Dolphin" />
 		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Whale_Shark" />
+		<Entry Class="AquaFishProcessing" BlueprintSubtypeId="Aqua_FishMeat_Animal_WhiteShark" />
     </BlueprintClassEntries>
 </Definitions>

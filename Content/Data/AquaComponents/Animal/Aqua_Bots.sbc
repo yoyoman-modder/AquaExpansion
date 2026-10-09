@@ -17,7 +17,11 @@
 			<Public>true</Public>
 			<AvailableInSurvival>false</AvailableInSurvival>
 			<RemoveAfterDeath>true</RemoveAfterDeath>
-			<InventoryContentGenerated>false</InventoryContentGenerated>
+			<InventoryContentGenerated>true</InventoryContentGenerated>
+			<InventoryContainerTypeId>
+				<TypeId>ContainerTypeDefinition</TypeId>
+				<SubtypeId>Aqua_WhiteSharkLoot</SubtypeId>
+			</InventoryContainerTypeId>
 			<FactionTag>UNKN</FactionTag>
 			<AttackLength>1000</AttackLength>
 			<AttackRadius>0.5</AttackRadius>

@@ -125,5 +125,40 @@ namespace AquaExpansion.Core.Animals
             Attack.AttackCenter = Deffinition.AttackCenter;
             Attack.Agression = Deffinition.Agression;
         }
+        /// <summary>
+        /// Set Hit Zones
+        /// </summary>
+        protected override void InitHitZones()
+        {
+            base.InitHitZones();
+            /*AnimalHitZoneUtils.AddZone(
+            hitZones,
+            this,
+            "Head",
+            new Vector3D(0.0, 0.0, -1.5),
+            0.3f,
+            2.0f);
+            AnimalHitZoneUtils.AddZone(
+            hitZones,
+            this,
+            "Body",
+            new Vector3D(0.0, 0.0, -0.8),
+            0.3f,
+            1.0f);
+            AnimalHitZoneUtils.AddZone(
+            hitZones,
+            this,
+            "Tail",
+            new Vector3D(0.0, 0.0, 1.0),
+            0.2f,
+            0.75f);*/
+            //new
+            var head = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,1);
+            var body = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,2);
+            var tail = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,3);
+            AnimalHitZoneUtils.AddZone(hitZones,this, head.Name, head.LocalPosition, head.Radius, head.DamageMultiplier);
+            AnimalHitZoneUtils.AddZone(hitZones, this, body.Name, body.LocalPosition, body.Radius, body.DamageMultiplier);
+            AnimalHitZoneUtils.AddZone(hitZones, this, tail.Name, tail.LocalPosition, tail.Radius, tail.DamageMultiplier);
+        }
     }
 }

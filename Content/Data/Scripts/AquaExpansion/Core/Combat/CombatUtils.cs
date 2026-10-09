@@ -1,4 +1,5 @@
-﻿using Jakaria.API;
+﻿using AquaExpansion.Core.Animals;
+using Jakaria.API;
 using Sandbox.Definitions;
 using Sandbox.Game;
 using Sandbox.Game.Entities;
@@ -6,6 +7,7 @@ using Sandbox.ModAPI;
 using Sandbox.ModAPI.Weapons;
 using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Text;
 using VRage.Game;
 using VRage.Game.ModAPI;
@@ -1399,6 +1401,17 @@ namespace AquaExpansion.Core.Combat
         public float CurrentHealthDamage;
         public float LifeTime;
         public float BubbleDistance;
+        public RayD GetRay(out double maxDistance)
+        {
+            Vector3D direction = Position - PreviousPosition;
+            maxDistance = direction.Length();
+            if (maxDistance <= 0.000001)
+            {
+                return new RayD(PreviousPosition,Vector3D.Forward);
+            }
+            direction /= maxDistance;
+            return new RayD(PreviousPosition,direction);
+        }
     }
     /// <summary>
     /// Hydrodynamic ammo profile defines the properies of a projectile when interacting with water, including mass, drag coefficient, and splash type
@@ -2474,6 +2487,8 @@ namespace AquaExpansion.Core.Combat
                     //trail update
                     // Collision
                     CheckHit(projectile);
+                    if (CheckAnimalHit(projectile))
+                        break;
                     if (!projectile.Alive)
                         break;
                     // Water physics
@@ -2868,6 +2883,37 @@ namespace AquaExpansion.Core.Combat
         {
             DrawProjectile(projectile);
             DrawWake(projectile);
+        }
+        private static bool CheckAnimalHit(AquaProjectile projectile)
+        {
+            AnimalHitZone hitZone;
+            Vector3D hitPosition;
+            double hitDistance;
+            if (!AnimalHitZoneUtils.QueryProjectile(
+                projectile,
+                out hitZone,
+                out hitPosition,
+                out hitDistance))
+            {
+                return false;
+            }
+            IMyCharacter character = hitZone.Host.GetCharacter();
+            if (character == null ||
+                character.IsDead)
+            {
+                return false;
+            }
+            projectile.Position = hitPosition;
+            //AquaExpansionSession.Insance.Log(true,$"HitSphere {hitZone.Name}");
+            character.DoDamage(
+                projectile.CurrentHealthDamage *
+                hitZone.DamageMultiplier,
+                MyStringHash.GetOrCompute("Bullet"),
+                true);
+            var mat = character.Physics.MaterialType;
+            CombatUtils.CreateCharacterImpact(projectile.Position, projectile.Velocity, CharacterImpactDatabase.Get(mat.String), projectile.Trajectory.Type);
+            projectile.Alive = false;
+            return true;
         }
     }
 }

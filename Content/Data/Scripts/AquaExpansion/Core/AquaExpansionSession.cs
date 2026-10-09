@@ -20,7 +20,6 @@ using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.Entity;
 using VRage.Game.ModAPI;
-using VRage.Input;
 using VRage.ModAPI;
 using VRage.Utils;
 using VRageMath;
@@ -89,6 +88,13 @@ namespace AquaExpansion.Core
         //animals
         private SeaAnimalSpawner SeaAnimalSpawner;
         private enum ChatCommandPermission { Public,ServerOnly,AdminOnly }
+        //network
+        public override void SaveData()
+        {
+            base.SaveData();
+            if (SeaAnimalSpawner != null)
+                SeaAnimalSpawner.SavePopulation();
+        }
         public override void LoadData()
         {
             Insance = this;
@@ -152,6 +158,7 @@ namespace AquaExpansion.Core
         }
         private void GetWCConnected()
         {
+            //Log(true, $"WeaponCore Found");
             usebalisticsFallback = false;
         }
         private void CheckBalisticFallback()
@@ -159,6 +166,7 @@ namespace AquaExpansion.Core
             if (usebalisticsFallback)
             {
                 balistics.Load();
+                //Log(true, $"Balistics System init");
             }
         }
         private void ClearBalisticksFallback()
@@ -306,6 +314,7 @@ namespace AquaExpansion.Core
                     continue;
                 ProcessBlock(block);
             }
+            //Log(true, $" Terminal blocks {TerminalTracedBlocks.Count}");
         }
         private void UpdateEngineBlocks()
         {
@@ -317,6 +326,7 @@ namespace AquaExpansion.Core
                     continue;
                     ProcessEngineBlock(block);
             }
+            //Log(true, $"Engine blocks {TrackedThrusters.Count}");
         }
         private void FilterThrusters()
         {
@@ -794,10 +804,7 @@ namespace AquaExpansion.Core
             {
                 EnviromentHighlightControll();
             }
-            if (IsServer)
-            {
-                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, BeforeDamage);
-            }
+            MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(0, BeforeDamage);
             Log(true, $"Welcome back!");
         }
         /// <summary>
@@ -818,6 +825,7 @@ namespace AquaExpansion.Core
                 {
                     info.Amount = 0f;
                 }
+                //AquaExpansionSession.Insance.Log(true, $"Damage  {info.Type}");
             }
         }
         private void onRegisteredCallback()
@@ -844,6 +852,7 @@ namespace AquaExpansion.Core
             UpdateBalisticsFallback();
             SeaAnimalSpawner.Update(latentScheduler);
             base.UpdateBeforeSimulation();
+            //LogFilteredBlocks();
         }
         public override void UpdateAfterSimulation()
         {
@@ -859,6 +868,8 @@ namespace AquaExpansion.Core
             if (enviromentdef != null)
             {
                 OriginalInteractionColor = enviromentdef.ContourHighlightColor;
+                //Log(true, $" envdata {OriginalInteractionColor.ToVector4()}");
+                
             }
         }
         private void SetDephbasedColor()
@@ -867,6 +878,7 @@ namespace AquaExpansion.Core
             {
                 UpdateGlobalHUDColor();
                 Vector4 linearColor = RGBtoXYZW(GlobaldepthbasedHUDColor);
+                //Log(true, $"current color is {GlobaldepthbasedHUDColor} to linear {linearColor}");
                 Vector4 hcolor = new Vector4(linearColor.X, linearColor.Y, linearColor.Z, linearColor.W);
                 enviromentdef.ContourHighlightColor = hcolor;
             }
@@ -1154,6 +1166,11 @@ namespace AquaExpansion.Core
         //DiverMode
         private void DiveMode()
         {
+            /*foreach (var player in GetPlayersWithCharacters())
+            {
+                JetpackUnderWaterSystem.SetDiverMode(player.Character, player.IdentityId, tick);
+                JetpackUnderWaterSystem.AddPID(player.IdentityId);
+            }*/
             foreach (var player in GetPlayersWithCharacters())
             {
                 if (player == null ||
@@ -1163,6 +1180,16 @@ namespace AquaExpansion.Core
                     player.Character,
                     player.IdentityId,
                     tick);
+                //DiverState(player);
+            }
+        }
+        private void DiverState(IMyPlayer player)
+        {
+            int gearLevel;
+            bool oxygenRefillActive;
+            if (JetpackUnderWaterSystem.TryGetPlayerState(player.IdentityId, out gearLevel, out oxygenRefillActive))
+            {
+                Log(true,$"Playerstate {player.IdentityId} {gearLevel} {oxygenRefillActive}");
             }
         }
         private void ConstructHUD()
@@ -1176,6 +1203,7 @@ namespace AquaExpansion.Core
                 return;
             }
             var character = player.Character;
+
             if (character == null ||
                 character.Closed ||
                 character.IsDead)
@@ -1335,6 +1363,7 @@ namespace AquaExpansion.Core
             if (!isUnderwater || isUnderwater && Fullunderwater < 1.0f)
             {
                 GlobaldepthbasedHUDColor = OriginalInteractionColor;
+                //Log(true, $"revert to original color {GlobaldepthbasedHUDColor.ToVector4().ToString()}");
                 return;
             }
             float depth = GetWaterDepthbyCharacter(character);
@@ -1720,6 +1749,7 @@ namespace AquaExpansion.Core
                     UpdateShipWelderEffects();
                 }
             }
+            //Log(true, $"Ship Welder blocks {TrackedShipWelders.Count}");
         }
         private void FilterShipWelders()
         {
@@ -2048,7 +2078,7 @@ namespace AquaExpansion.Core
                     MyAPIGateway.Utilities.ShowMessage(AquaAPI,
                     AquaModdingNamesDatabase.GetModCommandByID(32));
                     return;
-                case "log":
+                case "hits":
                     AnimalDebugEnabled = !AnimalDebugEnabled;
                     MyAPIGateway.Utilities.ShowMessage(AquaAPI,
                     AquaModdingNamesDatabase.GetModCommandByID(AnimalDebugEnabled ? 34 : 35));
@@ -2125,6 +2155,7 @@ namespace AquaExpansion.Core
         {
             SeaAnimalComponentDatabase.Init();
             SeaAnimalFoodItemsDatabase.Init();
+            SeaAnimalHitZoneDatabase.Init();
             SeaAnimalDatabase.Init();
         }
         private void InitDatabases()
@@ -2193,12 +2224,20 @@ namespace AquaExpansion.Core
             if (welder == null)
                 return;
             Trackedhandwelders.Add(welder);
+            /*Log(
+            true,
+            $"REGISTER welder={welder.EntityId} " +
+            $"count={Trackedhandwelders.Count}");*/
         }
         public void OnUnRegisterHandWelder(IMyWelder welder)
         {
             if (welder == null)
                 return;
             Trackedhandwelders.Remove(welder);
+            /*Log(
+            true,
+            $"UNREGISTER welder={welder.EntityId} " +
+            $"count={Trackedhandwelders.Count}");*/
         }
         private void UpdateHandTools()
         {
@@ -2238,6 +2277,11 @@ namespace AquaExpansion.Core
             {
                 return !MyAPIGateway.Multiplayer.IsServer;
             }
+        }
+        // Replace the AccessNetworkSession method with the following implementation
+        private void AccessNetworkSession()
+        {
+            
         }
         protected override void UnloadData()
         {

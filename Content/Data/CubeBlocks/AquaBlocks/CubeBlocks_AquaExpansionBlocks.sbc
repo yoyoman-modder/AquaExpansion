@@ -203,7 +203,7 @@
 				<TypeId>BatteryBlock</TypeId>
 				<SubtypeId>LargeBlockSaltBattery</SubtypeId>
 			</Id>
-			<DisplayName>Salt Battery</DisplayName>
+			<DisplayName>Large Salt Battery</DisplayName>
 			<Icon>Textures\GUI\Icons\Cubes\BatteryReskin.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<Description>Stores energy using saline electrochemical cells</Description>

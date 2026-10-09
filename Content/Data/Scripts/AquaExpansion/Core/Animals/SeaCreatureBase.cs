@@ -20,7 +20,6 @@ namespace AquaExpansion.Core.Animals
     {
         protected IMyCharacter Character;
         private IMyGps Animalinfomarker;
-        private bool ready = false;
         private bool showmarker = false;
         private LatentScheduler scheduler;
         private MyInventory inv;
@@ -42,6 +41,8 @@ namespace AquaExpansion.Core.Animals
         private bool BTready = false;
         private BioLatentScheduler biobuffer;
         protected SeaCreatureAttackData Attack;
+        protected readonly List<AnimalHitZone> hitZones = new List<AnimalHitZone>();
+        private bool foodTaskPending;
         /// <summary>
         /// Init Sea Creature
         /// </summary>
@@ -62,7 +63,14 @@ namespace AquaExpansion.Core.Animals
             SeaNavigator = new SeaCreatureNavigator();
             Sensor = new AnimalSensor();
             Attack = new SeaCreatureAttackData();
-            NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
+            NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+        }
+        public override void UpdateOnceBeforeFrame()
+        {
+            if (!IsValid())
+                return;
+            InitHitZones();
+            base.UpdateOnceBeforeFrame();
         }
         /// <summary>
         /// Update internal
@@ -82,6 +90,7 @@ namespace AquaExpansion.Core.Animals
             UpdateBehaviorTree();
             // Applies movement/state produced by BT.
             UpdateBTMarker();
+            UpdateHitZones();
             UpdateCreature();
             AnimalCauseDeath();
             AnimalAttackSphere();
@@ -90,11 +99,19 @@ namespace AquaExpansion.Core.Animals
         }
         public override void UpdateBeforeSimulation10()
         {
+            /*if (!IsValid() || Character.IsDead)
+                return;
+            LifeSupport();
+            CountInventoryFood(out FoodCount);*/
+            base.UpdateBeforeSimulation10();
+        }
+        public override void UpdateAfterSimulation()
+        {
             if (!IsValid() || Character.IsDead)
                 return;
-            LifeSupport(true);
+            LifeSupport();
             CountInventoryFood(out FoodCount);
-            base.UpdateBeforeSimulation10();
+            base.UpdateAfterSimulation();
         }
         /// <summary>
         /// Update internal Animal Tick
@@ -109,6 +126,13 @@ namespace AquaExpansion.Core.Animals
         protected virtual void UpdateCreature()
         {
            
+        }
+        /// <summary>
+        /// Initializes hit zones for the sea creature.
+        /// </summary>
+        protected virtual void InitHitZones()
+        {
+
         }
         /// <summary>
         /// Set Attack Data
@@ -274,21 +298,16 @@ namespace AquaExpansion.Core.Animals
         /// <summary>
         /// Life support
         /// </summary>
-        /// <param name="always"></param>
-        private void LifeSupport(bool always)
+        private void LifeSupport()
         {
             if (!IsValid() || Character.IsDead)
                 return;
-            if (always)
-            {
-                var e = AnimalEnergy();
-                if (e > 75f)
-                    return;
-                if (ready)
-                    return;
-                ready = true;
-                scheduler.Schedule(InsertEnergyFood, 5, false, 0);
-            }
+            if (AnimalEnergy() >= 75f)
+                return;
+            if (foodTaskPending)
+                return;
+            foodTaskPending = true;
+            scheduler.Schedule(InsertEnergyFood, 5, false, 0);
         }
         /// <summary>
         /// Get Inventory
@@ -333,19 +352,31 @@ namespace AquaExpansion.Core.Animals
         private void InsertEnergyFood()
         {
             if (!IsValid() || Character.IsDead)
+            {
+                foodTaskPending = false;
                 return;
-            if (inv == null || chinv == null || inv.IsFull)
+            }
+            if (inv == null || inv.IsFull)
+            {
+                foodTaskPending = false;
                 return;
-            if (string.IsNullOrEmpty(Deffinition.Food) || !AnimalFoodSubtypes.Contains(Deffinition.Food))
+            }
+            if (string.IsNullOrEmpty(Deffinition.Food) ||
+                !AnimalFoodSubtypes.Contains(Deffinition.Food))
+            {
+                foodTaskPending = false;
                 return;
+            }
             FoodAmount = 1;
             var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
+            if (itemdef == null)
+            {
+                foodTaskPending = false;
+                return;
+            }
             var obj = (MyObjectBuilder_PhysicalObject)MyObjectBuilderSerializer.CreateNewObject(itemdef);
             inv.AddItems(FoodAmount, obj);
-            ready = false;
-            scheduler.Schedule(AnimalGetEnergy,2, false, 0);
-            //AquaExpansionSession.Insance.Log(true, $"Food Added {itemdef.SubtypeId}");
-
+            scheduler.Schedule(AnimalGetEnergy, 2, false, 0);
         }
         /// <summary>
         /// Get definition by subtype
@@ -371,7 +402,6 @@ namespace AquaExpansion.Core.Animals
             {
                 var subtype = item.Content.SubtypeId.String;
                 int amount = (int)item.Amount;
-
                 if (AnimalFoodSubtypes.Contains(subtype))
                 {
                     food += amount;
@@ -383,9 +413,16 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void AnimalGetEnergy()
         {
+            if (!IsValid() || Character.IsDead)
+            {
+                foodTaskPending = false;
+                return;
+            }
             var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
-            inv.ConsumeItem(itemdef, 1, Character.EntityId);
+            if (itemdef != null)
+                inv.ConsumeItem(itemdef, 2, Character.EntityId);
             //AquaExpansionSession.Insance.Log(true, $"Animal get Energy");
+            foodTaskPending = false;
         }
         /// <summary>
         /// Animal Health internal
@@ -532,7 +569,7 @@ namespace AquaExpansion.Core.Animals
             Vector3D spherePosition = animalPosition + forward * Deffinition.AttackCenter;
             float radius = Attack.AttackRadius;
             BoundingSphereD sphere = new BoundingSphereD(spherePosition,radius);
-            AnimalUtils.DebugSphere(spherePosition, Color.Red, radius);
+            //AnimalUtils.DebugSphere(spherePosition, Color.Red, radius);
             List<IMyEntity> entities = MyAPIGateway.Entities.GetTopMostEntitiesInSphere(ref sphere);
             if (entities == null)
                 return;
@@ -601,25 +638,25 @@ namespace AquaExpansion.Core.Animals
             if (Entity == null)
             {
                 BTready = false;
-                AquaExpansionSession.Insance.Log(true,$"Failed to init for {Entity?.DisplayName}");
+                //AquaExpansionSession.Insance.Log(true,$"Failed to init for {Entity?.DisplayName}");
                 return;
             }
             Character = Entity as IMyCharacter;
             if (!IsValid() || Character.IsDead)
             {
                 BTready = false;
-                AquaExpansionSession.Insance.Log(true, $"Failed to init for {Character?.Definition.Id.SubtypeId}");
+                //AquaExpansionSession.Insance.Log(true, $"Failed to init for {Character?.Definition.Id.SubtypeId}");
                 return;
             }
             BT = BuildTree();
             if (BT == null)
             {
                 BTready = false;
-                AquaExpansionSession.Insance.Log(true, $"BuildTree() returned null for {Entity?.DisplayName}");
+                //AquaExpansionSession.Insance.Log(true, $"BuildTree() returned null for {Entity?.DisplayName}");
                 return;
             }
             BTready = true;
-            AquaExpansionSession.Insance.Log(true, $"BuildTree() Initialized {Entity?.DisplayName ?? "Entity"}");
+            //AquaExpansionSession.Insance.Log(true, $"BuildTree() Initialized {Entity?.DisplayName ?? "Entity"}");
         }
         /// <summary>
         /// Construct Behavior Tree in Child Classes
@@ -679,10 +716,69 @@ namespace AquaExpansion.Core.Animals
             BB = null;
         }
         /// <summary>
+        /// Get Character
+        /// </summary>
+        /// <returns></returns>
+        public IMyCharacter GetCharacter()
+        {
+            return Character;
+        }
+        /// <summary>
+        /// Get HitZones
+        /// </summary>
+        /// <returns></returns>
+        public List<AnimalHitZone> GetHitZones()
+        {
+            return hitZones;
+        }
+        /// <summary>
+        /// Update HitZones
+        /// </summary>
+        private void UpdateHitZones()
+        {
+            if (!IsValid() || Character.IsDead)
+            {
+                return;
+            }
+            for (int i = 0; i < hitZones.Count; i++)
+            {
+                AnimalHitZone zone = hitZones[i];
+                if (zone == null)
+                    continue;
+                AnimalHitZoneUtils.UpdateZone(zone);
+                AnimalHitZoneUtils.DebugDrawZone(zone,Color.Cyan,AquaExpansionSession.Insance.AnimalDebugEnabled);
+            }
+        }
+        /// <summary>
+        /// Close HitZones
+        /// </summary>
+        private void CloseHitZones()
+        {
+            AnimalHitZoneUtils.RemoveZones(hitZones);
+        }
+        /// <summary>
+        /// Close Markers
+        /// </summary>
+        private void CloseMarkers()
+        {
+            if (Animalinfomarker != null)
+            {
+                RemoveMarker(Animalinfomarker);
+                Animalinfomarker = null;
+            }
+            if (AnimalBTmarker != null)
+            {
+                RemoveBTMarker(AnimalBTmarker);
+                AnimalBTmarker = null;
+            }
+        }
+        /// <summary>
         /// Clear
         /// </summary>
         private void Clear()
         {
+            CloseMarkers();
+            CloseHitZones();
             CloseBehaviorTree();
             biobuffer.Clear();
             scheduler.Clear();

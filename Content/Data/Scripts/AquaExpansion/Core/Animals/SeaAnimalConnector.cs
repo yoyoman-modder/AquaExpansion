@@ -134,6 +134,7 @@ namespace AquaExpansion.Core.Animals
             {
                 
             }
+            Biobuffer.Clear();
             Biobuffer = null;
             base.Close();
         }

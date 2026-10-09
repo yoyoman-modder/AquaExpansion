@@ -7,7 +7,6 @@ using Sandbox.ModAPI;
 using Sandbox.ModAPI.Weapons;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Text;
 using VRage;
@@ -5163,8 +5162,8 @@ namespace AquaExpansion.Core
             RegisterModCommand(31, "/animal");
             RegisterModCommand(32, "All runtime animal overrides cleared.");
             RegisterModCommand(33, "Unknown animal subtype: ");
-            RegisterModCommand(34, "Animal Debug enabled");
-            RegisterModCommand(35, "Animal Debug disabled");
+            RegisterModCommand(34, "Animal HitZones Debug enabled");
+            RegisterModCommand(35, "Animal HitZones Debug disabled");
             RegisterModCommand(36, "Animal Render Debug enabled");
             RegisterModCommand(37, "Animal Render Debug disabled");
             RegisterModCommand(38, "Animal Sensor Debug enabled");
