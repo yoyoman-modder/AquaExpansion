@@ -237,24 +237,6 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
         public bool FireEffects { get; set; }
         private void SetGatlingEffectData()
         {
-            /*if (gat == null || gat.Closed || gat.MarkedForClose)
-                return;
-            muzzleLocalMatrix = GetMuzzle.Matrix;
-            MatrixD muzzleWorldMatrix = muzzleLocalMatrix * gat.WorldMatrix;
-            Vector3D muzzlePosition = muzzleWorldMatrix.Translation;
-            Vector3D muzzleForward = muzzleWorldMatrix.Forward;
-            muzzleForward.Normalize();
-            double muzzleDistance = -MuzzleOffset.Z;
-            actualMuzzlePosition = muzzlePosition + muzzleForward * muzzleDistance;
-            var pos = Vector3D.Zero;
-            if (UseVirtualOffset)
-            {
-                pos = actualMuzzlePosition;
-            }
-            else
-            {
-                pos = muzzlePosition;
-            }*/
             if (gat == null || gat.Closed || gat.MarkedForClose)
                 return;
             if (Muzzle == null)

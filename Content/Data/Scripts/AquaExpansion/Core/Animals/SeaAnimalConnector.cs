@@ -59,7 +59,6 @@ namespace AquaExpansion.Core.Animals
                 return;
             ready = true;
             Biobuffer.Schedule(GetSeaAnimal, 2,false,0);
-
         }
         /// <summary>
         /// Add bridge cmponent to SeaAnimal

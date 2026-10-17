@@ -20,6 +20,7 @@ using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.Entity;
 using VRage.Game.ModAPI;
+using VRage.Input;
 using VRage.ModAPI;
 using VRage.Utils;
 using VRageMath;
@@ -88,6 +89,7 @@ namespace AquaExpansion.Core
         //animals
         private SeaAnimalSpawner SeaAnimalSpawner;
         private enum ChatCommandPermission { Public,ServerOnly,AdminOnly }
+        private SeaGod seaGod;
         //network
         public override void SaveData()
         {
@@ -104,6 +106,7 @@ namespace AquaExpansion.Core
             latentScheduler = new LatentScheduler();
             balistics = new UnderwaterBalisticsSystem();
             SeaAnimalSpawner = new SeaAnimalSpawner();
+            seaGod = new SeaGod();
             MyAPIGateway.Entities.OnEntityAdd += OnEntityAdd;
             MyAPIGateway.Entities.OnEntityRemove += OnEntityRemove;
             MyAPIGateway.Utilities.MessageEntered += OnMessageEntered;
@@ -166,7 +169,7 @@ namespace AquaExpansion.Core
             if (usebalisticsFallback)
             {
                 balistics.Load();
-                //Log(true, $"Balistics System init");
+                Log(true, $"Balistics System init");
             }
         }
         private void ClearBalisticksFallback()
@@ -858,8 +861,9 @@ namespace AquaExpansion.Core
         {
             LineAnimationManager.Update();
             UpdateAll();
+            seaGod.Update();
+            //PressToSpawnAnimal();
             base.UpdateAfterSimulation();
-            PressToSpawnAnimal();
         }
         //
         private void EnviromentHighlightControll()
@@ -1166,11 +1170,6 @@ namespace AquaExpansion.Core
         //DiverMode
         private void DiveMode()
         {
-            /*foreach (var player in GetPlayersWithCharacters())
-            {
-                JetpackUnderWaterSystem.SetDiverMode(player.Character, player.IdentityId, tick);
-                JetpackUnderWaterSystem.AddPID(player.IdentityId);
-            }*/
             foreach (var player in GetPlayersWithCharacters())
             {
                 if (player == null ||
@@ -1180,7 +1179,6 @@ namespace AquaExpansion.Core
                     player.Character,
                     player.IdentityId,
                     tick);
-                //DiverState(player);
             }
         }
         private void DiverState(IMyPlayer player)
@@ -1648,6 +1646,8 @@ namespace AquaExpansion.Core
             ClearBalisticksFallback();
             balistics = null;
             ClearAnimalSpawner();
+            seaGod.Close();
+            seaGod = null;
             Insance = null;
         }
         private void SpawnTestAnimal(String BotSubtype, string Creaturename)
@@ -1677,10 +1677,10 @@ namespace AquaExpansion.Core
         }
         private void PressToSpawnAnimal()
         {
-            /*if (MyAPIGateway.Input.IsNewKeyPressed(MyKeys.Control))
+            if (MyAPIGateway.Input.IsNewKeyPressed(MyKeys.Control))
             {
                 SpawnTestAnimal("AquaShark_Bot", "White Shark");
-            }*/
+            }
         }
         private string GetShipWelderEffect(IMyShipWelder block)
         {
@@ -2257,7 +2257,7 @@ namespace AquaExpansion.Core
             SeaAnimalSpawner = null;
         }
         //Server
-        private bool IsServer
+        public bool IsServer
         {
             get
             {
@@ -2271,7 +2271,7 @@ namespace AquaExpansion.Core
                 return MyAPIGateway.Utilities.IsDedicated;
             }
         }
-        private bool IsClient
+        public bool IsClient
         {
             get
             {

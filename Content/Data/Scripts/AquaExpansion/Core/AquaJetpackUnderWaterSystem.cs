@@ -181,7 +181,7 @@ namespace AquaExpansion.Core
             gearlevel = 0;
             if (character == null || character.IsDead || character.Closed)
                 return;
-            if (!WaterModAPI.IsUnderwater(character.WorldMatrix.Translation))
+            if (!WaterModAPI.IsUnderwater(character.GetPosition()))
                 return;
             IMyInventory charInv;
             MyInventory charInvE;

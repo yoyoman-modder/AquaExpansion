@@ -137,7 +137,8 @@ namespace AquaExpansion.Core.BT
         private float GroundAvoidanceDepth;
         private int GridAvoidanceTimer;
         private float GridAvoidanceDepth;
-        public ChaseTarget(double range,float offset,float minimumDepth,AnimalSensor animalSensor)
+        private readonly float dangDepth;
+        public ChaseTarget(double range,float offset,float minimumDepth,float dangerdepth,AnimalSensor animalSensor)
         {
             chaseRange = range;
             depthOffset = offset;
@@ -147,6 +148,7 @@ namespace AquaExpansion.Core.BT
             GroundAvoidanceDepth = 0.0f;
             GridAvoidanceTimer = 0;
             GridAvoidanceDepth = 0.0f;
+            dangDepth = dangerdepth;
         }
         private void ClearTarget()
         {
@@ -216,8 +218,7 @@ namespace AquaExpansion.Core.BT
             const float step = 1.0f;
             const float recovery = 0.08f;
             const float maxDepth = 8.0f;
-            bool danger =
-                IsGridDanger();
+            bool danger = IsGridDanger();
             if (danger)
             {
                 GridAvoidanceTimer++;
@@ -331,8 +332,8 @@ namespace AquaExpansion.Core.BT
             UpdateGroundAvoidance();
             UpdateGridAvoidance();
             float avoidanceDepth = GroundAvoidanceDepth + GridAvoidanceDepth;
-            if (avoidanceDepth > 10.0f)
-                avoidanceDepth = 10.0f;
+            if (avoidanceDepth > 5.0f)
+                avoidanceDepth = 5.0f;
             float desiredDepth = targetDepth - avoidanceDepth;
             if (desiredDepth < minDepth)
                 desiredDepth = minDepth;
@@ -340,6 +341,7 @@ namespace AquaExpansion.Core.BT
             BB.Set<float>("AvoidanceDepth",GroundAvoidanceDepth);
             BB.Set<float>("GridAvoidanceDepth",GridAvoidanceDepth);
             BB.Set<float>("DesiredDepth",desiredDepth);
+            //Log($"target {targetDepth} desired {desiredDepth}");
         }
         public override void Start(IMyCharacter character)
         {
@@ -360,9 +362,10 @@ namespace AquaExpansion.Core.BT
                 return SetState(NodeState.Failure);
             }
             if (sensor == null ||
-                sensor.IsDangerousDepth(character,minDepth))
+                sensor.IsDangerousDepth(character,dangDepth))
             {
                 ClearTarget();
+                //Log($"danger depth {sensor.IsDangerousDepth(character, dangDepth)}");
                 return SetState(NodeState.Failure);
             }
             IMyPlayer player;
@@ -370,6 +373,7 @@ namespace AquaExpansion.Core.BT
             if (!GetTarget(out player,out target))
             {
                 ClearTarget();
+                //Log("invalid target");
                 return SetState(NodeState.Failure);
             }
             Vector3D position = character.GetPosition();
@@ -379,6 +383,7 @@ namespace AquaExpansion.Core.BT
             if (distanceSquared > chaseRange * chaseRange)
             {
                 ClearTarget();
+                //Log("target out of range");
                 return SetState(NodeState.Failure);
             }
             BB.Set<Vector3D>("TargetPosition",targetPosition);
@@ -395,6 +400,7 @@ namespace AquaExpansion.Core.BT
                 BB.Set<Vector3>("DesiredDirection",Vector3.Zero);
             }
             UpdateTargetDepth(target);
+            //Log($"target {target.DisplayName}");
             return SetState(NodeState.Running);
         }
         public override void End(IMyCharacter character)
@@ -426,7 +432,8 @@ namespace AquaExpansion.Core.BT
                 IMyCharacter ch = ent as IMyCharacter;
                 if (ch == null ||
                     ch.Closed ||
-                    ch.IsDead)
+                    ch.IsDead ||
+                    ch.IsBot)
                     continue;
                 if (!WaterModAPI.IsUnderwater(ch.GetPosition()))
                     continue;
@@ -557,7 +564,7 @@ namespace AquaExpansion.Core.BT
                 return SetState(NodeState.Success);
             }
             //Fail("HealthAbove",$"Health {health}");
-            //Log($"Fail Health is {health}");
+            Log($"Fail Health is {health}");
             return SetState(NodeState.Failure);
         }
         public override void End(IMyCharacter character)

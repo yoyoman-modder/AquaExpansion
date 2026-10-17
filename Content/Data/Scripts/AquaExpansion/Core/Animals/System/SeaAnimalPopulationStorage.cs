@@ -92,64 +92,6 @@ namespace AquaExpansion.Core.Animals.System
         /// <returns>True if the load operation was successful; otherwise, false.</returns>
         public static bool Load(out List<SeaAnimalSpawnRecord> records)
         {
-            /*records = new List<SeaAnimalSpawnRecord>();
-            if (MyAPIGateway.Multiplayer != null &&
-                !MyAPIGateway.Multiplayer.IsServer)
-            {
-                return false;
-            }
-            try
-            {
-                using (BinaryReader reader = MyAPIGateway.Utilities.ReadBinaryFileInWorldStorage(FileName,typeof(SeaAnimalPopulationStorage)))
-                {
-                    if (reader == null)
-                        return false;
-                    int version = reader.ReadInt32();
-                    if (version != FileVersion)
-                    {
-                        records.Clear();
-                        AquaExpansionSession.Insance.Log(true,"[SeaAnimalPopulationStorage] Unsupported file version: " + version);
-                        return false;
-                    }
-                    int count = reader.ReadInt32();
-                    if (count < 0 || count > MaxRecords)
-                    {
-                        records.Clear();
-                        return false;
-                    }
-                    for (int i = 0; i < count; i++)
-                    {
-                        long entityId = reader.ReadInt64();
-                        long waterPlanetId = reader.ReadInt64();
-                        string subtypeId = reader.ReadString();
-                        Vector3D spawnPosition =
-                            new Vector3D(
-                                reader.ReadDouble(),
-                                reader.ReadDouble(),
-                                reader.ReadDouble());
-                        if (entityId == 0 ||
-                            waterPlanetId == 0 ||
-                            string.IsNullOrWhiteSpace(subtypeId))
-                        {
-                            continue;
-                        }
-                        records.Add(
-                            new SeaAnimalSpawnRecord(
-                                entityId,
-                                waterPlanetId,
-                                subtypeId,
-                                spawnPosition));
-                    }
-                }
-                AquaExpansionSession.Insance.Log(true,"[SeaAnimalPopulationStorage] Loaded records: " + records.Count);
-                return true;
-            }
-            catch (Exception exception)
-            {
-                records.Clear();
-                AquaExpansionSession.Insance.Log(true,"[SeaAnimalPopulationStorage] Load failed: " + exception.Message);
-                return false;
-            }*/
             records = new List<SeaAnimalSpawnRecord>();
             if (MyAPIGateway.Multiplayer != null &&
                 !MyAPIGateway.Multiplayer.IsServer)

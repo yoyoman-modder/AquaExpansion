@@ -342,7 +342,6 @@ namespace AquaExpansion.API
             }
             return HydroAmmoDatabase.HasAmmoProfile(subtypeId.Trim());
         }
-
         // =====================================================
         // GET OWNER
         // =====================================================
@@ -388,7 +387,6 @@ namespace AquaExpansion.API
                 Torpedo = profile.Torpedo
             };
         }
-
         // Check Muzzle effect
         private bool HasMuzzleBurst(string subtypeId)
         {

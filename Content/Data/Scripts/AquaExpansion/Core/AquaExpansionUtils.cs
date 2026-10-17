@@ -4240,7 +4240,6 @@ namespace AquaExpansion.Core
                     }
                 }
             });
-
             //small orders
             RegisterSmall(new AquaSeaAnchorEquipOrder(1, "BaseAnchorSmall", 1)
             {
@@ -4546,7 +4545,6 @@ namespace AquaExpansion.Core
         private static readonly Dictionary<string, int> SporeItemsbyName = new Dictionary<string, int>();
         private static readonly Dictionary<int, string> CropItemsbyID = new Dictionary<int, string>();
         private static readonly Dictionary<string, int> CropItemsbyName = new Dictionary<string, int>();
-
         /// <summary>
         /// Init Farm Items Database
         /// </summary>
@@ -4559,7 +4557,6 @@ namespace AquaExpansion.Core
             RegisterCrop(2, "AquaSeaweedRaw_Brown");
             RegisterCrop(3, "AquaSeaweedRaw_Red");
         }
-
         /// <summary>
         /// Register Spore Item
         /// </summary>
@@ -4570,7 +4567,6 @@ namespace AquaExpansion.Core
             SporeItemsbyID[id] = subtype;
             SporeItemsbyName[subtype] = id;
         }
-
         /// <summary>
         /// Register Crop Item
         /// </summary>
@@ -4581,7 +4577,6 @@ namespace AquaExpansion.Core
             CropItemsbyID[id] = subtype;
             CropItemsbyName[subtype] = id;
         }
-
         /// <summary>
         /// Get Spore subtype by ID
         /// </summary>
@@ -4595,7 +4590,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Spore NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get Spore ID by Name
         /// </summary>
@@ -4620,7 +4614,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Spore NOT FOUND: '{name}'");
             return -1;
         }
-
         /// <summary>
         /// Get Crop subtype by ID
         /// </summary>
@@ -4634,7 +4627,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Crop NOT FOUND (id): {id}");
             return null;
         }
-
         /// <summary>
         /// Get Crop ID by subtype
         /// </summary>
@@ -4659,7 +4651,6 @@ namespace AquaExpansion.Core
             AquaExpansionSession.Insance.Log(true, $"Crop NOT FOUND: '{name}'");
             return -1;
         }
-
         /// <summary>
         /// Get All Spores
         /// </summary>
@@ -4668,7 +4659,6 @@ namespace AquaExpansion.Core
         {
             return SporeItemsbyID.Values;
         }
-
         /// <summary>
         /// Get All Crops
         /// </summary>
@@ -4677,11 +4667,8 @@ namespace AquaExpansion.Core
         {
             return CropItemsbyID.Values;
         }
-
         public static bool IsSpore(string subtype) => SporeItemsbyName.ContainsKey(subtype);
-
         public static bool IsCrop(string subtype) => CropItemsbyName.ContainsKey(subtype);
-
         public static HashSet<string> FillSpores()
         {
             return new HashSet<string>(SporeItemsbyID.Values);
@@ -4690,7 +4677,6 @@ namespace AquaExpansion.Core
         {
             return new HashSet<string>(CropItemsbyID.Values);
         }
-
         /// <summary>
         /// Validate Farm Items database
         /// </summary>

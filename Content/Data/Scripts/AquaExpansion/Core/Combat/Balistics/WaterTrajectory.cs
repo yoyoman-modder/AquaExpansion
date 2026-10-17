@@ -10,7 +10,7 @@ namespace AquaExpansion.Core.Combat.Balistics
 {
     public static class WaterTrajectory
     {
-       public static WaterTrajectoryResult Calculate(MyPlanet planet, Vector3D origin, Vector3D direction, double maxDistance)
+        public static WaterTrajectoryResult Calculate(MyPlanet planet, Vector3D origin, Vector3D direction, double maxDistance)
        {
             WaterTrajectoryResult result = new WaterTrajectoryResult();
             Vector3D end = origin + direction * maxDistance;

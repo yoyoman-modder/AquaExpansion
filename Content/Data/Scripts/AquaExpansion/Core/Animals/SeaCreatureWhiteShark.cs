@@ -29,18 +29,18 @@ namespace AquaExpansion.Core.Animals
                     new SequenceNode(// run children in order until one fails
                         new SelectorNode(//ticks its children sequentually until one succeeds
                             new SequenceNode(
-                                new DangerDepth(4, Sensor),//checks if depth not danger for animal
+                                new DangerDepth(5, Sensor),//checks if depth not danger for animal
                                 new HealthAbove(100),//checks health above  value
                                 new SelectorNode(
                                     new SequenceNode(
                                         new HealthAbove(50),
                                         new DetectPlayer(100),//detect random player from nearby targets store target to chase
-                                        new ChaseTarget(100, 1.5f, 4, Sensor)//chase player target
+                                        new ChaseTarget(100,1.5f,1,5,Sensor)//chase player target
                                     ),
                                     new RandomSelectorNode(
-                                        new Wander(5, Deffinition.DesiredDepth, 6, Sensor),//wander random swimming
+                                        new Wander(5, Deffinition.DesiredDepth,5, Sensor),//wander random swimming
                                         new SwimAway(3),
-                                        new Wander(10, Deffinition.DesiredDepth, 6, Sensor)//wander random swimming
+                                        new Wander(10, Deffinition.DesiredDepth,5, Sensor)//wander random swimming
                                     )
                                 )
                             ),
@@ -83,6 +83,7 @@ namespace AquaExpansion.Core.Animals
                         desiredDirection.Normalize();
                         Movement.DesiredDirection = desiredDirection;
                     }
+                    //AquaExpansionSession.Insance.Log(true, $"dir {desiredDirection}");
                 }
                 if (BT.Blackboard.Has("DesiredSpeed"))
                 {
@@ -92,8 +93,14 @@ namespace AquaExpansion.Core.Animals
                 {
                     Movement.DesiredDepth = BT.Blackboard.Get<float>("DesiredDepth");
                 }
+                
             }
-            SeaCreatureMovement.Update(Character,Movement,Sensor,Movement.IsMoving,GetAnimalTick);
+            /*AquaExpansionSession.Insance.Log(true, "Shark Movement: " +
+    "Direction=" + Movement.DesiredDirection +
+    " Speed=" + Movement.DesiredSpeed +
+    " Depth=" + Movement.DesiredDepth +
+    " Forward=" + Character.WorldMatrix.Forward);*/
+            SeaCreatureMovement.Update(Character,Movement,Sensor,Movement.IsMoving,MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS);
         }
         /// <summary>
         /// Set movement
@@ -131,28 +138,6 @@ namespace AquaExpansion.Core.Animals
         protected override void InitHitZones()
         {
             base.InitHitZones();
-            /*AnimalHitZoneUtils.AddZone(
-            hitZones,
-            this,
-            "Head",
-            new Vector3D(0.0, 0.0, -1.5),
-            0.3f,
-            2.0f);
-            AnimalHitZoneUtils.AddZone(
-            hitZones,
-            this,
-            "Body",
-            new Vector3D(0.0, 0.0, -0.8),
-            0.3f,
-            1.0f);
-            AnimalHitZoneUtils.AddZone(
-            hitZones,
-            this,
-            "Tail",
-            new Vector3D(0.0, 0.0, 1.0),
-            0.2f,
-            0.75f);*/
-            //new
             var head = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,1);
             var body = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,2);
             var tail = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,3);

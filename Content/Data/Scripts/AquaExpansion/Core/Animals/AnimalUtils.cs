@@ -32,9 +32,9 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal behavior type
     /// </summary>
-    public enum SeaAnimalBehavior { Predator,Passive }
-    public enum SeaAnimalFoodSystemStage
-    { Idle,Processing,Finished,Full }
+    public enum SeaAnimalBehavior { Predator, Passive }
+    public enum SeaAnimalFoodSystemStage { Idle, Processing, Finished, Full }
+    public enum SeaAnimalWasteType { Gas, Solid }
     /// <summary>
     /// Animal Utility class
     /// </summary>
@@ -71,7 +71,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="position"></param>
         /// <param name="color"></param>
         /// <param name="radius"></param>
-        public static void DebugSphere(Vector3D position,Color color,float radius = 1f)
+        public static void DebugSphere(Vector3D position, Color color, float radius = 1f)
         {
             Color c = color * 10f;
             MatrixD world = MatrixD.CreateTranslation(position);
@@ -167,7 +167,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="angle"></param>
         /// <param name="yawinput"></param>
         /// <param name="swimforce"></param>
-        public static void LogAnimalPhysics(string subtype, float speed,float speederror,float acceleration, float boost,float angle,float yawinput,float swimforce)
+        public static void LogAnimalPhysics(string subtype, float speed, float speederror, float acceleration, float boost, float angle, float yawinput, float swimforce)
         {
             AquaExpansionSession.Insance.Log(true,
            string.Format(
@@ -416,6 +416,10 @@ namespace AquaExpansion.Core.Animals
             }
             switch (command)
             {
+                case "desiredspeed":
+                    if (TryGetFloat(args, 3, out value))
+                        profile.DesiredSpeed = value;
+                    break;
                 case "maxspeed":
                     if (TryGetFloat(args, 3, out value))
                         profile.MaxSpeed = value;
@@ -462,7 +466,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="box"></param>
         /// <param name="point"></param>
         /// <returns></returns>
-        public static Vector3D GetClosestPointOnAABB(BoundingBoxD box,Vector3D point)
+        public static Vector3D GetClosestPointOnAABB(BoundingBoxD box, Vector3D point)
         {
             return new Vector3D(
                 MathHelperD.Clamp(
@@ -504,7 +508,7 @@ namespace AquaExpansion.Core.Animals
             if (character == null || character.IsDead || character.Closed || character.MarkedForClose)
                 return false;
             float ox;
-            AquaExpansionSession.Insance.GetInAirtightGrid(character,out ox);
+            AquaExpansionSession.Insance.GetInAirtightGrid(character, out ox);
             if (ox >= AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL)
                 return true;
             return false;
@@ -588,6 +592,11 @@ namespace AquaExpansion.Core.Animals
                 Agression = this.Agression
             };
         }
+    }
+    public class SeaAnimalWasteDefinition
+    {
+        public string GasEffect;
+        public string SolidComponent;
     }
     /// <summary>
     /// Animal database
@@ -730,7 +739,7 @@ namespace AquaExpansion.Core.Animals
     {
         private static readonly Dictionary<int, string> AnimalFoodItemsbyID = new Dictionary<int, string>();
         private static readonly Dictionary<string, int> AnimalFoodItemsbyName = new Dictionary<string, int>();
-        private static readonly Dictionary<int, string> SeaAnimalWasteEffectsbyID = new Dictionary<int, string>();
+        private static readonly Dictionary<int, SeaAnimalWasteDefinition> SeaAnimalWasteEffectsbyID = new Dictionary<int, SeaAnimalWasteDefinition>();
         /// <summary>
         /// Init
         /// </summary>
@@ -756,9 +765,23 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         /// <param name="id"></param>
         /// <param name="subtype"></param>
-        private static void RegisterWaste(int id, string subtype)
+        private static void RegisterWaste(int id, string subtype, SeaAnimalWasteType type)
         {
-            SeaAnimalWasteEffectsbyID[id] = subtype;
+            SeaAnimalWasteDefinition definition;
+            if (!SeaAnimalWasteEffectsbyID.TryGetValue(id, out definition))
+            {
+                definition = new SeaAnimalWasteDefinition();
+                SeaAnimalWasteEffectsbyID[id] = definition;
+            }
+            switch (type)
+            {
+                case SeaAnimalWasteType.Gas:
+                    definition.GasEffect = subtype;
+                    break;
+                case SeaAnimalWasteType.Solid:
+                    definition.SolidComponent = subtype;
+                    break;
+            }
         }
         /// <summary>
         /// Get animal food by ID
@@ -778,12 +801,20 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static string GetWasteByID(int id)
+        public static string GetWasteByID(int id, SeaAnimalWasteType type)
         {
-            string subtype;
-            if (SeaAnimalWasteEffectsbyID.TryGetValue(id, out subtype))
-                return subtype;
-            AquaExpansionSession.Insance.Log(true, $"Animal Waste NOT FOUND (id): {id}");
+            SeaAnimalWasteDefinition definition;
+            if (SeaAnimalWasteEffectsbyID.TryGetValue(id, out definition))
+            {
+                switch (type)
+                {
+                    case SeaAnimalWasteType.Gas:
+                        return definition.GasEffect;
+                    case SeaAnimalWasteType.Solid:
+                        return definition.SolidComponent;
+                }
+            }
+            AquaExpansionSession.Insance.Log(true, $"Animal Waste NOT FOUND (id): {id}, Type: {type}");
             return null;
         }
         /// <summary>
@@ -824,7 +855,13 @@ namespace AquaExpansion.Core.Animals
         /// <returns></returns>
         public static IEnumerable<string> GetAllAnimalWaste()
         {
-            return SeaAnimalWasteEffectsbyID.Values;
+            foreach (SeaAnimalWasteDefinition definition in SeaAnimalWasteEffectsbyID.Values)
+            {
+                if (!string.IsNullOrEmpty(definition.GasEffect))
+                    yield return definition.GasEffect;
+                if (!string.IsNullOrEmpty(definition.SolidComponent))
+                    yield return definition.SolidComponent;
+            }
         }
         /// <summary>
         /// is this subtype are Animal Food?
@@ -846,7 +883,15 @@ namespace AquaExpansion.Core.Animals
         /// <returns></returns>
         public static HashSet<string> FillAnimalWasteData()
         {
-            return new HashSet<string>(SeaAnimalWasteEffectsbyID.Values);
+            HashSet<string> wasteData = new HashSet<string>();
+            foreach (SeaAnimalWasteDefinition definition in SeaAnimalWasteEffectsbyID.Values)
+            {
+                if (!string.IsNullOrEmpty(definition.GasEffect))
+                    wasteData.Add(definition.GasEffect);
+                if (!string.IsNullOrEmpty(definition.SolidComponent))
+                    wasteData.Add(definition.SolidComponent);
+            }
+            return wasteData;
         }
     }
     /// <summary>
@@ -910,7 +955,7 @@ namespace AquaExpansion.Core.Animals
         /// Fill Anmal Components into a Dictionary for quick lookup by subtype
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<string,Func<MyGameLogicComponent>> FillAnimalComponents()
+        public static Dictionary<string, Func<MyGameLogicComponent>> FillAnimalComponents()
         {
             return new Dictionary<string, Func<MyGameLogicComponent>>(SeaAnimalsLogicData);
         }
@@ -959,7 +1004,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="movement"></param>
         ///  <param name="sensor"></param>
         /// <param name="run"></param>
-        public static void Update(IMyCharacter character,SeadCreatureMovementData movement,AnimalSensor sensor,bool run,int dt)
+        public static void Update(IMyCharacter character, SeadCreatureMovementData movement, AnimalSensor sensor, bool run, float dt)
         {
             if (!run)
                 return;
@@ -970,7 +1015,7 @@ namespace AquaExpansion.Core.Animals
                 !movement.IsMoving)
                 return;
             Vector3D desiredDirection = movement.DesiredDirection;
-            bool voxelRecovery = UpdateObstacleAvoidance(character,movement,sensor,ref desiredDirection);
+            bool voxelRecovery = UpdateObstacleAvoidance(character, movement, sensor, ref desiredDirection);
             if (voxelRecovery)
             {
                 movement.UseDepthControl = true;
@@ -981,8 +1026,26 @@ namespace AquaExpansion.Core.Animals
             }
             movement.DesiredDirection = desiredDirection;
             UpdateSteering(character, movement, desiredDirection);
-            UpdatePropulsion(character,movement,dt);
-            UpdateDepth(character,movement);
+            UpdatePropulsion(character, movement, MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS);
+            UpdateDepth(character, movement);
+            /*if (!run ||
+           character == null ||
+           character.Physics == null ||
+           movement == null ||
+           !movement.IsMoving ||
+           dt <= 0f)
+                return;
+            Vector3D desiredDirection = movement.DesiredDirection;
+            bool voxelRecovery = UpdateObstacleAvoidance(
+                character,
+                movement,
+                sensor,
+                ref desiredDirection);
+            movement.UseDepthControl = !voxelRecovery;
+            movement.DesiredDirection = desiredDirection;
+            UpdateSteering(character, movement, desiredDirection);
+            UpdatePropulsion(character, movement, dt);
+            UpdateDepth(character, movement);*/
         }
         /// <summary>
         /// Update Obstacle Avoidance
@@ -992,7 +1055,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="sensor"></param>
         /// <param name="desiredDirection"></param>
         /// <returns></returns>
-        private static bool UpdateObstacleAvoidance(IMyCharacter character,SeadCreatureMovementData movement,AnimalSensor sensor,ref Vector3D desiredDirection)
+        private static bool UpdateObstacleAvoidance(IMyCharacter character, SeadCreatureMovementData movement, AnimalSensor sensor, ref Vector3D desiredDirection)
         {
             if (character == null ||
                 character.Physics == null ||
@@ -1013,7 +1076,7 @@ namespace AquaExpansion.Core.Animals
             bool rightBlocked = sensor.RightObstacleDetected;
             bool upBlocked = sensor.UpObstacleDetected;
             bool downBlocked = sensor.DownObstacleDetected;
-            bool voxelRecovery = UpdateVoxelRecovery(character,sensor);
+            bool voxelRecovery = UpdateVoxelRecovery(character, sensor);
             if (frontBlocked)
             {
                 float strength = GetObstacleStrength(sensor.FrontObstacleDistance);
@@ -1123,9 +1186,9 @@ namespace AquaExpansion.Core.Animals
         /// <param name="character"></param>
         /// <param name="movement"></param>
         /// <param name="desiredDirection"></param>
-        private static void UpdateSteering(IMyCharacter character,SeadCreatureMovementData movement,Vector3D desiredDirection)
+        private static void UpdateSteering(IMyCharacter character, SeadCreatureMovementData movement, Vector3D desiredDirection)
         {
-            if (character == null ||
+            /*if (character == null ||
                 character.Physics == null ||
                 movement == null)
                 return;
@@ -1138,12 +1201,44 @@ namespace AquaExpansion.Core.Animals
             if (forward.LengthSquared() <= 0.001)
                 return;
             forward.Normalize();
-            double dot = Vector3D.Dot(forward,desiredDirection);
-            dot = MathHelper.Clamp((float)dot,-1.0f,1.0f);
+            double dot = Vector3D.Dot(forward, desiredDirection);
+            dot = MathHelper.Clamp((float)dot, -1.0f, 1.0f);
             double angle = Math.Acos(dot);
             if (angle <= 0.001)
                 return;
-            Vector3D cross = Vector3D.Cross(forward,desiredDirection);
+            Vector3D cross = Vector3D.Cross(forward, desiredDirection);
+            if (cross.Y < 0.0)
+                angle = -angle;
+            float maxTurn = movement.TurnSpeed * (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
+            float turn = MathHelper.Clamp((float)angle, -maxTurn, maxTurn);
+            if (Math.Abs(turn) <= 0.0001f)
+                return;
+            MatrixD rotation = MatrixD.CreateFromAxisAngle(Vector3D.Up, turn);
+            Vector3D newForward = Vector3D.TransformNormal(forward, rotation);
+            newForward.Normalize();
+            MatrixD world = character.WorldMatrix;
+            world.Forward = newForward;
+            character.WorldMatrix = world;*/
+            if (character == null ||
+           character.Physics == null ||
+           movement == null)
+                return;
+            desiredDirection.Y = 0.0;
+            if (desiredDirection.LengthSquared() <= 0.001)
+                return;
+            desiredDirection.Normalize();
+            MatrixD world = character.WorldMatrix;
+            Vector3D forward = world.Forward;
+            forward.Y = 0.0;
+            if (forward.LengthSquared() <= 0.001)
+                return;
+            forward.Normalize();
+            double dot = Vector3D.Dot(forward, desiredDirection);
+            dot = MathHelper.Clamp((float)dot, -1f, 1f);
+            double angle = Math.Acos(dot);
+            if (angle <= 0.001)
+                return;
+            Vector3D cross = Vector3D.Cross(forward, desiredDirection);
             if (cross.Y < 0.0)
                 angle = -angle;
             float maxTurn = movement.TurnSpeed * (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
@@ -1151,10 +1246,15 @@ namespace AquaExpansion.Core.Animals
             if (Math.Abs(turn) <= 0.0001f)
                 return;
             MatrixD rotation = MatrixD.CreateFromAxisAngle(Vector3D.Up,turn);
-            Vector3D newForward = Vector3D.TransformNormal(forward,rotation);
+            Vector3D newForward = Vector3D.TransformNormal(world.Forward, rotation);
+            Vector3D newRight = Vector3D.TransformNormal(world.Right, rotation);
+            Vector3D newUp = Vector3D.TransformNormal(world.Up, rotation);
             newForward.Normalize();
-            MatrixD world = character.WorldMatrix;
+            newRight.Normalize();
+            newUp.Normalize();
             world.Forward = newForward;
+            world.Right = newRight;
+            world.Up = newUp;
             character.WorldMatrix = world;
         }
         /// <summary>
@@ -1162,8 +1262,30 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         /// <param name="character"></param>
         /// <param name="movement"></param>
-        private static void UpdatePropulsion(IMyCharacter character,SeadCreatureMovementData movement,float dt)
+        private static void UpdatePropulsion(IMyCharacter character, SeadCreatureMovementData movement, float dt)
         {
+            /*if (character == null ||
+                character.Physics == null ||
+                movement == null ||
+                dt <= 0f)
+                return;
+            Vector3 forward = character.WorldMatrix.Forward;
+            forward.Normalize();
+            Vector3 velocity = character.Physics.LinearVelocity;
+            float forwardSpeed = Vector3.Dot(velocity, forward);
+            float targetSpeed = MathHelper.Clamp(movement.DesiredSpeed, 0f, movement.MaxSpeed);
+            float speedChange = movement.Acceleration * dt;
+            if (forwardSpeed < targetSpeed)
+            {
+                forwardSpeed = Math.Min(forwardSpeed + speedChange, targetSpeed);
+            }
+            else if (forwardSpeed > targetSpeed)
+            {
+                forwardSpeed = Math.Max(forwardSpeed - speedChange, targetSpeed);
+            }
+            Vector3 verticalVelocity = Vector3.Up * Vector3.Dot(velocity, Vector3.Up);
+            Vector3 newVelocity = forward * forwardSpeed + verticalVelocity;
+            character.Physics.LinearVelocity = newVelocity;*/
             if (character == null ||
                 character.Physics == null ||
                 movement == null ||
@@ -1175,16 +1297,19 @@ namespace AquaExpansion.Core.Animals
             float forwardSpeed = Vector3.Dot(velocity, forward);
             float targetSpeed = MathHelper.Clamp(movement.DesiredSpeed,0f,movement.MaxSpeed);
             float speedChange = movement.Acceleration * dt;
-            if (forwardSpeed < targetSpeed)
-            {
-                forwardSpeed = Math.Min(forwardSpeed + speedChange,targetSpeed);
-            }
-            else if (forwardSpeed > targetSpeed)
-            {
-                forwardSpeed = Math.Max(forwardSpeed - speedChange,targetSpeed);
-            }
-            Vector3 verticalVelocity = Vector3.Up * Vector3.Dot(velocity,Vector3.Up);
-            Vector3 newVelocity = forward * forwardSpeed + verticalVelocity;
+            forwardSpeed = MathHelper.Clamp(
+                targetSpeed,
+                Math.Max(0f, forwardSpeed - speedChange),
+                Math.Max(targetSpeed, forwardSpeed + speedChange));
+            Vector3 verticalVelocity = Vector3.Up * Vector3.Dot(velocity, Vector3.Up);
+            Vector3 lateralVelocity = velocity
+                - forward * Vector3.Dot(velocity, forward)
+                - verticalVelocity;
+            lateralVelocity *= Math.Max(0f, 1f - 2f * dt);
+            Vector3 newVelocity =
+                forward * forwardSpeed +
+                verticalVelocity +
+                lateralVelocity;
             character.Physics.LinearVelocity = newVelocity;
         }
         /// <summary>
@@ -1192,7 +1317,7 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         /// <param name="character"></param>
         /// <param name="movement"></param>
-        private static void UpdateDepth(IMyCharacter character,SeadCreatureMovementData movement)
+        private static void UpdateDepth(IMyCharacter character, SeadCreatureMovementData movement)
         {
             if (character == null ||
                 character.Physics == null ||
@@ -1204,12 +1329,12 @@ namespace AquaExpansion.Core.Animals
             if (Math.Abs(error) < 0.5f)
                 error = 0.0f;
             float buoyancyForce = -error * movement.DepthGain;
-            buoyancyForce = MathHelper.Clamp(buoyancyForce,-movement.MaxBuoyancyForce,movement.MaxBuoyancyForce);
+            buoyancyForce = MathHelper.Clamp(buoyancyForce, -movement.MaxBuoyancyForce, movement.MaxBuoyancyForce);
             Vector3 worldUp = character.WorldMatrix.Up;
             worldUp.Normalize();
-            float verticalSpeed = Vector3.Dot(character.Physics.LinearVelocity,worldUp);
+            float verticalSpeed = Vector3.Dot(character.Physics.LinearVelocity, worldUp);
             buoyancyForce -= verticalSpeed * movement.VerticalDamping;
-            buoyancyForce = MathHelper.Clamp(buoyancyForce,-movement.MaxBuoyancyForce,movement.MaxBuoyancyForce);
+            buoyancyForce = MathHelper.Clamp(buoyancyForce, -movement.MaxBuoyancyForce, movement.MaxBuoyancyForce);
             Vector3 impulse = worldUp * buoyancyForce;
             character.Physics.AddForce(
                 MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,
@@ -1268,7 +1393,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="character"></param>
         /// <param name="sensor"></param>
         /// <returns></returns>
-        private static bool UpdateVoxelRecovery(IMyCharacter character,AnimalSensor sensor)
+        private static bool UpdateVoxelRecovery(IMyCharacter character, AnimalSensor sensor)
         {
             if (character == null ||
                 character.Physics == null ||
@@ -1782,7 +1907,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="character"></param>
         /// <param name="minDepth"></param>
         /// <returns></returns>
-        public bool IsDangerousDepth(IMyCharacter character,float minDepth)
+        public bool IsDangerousDepth(IMyCharacter character, float minDepth)
         {
             if (character == null ||
                 character.MarkedForClose)
@@ -1801,15 +1926,14 @@ namespace AquaExpansion.Core.Animals
     public class AnimalDigestiveOrder
     {
         public Dictionary<MyDefinitionId, MyFixedPoint> FoodPrerequisites = new Dictionary<MyDefinitionId, MyFixedPoint>();
-        public Dictionary<string,int> CloudWasteResults = new Dictionary<string, int>();
+        public Dictionary<string, Dictionary<SeaAnimalWasteType, int>> WasteResults = new Dictionary<string, Dictionary<SeaAnimalWasteType, int>>();
         public int Id;
         public string Displayname;
-        public AnimalDigestiveOrder(int id,string displayname)
+        public AnimalDigestiveOrder(int id, string displayname)
         {
             Id = id;
             Displayname = displayname;
         }
-
     }
     /// <summary>
     /// Animal Spawn Deffinition
@@ -1906,10 +2030,10 @@ namespace AquaExpansion.Core.Animals
                 return;
             if (definitions.ContainsKey(definition.SubtypeId))
             {
-                AquaExpansionSession.Insance.Log(true,"Duplicate SeaAnimal Spawn definition: " + definition.SubtypeId);
+                AquaExpansionSession.Insance.Log(true, "Duplicate SeaAnimal Spawn definition: " + definition.SubtypeId);
                 return;
             }
-            definitions.Add(definition.SubtypeId,definition);
+            definitions.Add(definition.SubtypeId, definition);
         }
         public static SeaAnimalSpawnDefinition Get(string subtypeid)
         {
@@ -1931,9 +2055,9 @@ namespace AquaExpansion.Core.Animals
         private static readonly Dictionary<string, Guid> animalguids = new Dictionary<string, Guid>();
         public static void Init()
         {
-            RegisterGuid("AquaWhiteShark",new Guid("D33FD442-888A-4BF4-A41E-8F016FF10484"));
+            RegisterGuid("AquaWhiteShark", new Guid("D33FD442-888A-4BF4-A41E-8F016FF10484"));
         }
-        private static void RegisterGuid(string subtype,Guid guid)
+        private static void RegisterGuid(string subtype, Guid guid)
         {
             if (string.IsNullOrWhiteSpace(subtype))
                 return;
@@ -2034,14 +2158,14 @@ namespace AquaExpansion.Core.Animals
         public float Radius;
         public float DamageMultiplier;
         public BoundingSphereD BoundingSphere;
-        public AnimalHitZone(SeaCreatureBase host,string name,Vector3D localPosition,float radius,float damageMultiplier)
+        public AnimalHitZone(SeaCreatureBase host, string name, Vector3D localPosition, float radius, float damageMultiplier)
         {
             Host = host;
             Name = name;
             LocalPosition = localPosition;
             Radius = radius;
             DamageMultiplier = damageMultiplier;
-            BoundingSphere = new BoundingSphereD(Vector3D.Zero,radius);
+            BoundingSphere = new BoundingSphereD(Vector3D.Zero, radius);
         }
     }
     /// <summary>
@@ -2069,7 +2193,7 @@ namespace AquaExpansion.Core.Animals
         private static readonly MyDynamicAABBTreeD zoneTree = new MyDynamicAABBTreeD();
         private static readonly Dictionary<AnimalHitZone, int> zoneProxies = new Dictionary<AnimalHitZone, int>();
         private static readonly List<MyLineSegmentOverlapResult<AnimalHitZone>> results = new List<MyLineSegmentOverlapResult<AnimalHitZone>>();
-        public static void AddZone(List<AnimalHitZone> ownerZones,SeaCreatureBase host,string name,Vector3D localPosition,float radius,float damageMultiplier)
+        public static void AddZone(List<AnimalHitZone> ownerZones, SeaCreatureBase host, string name, Vector3D localPosition, float radius, float damageMultiplier)
         {
             if (ownerZones == null ||
                 host == null ||
@@ -2088,12 +2212,12 @@ namespace AquaExpansion.Core.Animals
             IMyCharacter character = host.GetCharacter();
             if (character != null)
             {
-                zone.WorldPosition = Vector3D.Transform(zone.LocalPosition,character.WorldMatrix);
+                zone.WorldPosition = Vector3D.Transform(zone.LocalPosition, character.WorldMatrix);
                 zone.BoundingSphere.Center = zone.WorldPosition;
             }
             BoundingBoxD box = zone.BoundingSphere.GetBoundingBox();
-            int proxyId = zoneTree.AddProxy(ref box,zone,0);
-            zoneProxies.Add(zone,proxyId);
+            int proxyId = zoneTree.AddProxy(ref box, zone, 0);
+            zoneProxies.Add(zone, proxyId);
         }
         public static void UpdateZone(AnimalHitZone zone)
         {
@@ -2108,17 +2232,17 @@ namespace AquaExpansion.Core.Animals
             {
                 return;
             }
-            zone.WorldPosition = Vector3D.Transform(zone.LocalPosition,character.WorldMatrix);
+            zone.WorldPosition = Vector3D.Transform(zone.LocalPosition, character.WorldMatrix);
             zone.BoundingSphere.Center = zone.WorldPosition;
             int proxyId;
-            if (!zoneProxies.TryGetValue(zone,out proxyId))
+            if (!zoneProxies.TryGetValue(zone, out proxyId))
             {
                 return;
             }
             BoundingBoxD box = zone.BoundingSphere.GetBoundingBox();
-            zoneTree.MoveProxy(proxyId,ref box,Vector3D.Zero);
+            zoneTree.MoveProxy(proxyId, ref box, Vector3D.Zero);
         }
-        public static bool QueryProjectile(AquaProjectile projectile,out AnimalHitZone hitZone,out Vector3D hitPosition,out double hitDistance)
+        public static bool QueryProjectile(AquaProjectile projectile, out AnimalHitZone hitZone, out Vector3D hitPosition, out double hitDistance)
         {
             hitZone = null;
             hitPosition = Vector3D.Zero;
@@ -2135,10 +2259,10 @@ namespace AquaExpansion.Core.Animals
                 return false;
             }
             Vector3D direction = movement / segmentLength;
-            LineD line = new LineD(projectile.PreviousPosition,projectile.Position);
-            RayD ray = new RayD(projectile.PreviousPosition,direction);
+            LineD line = new LineD(projectile.PreviousPosition, projectile.Position);
+            RayD ray = new RayD(projectile.PreviousPosition, direction);
             results.Clear();
-            zoneTree.OverlapAllLineSegment(ref line,results);
+            zoneTree.OverlapAllLineSegment(ref line, results);
             for (int i = 0; i < results.Count; i++)
             {
                 AnimalHitZone zone = results[i].Element;
@@ -2181,7 +2305,7 @@ namespace AquaExpansion.Core.Animals
             results.Clear();
             return hitZone != null;
         }
-        public static void RemoveZone(List<AnimalHitZone> ownerZones,AnimalHitZone zone)
+        public static void RemoveZone(List<AnimalHitZone> ownerZones, AnimalHitZone zone)
         {
             if (zone == null)
                 return;
@@ -2190,7 +2314,7 @@ namespace AquaExpansion.Core.Animals
                 ownerZones.Remove(zone);
             }
             int proxyId;
-            if (!zoneProxies.TryGetValue(zone,out proxyId))
+            if (!zoneProxies.TryGetValue(zone, out proxyId))
             {
                 return;
             }
@@ -2207,7 +2331,7 @@ namespace AquaExpansion.Core.Animals
                 if (zone == null)
                     continue;
                 int proxyId;
-                if (zoneProxies.TryGetValue(zone,out proxyId))
+                if (zoneProxies.TryGetValue(zone, out proxyId))
                 {
                     zoneProxies.Remove(zone);
                     zoneTree.RemoveProxy(proxyId);
@@ -2221,7 +2345,7 @@ namespace AquaExpansion.Core.Animals
             zoneProxies.Clear();
             results.Clear();
         }
-        public static void DebugDrawZone(AnimalHitZone zone,Color color,bool render)
+        public static void DebugDrawZone(AnimalHitZone zone, Color color, bool render)
         {
             if (!render ||
                 zone == null)
@@ -2234,7 +2358,7 @@ namespace AquaExpansion.Core.Animals
                 zone.Radius,
                 ref color,
                 MySimpleObjectRasterizer.Solid,
-                30,
+                60,
                 MyStringId.GetOrCompute("Square"),
                 MyStringId.GetOrCompute("Square"),
                 0.01f);
@@ -2270,7 +2394,7 @@ namespace AquaExpansion.Core.Animals
                 return;
             Dictionary<int, AnimalHitZoneDefinition> subdict;
             if (!zonedefinitions.TryGetValue(subtype, out subdict))
-            { 
+            {
                 subdict = new Dictionary<int, AnimalHitZoneDefinition>();
                 zonedefinitions[subtype] = subdict;
             }
@@ -2287,6 +2411,189 @@ namespace AquaExpansion.Core.Animals
             if (!subdict.TryGetValue(id, out definition))
                 return null;
             return definition;
+        }
+    }
+    public class SeaGodProtectionZone
+    {
+        public IMyCharacter Player;
+        public Vector3D LocalPosition;
+        public Vector3D WorldPosition;
+        public float Radius;
+        public BoundingSphereD BoundingSphere;
+        public bool Protect;
+        public SeaGodProtectionZone(IMyCharacter player, Vector3D localPosition, float radius,bool protect)
+        {
+            Player = player;
+            LocalPosition = localPosition;
+            Radius = radius;
+            BoundingSphere = new BoundingSphereD(Vector3D.Zero, radius);
+            Protect = protect;
+        }
+    }
+    public class SeaGodProtectionZoneUtils
+    {
+        private static readonly MyDynamicAABBTreeD SeaGodzoneTree = new MyDynamicAABBTreeD();
+        private static readonly Dictionary<SeaGodProtectionZone, int> zoneProxies = new Dictionary<SeaGodProtectionZone, int>();
+        private static readonly List<MyLineSegmentOverlapResult<SeaGodProtectionZone>> results = new List<MyLineSegmentOverlapResult<SeaGodProtectionZone>>();
+        public static void AddZone(List<SeaGodProtectionZone> ownerZones, IMyCharacter player, Vector3D localPosition, float radius,bool protect)
+        {
+            if (ownerZones == null ||
+               player == null ||
+               player.Closed ||
+               player.MarkedForClose ||
+               player.IsDead ||
+               radius <= 0.0f)
+            {
+                return;
+            }
+            SeaGodProtectionZone zone =
+                new SeaGodProtectionZone(player,localPosition,radius,protect);
+            ownerZones.Add(zone);
+            IMyCharacter character = player;
+            if (character != null)
+            {
+                zone.WorldPosition = Vector3D.Transform(zone.LocalPosition, character.WorldMatrix);
+                zone.BoundingSphere.Center = zone.WorldPosition;
+            }
+            zone.Protect = protect;
+            BoundingBoxD box = zone.BoundingSphere.GetBoundingBox();
+            int proxyId = SeaGodzoneTree.AddProxy(ref box, zone, 0);
+            zoneProxies.Add(zone, proxyId);
+        }
+        public static void UpdateZone(SeaGodProtectionZone zone)
+        {
+            if (zone == null ||
+                zone.Player == null ||
+                zone.Player.Closed ||
+                zone.Player.MarkedForClose ||
+                zone.Player.IsDead
+                )
+            {
+                return;
+            }
+            IMyCharacter character = zone.Player;
+            if (character == null ||
+                character.IsDead)
+            {
+                return;
+            }
+            zone.Protect = true;
+            zone.WorldPosition = Vector3D.Transform(zone.LocalPosition, character.WorldMatrix);
+            zone.BoundingSphere.Center = zone.WorldPosition;
+            if (!WaterModAPI.IsUnderwater(zone.BoundingSphere.Center))
+            {
+                zone.Protect = false;
+            }
+            int proxyId;
+            if (!zoneProxies.TryGetValue(zone, out proxyId))
+            {
+                return;
+            }
+            BoundingBoxD box = zone.BoundingSphere.GetBoundingBox();
+            SeaGodzoneTree.MoveProxy(proxyId, ref box, Vector3D.Zero);
+        }
+        public static void RemoveZones(List<SeaGodProtectionZone> ownerZones)
+        {
+            if (ownerZones == null)
+                return;
+            for (int i = 0; i < ownerZones.Count; i++)
+            {
+                SeaGodProtectionZone zone = ownerZones[i];
+                if (zone == null)
+                    continue;
+                int proxyId;
+                if (zoneProxies.TryGetValue(zone, out proxyId))
+                {
+                    zoneProxies.Remove(zone);
+                    SeaGodzoneTree.RemoveProxy(proxyId);
+                }
+            }
+            ownerZones.Clear();
+        }
+        public static void DebugDrawZone(SeaGodProtectionZone zone, Color color, bool render)
+        {
+            if (!render ||
+                zone == null)
+            {
+                return;
+            }
+            //Vector4 c = color;
+            MatrixD matrix = MatrixD.CreateTranslation(zone.WorldPosition);
+            MySimpleObjectDraw.DrawTransparentSphere(
+                ref matrix,
+                zone.Radius,
+                ref color,
+                MySimpleObjectRasterizer.Solid,
+                60,
+                MyStringId.GetOrCompute("Square"),
+                MyStringId.GetOrCompute("Square"),
+                0.01f);
+        }
+        public static bool QueryProjectile(AquaProjectile projectile, out SeaGodProtectionZone Zone, out Vector3D hitPosition, out double hitDistance)
+        {
+            Zone = null;
+            hitPosition = Vector3D.Zero;
+            hitDistance = double.MaxValue;
+            if (projectile == null ||
+                !projectile.Alive)
+            {
+                return false;
+            }
+            Vector3D movement = projectile.Position - projectile.PreviousPosition;
+            double segmentLength = movement.Length();
+            if (segmentLength <= 0.000001)
+            {
+                return false;
+            }
+            Vector3D direction = movement / segmentLength;
+            LineD line = new LineD(projectile.PreviousPosition, projectile.Position);
+            RayD ray = new RayD(projectile.PreviousPosition, direction);
+            results.Clear();
+            SeaGodzoneTree.OverlapAllLineSegment(ref line, results);
+            for (int i = 0; i < results.Count; i++)
+            {
+                SeaGodProtectionZone zone = results[i].Element;
+                if (zone == null)
+                    continue;
+                if (zone.Player == null)
+                    continue;
+                IMyCharacter character = zone.Player;
+                if (character == null ||
+                    character.IsDead)
+                {
+                    continue;
+                }
+                Vector3D startOffset = projectile.PreviousPosition - zone.BoundingSphere.Center;
+                if (startOffset.LengthSquared() < zone.Radius * zone.Radius)
+                    continue;
+                double min;
+                double max;
+                if (!zone.BoundingSphere.IntersectRaySphere(
+                    ray,
+                    out min,
+                    out max))
+                {
+                    continue;
+                }
+                if (min < 0.0)
+                {
+                    min = max;
+                }
+                if (min < 0.0 ||
+                    min > segmentLength)
+                {
+                    continue;
+                }
+                if (min >= hitDistance)
+                {
+                    continue;
+                }
+                hitDistance = min;
+                Zone = zone;
+                hitPosition = ray.Position + ray.Direction * min;
+            }
+            results.Clear();
+            return Zone != null;
         }
     }
 }

@@ -7,7 +7,6 @@ using Sandbox.ModAPI;
 using Sandbox.ModAPI.Weapons;
 using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using System.Text;
 using VRage.Game;
 using VRage.Game.ModAPI;
@@ -2486,6 +2485,10 @@ namespace AquaExpansion.Core.Combat
                     UpdateWaterTransition(projectile);
                     //trail update
                     // Collision
+                    if (CheckSeaGodZoneHit(projectile))
+                        break;
+                    if (!projectile.Alive)
+                        break;
                     CheckHit(projectile);
                     if (CheckAnimalHit(projectile))
                         break;
@@ -2807,6 +2810,7 @@ namespace AquaExpansion.Core.Combat
             IMyCharacter character = hit.HitEntity as IMyCharacter;
             if (character != null)
             {
+                MyLog.Default.WriteLineAndConsole("Hit Character");
                 character.DoDamage(
                     projectile.CurrentHealthDamage,
                     MyStringHash.GetOrCompute("Bullet"),
@@ -2912,6 +2916,35 @@ namespace AquaExpansion.Core.Combat
                 true);
             var mat = character.Physics.MaterialType;
             CombatUtils.CreateCharacterImpact(projectile.Position, projectile.Velocity, CharacterImpactDatabase.Get(mat.String), projectile.Trajectory.Type);
+            projectile.Alive = false;
+            return true;
+        }
+        private static bool CheckSeaGodZoneHit(AquaProjectile projectile)
+        {
+            SeaGodProtectionZone zone;
+            Vector3D hitPosition;
+            double hitDistance;
+            if (!SeaGodProtectionZoneUtils.QueryProjectile(
+               projectile,
+               out zone,
+               out hitPosition,
+               out hitDistance))
+            {
+                return false;
+            }
+            IMyCharacter character = zone.Player;
+            if (character == null ||
+                character.IsDead)
+            {
+                return false;
+            }
+            if (!zone.Protect)
+            {
+                return false;
+            }
+            projectile.Position = hitPosition;
+            MyLog.Default.WriteLineAndConsole("Hit SeaGodZone");
+            //AquaExpansionSession.Insance.Log(true,$"Hit SeaGodZone");
             projectile.Alive = false;
             return true;
         }

@@ -29,7 +29,6 @@ namespace AquaExpansion.Core.Animals
         private MyFixedPoint FoodAmount = new MyFixedPoint();
         private int FoodCount;
         protected SeadCreatureMovementData Movement;
-        protected SeaCreatureNavigator SeaNavigator;
         protected SeaCreatureDefinition Deffinition;
         protected AnimalSensor Sensor;
         private int animalTick;
@@ -60,7 +59,6 @@ namespace AquaExpansion.Core.Animals
             biobuffer = new BioLatentScheduler();
             scheduler = new LatentScheduler();
             Movement = new SeadCreatureMovementData();
-            SeaNavigator = new SeaCreatureNavigator();
             Sensor = new AnimalSensor();
             Attack = new SeaCreatureAttackData();
             NeedsUpdate = MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME | MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
@@ -99,10 +97,6 @@ namespace AquaExpansion.Core.Animals
         }
         public override void UpdateBeforeSimulation10()
         {
-            /*if (!IsValid() || Character.IsDead)
-                return;
-            LifeSupport();
-            CountInventoryFood(out FoodCount);*/
             base.UpdateBeforeSimulation10();
         }
         public override void UpdateAfterSimulation()
@@ -544,7 +538,6 @@ namespace AquaExpansion.Core.Animals
             {
                 Character.DoDamage(2f,MyStringHash.GetOrCompute("Enviroment"),true);
             }
-
         }
         /// <summary>
         /// Animal Attack
@@ -784,7 +777,6 @@ namespace AquaExpansion.Core.Animals
             scheduler.Clear();
             Attack = null;
             Sensor = null;
-            SeaNavigator = null;
             Movement = null;
             biobuffer = null;
             scheduler = null;
