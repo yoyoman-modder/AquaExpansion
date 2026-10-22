@@ -138,7 +138,7 @@ namespace AquaExpansion.Core.BT
         private int GridAvoidanceTimer;
         private float GridAvoidanceDepth;
         private readonly float dangDepth;
-        public ChaseTarget(double range,float offset,float minimumDepth,float dangerdepth,AnimalSensor animalSensor)
+        public ChaseTarget(double range, float offset, float minimumDepth, float dangerdepth, AnimalSensor animalSensor)
         {
             chaseRange = range;
             depthOffset = offset;
@@ -165,7 +165,7 @@ namespace AquaExpansion.Core.BT
             BB.Clear("AvoidanceDepth");
             BB.Clear("GridAvoidanceDepth");
         }
-        private bool GetTarget(out IMyPlayer player,out IMyCharacter target)
+        private bool GetTarget(out IMyPlayer player, out IMyCharacter target)
         {
             player = null;
             target = null;
@@ -322,9 +322,11 @@ namespace AquaExpansion.Core.BT
             }
             return direction;
         }
-        private void UpdateTargetDepth(IMyCharacter target)
+        private void UpdateTargetDepth(IMyCharacter character, IMyCharacter target)
         {
-            if (target == null ||
+            if (character == null ||
+                character.MarkedForClose ||
+                target == null ||
                 target.MarkedForClose ||
                 target.IsDead)
                 return;
@@ -334,13 +336,19 @@ namespace AquaExpansion.Core.BT
             float avoidanceDepth = GroundAvoidanceDepth + GridAvoidanceDepth;
             if (avoidanceDepth > 5.0f)
                 avoidanceDepth = 5.0f;
-            float desiredDepth = targetDepth - avoidanceDepth;
+            float currentDepth = Math.Abs(AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character));
+            // Avoid the obstacle by aiming shallower than the shark's current depth.
+            // Continue aiming for the target too, if it is shallower.
+            float desiredDepth = targetDepth;
+            float avoidanceTargetDepth = currentDepth - avoidanceDepth;
+            if (avoidanceTargetDepth < desiredDepth)
+                desiredDepth = avoidanceTargetDepth;
             if (desiredDepth < minDepth)
                 desiredDepth = minDepth;
-            BB.Set<float>("TargetDepth",targetDepth);
-            BB.Set<float>("AvoidanceDepth",GroundAvoidanceDepth);
-            BB.Set<float>("GridAvoidanceDepth",GridAvoidanceDepth);
-            BB.Set<float>("DesiredDepth",desiredDepth);
+            BB.Set<float>("TargetDepth", targetDepth);
+            BB.Set<float>("AvoidanceDepth", GroundAvoidanceDepth);
+            BB.Set<float>("GridAvoidanceDepth", GridAvoidanceDepth);
+            BB.Set<float>("DesiredDepth", desiredDepth);
             //Log($"target {targetDepth} desired {desiredDepth}");
         }
         public override void Start(IMyCharacter character)
@@ -351,7 +359,7 @@ namespace AquaExpansion.Core.BT
             GridAvoidanceTimer = 0;
             GridAvoidanceDepth = 0.0f;
         }
-        public override NodeState Tick(IMyCharacter character,float dt)
+        public override NodeState Tick(IMyCharacter character, float dt)
         {
             SetCurrentNode();
             if (character == null ||
@@ -362,7 +370,7 @@ namespace AquaExpansion.Core.BT
                 return SetState(NodeState.Failure);
             }
             if (sensor == null ||
-                sensor.IsDangerousDepth(character,dangDepth))
+                sensor.IsDangerousDepth(character, dangDepth))
             {
                 ClearTarget();
                 //Log($"danger depth {sensor.IsDangerousDepth(character, dangDepth)}");
@@ -370,7 +378,7 @@ namespace AquaExpansion.Core.BT
             }
             IMyPlayer player;
             IMyCharacter target;
-            if (!GetTarget(out player,out target))
+            if (!GetTarget(out player, out target))
             {
                 ClearTarget();
                 //Log("invalid target");
@@ -386,20 +394,20 @@ namespace AquaExpansion.Core.BT
                 //Log("target out of range");
                 return SetState(NodeState.Failure);
             }
-            BB.Set<Vector3D>("TargetPosition",targetPosition);
-            BB.Set<double>("TargetDistance",Math.Sqrt(distanceSquared));
+            BB.Set<Vector3D>("TargetPosition", targetPosition);
+            BB.Set<double>("TargetDistance", Math.Sqrt(distanceSquared));
             if (distanceSquared > 0.0001)
             {
                 direction.Normalize();
                 Vector3 chaseDirection = (Vector3)direction;
                 Vector3 avoidanceDirection = GetAvoidanceDirection(chaseDirection);
-                BB.Set<Vector3>("DesiredDirection",avoidanceDirection);
+                BB.Set<Vector3>("DesiredDirection", avoidanceDirection);
             }
             else
             {
-                BB.Set<Vector3>("DesiredDirection",Vector3.Zero);
+                BB.Set<Vector3>("DesiredDirection", Vector3.Zero);
             }
-            UpdateTargetDepth(target);
+            UpdateTargetDepth(character, target);
             //Log($"target {target.DisplayName}");
             return SetState(NodeState.Running);
         }
@@ -564,7 +572,7 @@ namespace AquaExpansion.Core.BT
                 return SetState(NodeState.Success);
             }
             //Fail("HealthAbove",$"Health {health}");
-            Log($"Fail Health is {health}");
+            //Log($"Fail Health is {health}");
             return SetState(NodeState.Failure);
         }
         public override void End(IMyCharacter character)

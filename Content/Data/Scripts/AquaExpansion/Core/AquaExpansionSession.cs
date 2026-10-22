@@ -169,7 +169,7 @@ namespace AquaExpansion.Core
             if (usebalisticsFallback)
             {
                 balistics.Load();
-                Log(true, $"Balistics System init");
+                //Log(true, $"Balistics System init");
             }
         }
         private void ClearBalisticksFallback()

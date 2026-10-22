@@ -259,7 +259,6 @@ namespace AquaExpansion.Core.Animals
                 /animal <SubtypeId> maxspeed <value>
                 /animal <SubtypeId> desiredepth <value>
                 /animal <SubtypeId> turnspeed <value>
-                /animal <SubtypeId> forwardforce <value>
                 /animal <SubtypeId> depthgain <value>
                 /animal <SubtypeId> maxbuoyancyforce <value>
                 /animal <SubtypeId> verticaldamping <value>
@@ -432,10 +431,10 @@ namespace AquaExpansion.Core.Animals
                     if (TryGetFloat(args, 3, out value))
                         profile.TurnSpeed = value;
                     break;
-                case "forwardforce":
+                /*case "forwardforce":
                     if (TryGetFloat(args, 3, out value))
                         profile.ForwardForce = value;
-                    break;
+                    break;*/
                 case "depthgain":
                     if (TryGetFloat(args, 3, out value))
                         profile.DepthGain = value;
@@ -1028,24 +1027,6 @@ namespace AquaExpansion.Core.Animals
             UpdateSteering(character, movement, desiredDirection);
             UpdatePropulsion(character, movement, MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS);
             UpdateDepth(character, movement);
-            /*if (!run ||
-           character == null ||
-           character.Physics == null ||
-           movement == null ||
-           !movement.IsMoving ||
-           dt <= 0f)
-                return;
-            Vector3D desiredDirection = movement.DesiredDirection;
-            bool voxelRecovery = UpdateObstacleAvoidance(
-                character,
-                movement,
-                sensor,
-                ref desiredDirection);
-            movement.UseDepthControl = !voxelRecovery;
-            movement.DesiredDirection = desiredDirection;
-            UpdateSteering(character, movement, desiredDirection);
-            UpdatePropulsion(character, movement, dt);
-            UpdateDepth(character, movement);*/
         }
         /// <summary>
         /// Update Obstacle Avoidance
@@ -1141,23 +1122,23 @@ namespace AquaExpansion.Core.Animals
             if (sensor.UpGridObstacleDetected)
             {
                 float strength = GetVerticalObstacleStrength(sensor.UpGridObstacleDistance);
-                movement.DesiredDepth -= strength;
+                movement.DesiredDepth += strength;
             }
             else if (upBlocked)
             {
                 float strength = GetVerticalObstacleStrength(sensor.UpObstacleDistance);
-                movement.DesiredDepth -= strength;
+                movement.DesiredDepth += strength;
             }
             if (sensor.DownGridObstacleDetected)
             {
                 float strength = GetVerticalObstacleStrength(sensor.DownGridObstacleDistance);
-                movement.DesiredDepth += strength;
+                movement.DesiredDepth -= strength;
             }
             else if (downBlocked)
             {
                 float strength = GetVerticalObstacleStrength(sensor.DownObstacleDistance);
 
-                movement.DesiredDepth += strength;
+                movement.DesiredDepth -= strength;
             }
             if (sensor.IsGroundDetected &&
                 !voxelRecovery &&
@@ -1188,37 +1169,6 @@ namespace AquaExpansion.Core.Animals
         /// <param name="desiredDirection"></param>
         private static void UpdateSteering(IMyCharacter character, SeadCreatureMovementData movement, Vector3D desiredDirection)
         {
-            /*if (character == null ||
-                character.Physics == null ||
-                movement == null)
-                return;
-            desiredDirection.Y = 0.0;
-            if (desiredDirection.LengthSquared() <= 0.001)
-                return;
-            desiredDirection.Normalize();
-            Vector3D forward = character.WorldMatrix.Forward;
-            forward.Y = 0.0;
-            if (forward.LengthSquared() <= 0.001)
-                return;
-            forward.Normalize();
-            double dot = Vector3D.Dot(forward, desiredDirection);
-            dot = MathHelper.Clamp((float)dot, -1.0f, 1.0f);
-            double angle = Math.Acos(dot);
-            if (angle <= 0.001)
-                return;
-            Vector3D cross = Vector3D.Cross(forward, desiredDirection);
-            if (cross.Y < 0.0)
-                angle = -angle;
-            float maxTurn = movement.TurnSpeed * (float)MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
-            float turn = MathHelper.Clamp((float)angle, -maxTurn, maxTurn);
-            if (Math.Abs(turn) <= 0.0001f)
-                return;
-            MatrixD rotation = MatrixD.CreateFromAxisAngle(Vector3D.Up, turn);
-            Vector3D newForward = Vector3D.TransformNormal(forward, rotation);
-            newForward.Normalize();
-            MatrixD world = character.WorldMatrix;
-            world.Forward = newForward;
-            character.WorldMatrix = world;*/
             if (character == null ||
            character.Physics == null ||
            movement == null)
@@ -1264,28 +1214,6 @@ namespace AquaExpansion.Core.Animals
         /// <param name="movement"></param>
         private static void UpdatePropulsion(IMyCharacter character, SeadCreatureMovementData movement, float dt)
         {
-            /*if (character == null ||
-                character.Physics == null ||
-                movement == null ||
-                dt <= 0f)
-                return;
-            Vector3 forward = character.WorldMatrix.Forward;
-            forward.Normalize();
-            Vector3 velocity = character.Physics.LinearVelocity;
-            float forwardSpeed = Vector3.Dot(velocity, forward);
-            float targetSpeed = MathHelper.Clamp(movement.DesiredSpeed, 0f, movement.MaxSpeed);
-            float speedChange = movement.Acceleration * dt;
-            if (forwardSpeed < targetSpeed)
-            {
-                forwardSpeed = Math.Min(forwardSpeed + speedChange, targetSpeed);
-            }
-            else if (forwardSpeed > targetSpeed)
-            {
-                forwardSpeed = Math.Max(forwardSpeed - speedChange, targetSpeed);
-            }
-            Vector3 verticalVelocity = Vector3.Up * Vector3.Dot(velocity, Vector3.Up);
-            Vector3 newVelocity = forward * forwardSpeed + verticalVelocity;
-            character.Physics.LinearVelocity = newVelocity;*/
             if (character == null ||
                 character.Physics == null ||
                 movement == null ||
@@ -1297,10 +1225,7 @@ namespace AquaExpansion.Core.Animals
             float forwardSpeed = Vector3.Dot(velocity, forward);
             float targetSpeed = MathHelper.Clamp(movement.DesiredSpeed,0f,movement.MaxSpeed);
             float speedChange = movement.Acceleration * dt;
-            forwardSpeed = MathHelper.Clamp(
-                targetSpeed,
-                Math.Max(0f, forwardSpeed - speedChange),
-                Math.Max(targetSpeed, forwardSpeed + speedChange));
+            forwardSpeed = MathHelper.Clamp(targetSpeed,Math.Max(0f, forwardSpeed - speedChange),Math.Max(targetSpeed, forwardSpeed + speedChange));
             Vector3 verticalVelocity = Vector3.Up * Vector3.Dot(velocity, Vector3.Up);
             Vector3 lateralVelocity = velocity
                 - forward * Vector3.Dot(velocity, forward)
