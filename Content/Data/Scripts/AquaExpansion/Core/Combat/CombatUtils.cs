@@ -2810,13 +2810,13 @@ namespace AquaExpansion.Core.Combat
             IMyCharacter character = hit.HitEntity as IMyCharacter;
             if (character != null)
             {
-                MyLog.Default.WriteLineAndConsole("Hit Character");
+                //MyLog.Default.WriteLineAndConsole("Hit Character");
                 character.DoDamage(
                     projectile.CurrentHealthDamage,
                     MyStringHash.GetOrCompute("Bullet"),
                     true);
                 var mat = character.Physics.MaterialType;
-                CombatUtils.CreateCharacterImpact(hit.Normal, projectile.Velocity, CharacterImpactDatabase.Get(mat.String), projectile.Trajectory.Type);
+                CombatUtils.CreateCharacterImpact(hit.Position, projectile.Velocity, CharacterImpactDatabase.Get(mat.String), projectile.Trajectory.Type);
                 projectile.Alive = false;
                 return;
             }

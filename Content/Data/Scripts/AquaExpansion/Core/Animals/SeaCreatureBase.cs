@@ -2,6 +2,7 @@
 using Jakaria.API;
 using Sandbox.Game;
 using Sandbox.Game.Components;
+using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,6 @@ namespace AquaExpansion.Core.Animals
         protected AnimalSensor Sensor;
         private int animalTick;
         private IMyGps AnimalBTmarker;
-        //Behavior Tree integration
         protected BehaviorTree BT;
         protected Blackboard BB;
         private bool BTInitializationScheduled = false;
@@ -42,6 +42,8 @@ namespace AquaExpansion.Core.Animals
         protected SeaCreatureAttackData Attack;
         protected readonly List<AnimalHitZone> hitZones = new List<AnimalHitZone>();
         private bool foodTaskPending;
+        private bool wasteTaskPending;
+        protected Vector3D[] boneLocations;
         /// <summary>
         /// Init Sea Creature
         /// </summary>
@@ -68,6 +70,8 @@ namespace AquaExpansion.Core.Animals
             if (!IsValid())
                 return;
             InitHitZones();
+            InitBoneLocations();
+            InitCollisionZones();
             base.UpdateOnceBeforeFrame();
         }
         /// <summary>
@@ -94,10 +98,6 @@ namespace AquaExpansion.Core.Animals
             AnimalAttackSphere();
             scheduler.Update();
             base.UpdateBeforeSimulation();
-        }
-        public override void UpdateBeforeSimulation10()
-        {
-            base.UpdateBeforeSimulation10();
         }
         public override void UpdateAfterSimulation()
         {
@@ -141,6 +141,25 @@ namespace AquaExpansion.Core.Animals
         protected virtual void SetMovementData()
         {
             
+        }
+        protected virtual void InitCollisionZones()
+        { 
+
+        }
+        /// <summary>
+        /// Update bone locations
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Vector3D[] UpdateBoneLocations()
+        {
+            return boneLocations;
+        }
+        /// <summary>
+        /// Init start bone locations
+        /// </summary>
+        private void InitBoneLocations()
+        {
+            boneLocations = new Vector3D[hitZones.Count];
         }
         /// <summary>
         /// Update debug marker
@@ -414,9 +433,10 @@ namespace AquaExpansion.Core.Animals
             }
             var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
             if (itemdef != null)
-                inv.ConsumeItem(itemdef, 2, Character.EntityId);
+                inv.ConsumeItem(itemdef, 1, Character.EntityId);
             //AquaExpansionSession.Insance.Log(true, $"Animal get Energy");
             foodTaskPending = false;
+            WasteSupport();
         }
         /// <summary>
         /// Animal Health internal
@@ -730,16 +750,19 @@ namespace AquaExpansion.Core.Animals
         private void UpdateHitZones()
         {
             if (!IsValid() || Character.IsDead)
-            {
                 return;
-            }
-            for (int i = 0; i < hitZones.Count; i++)
+            UpdateBoneLocations();
+            if (boneLocations == null)
+                return;
+            int count = Math.Min(hitZones.Count, boneLocations.Length);
+            for (int i = 0; i < count; i++)
             {
                 AnimalHitZone zone = hitZones[i];
                 if (zone == null)
                     continue;
+                zone.LocalPosition = boneLocations[i];
                 AnimalHitZoneUtils.UpdateZone(zone);
-                AnimalHitZoneUtils.DebugDrawZone(zone,Color.Cyan,AquaExpansionSession.Insance.AnimalDebugEnabled);
+                AnimalHitZoneUtils.DebugDrawZone(zone,(Color.Cyan).ToVector4(),AquaExpansionSession.Insance.AnimalDebugEnabled);
             }
         }
         /// <summary>
@@ -748,6 +771,60 @@ namespace AquaExpansion.Core.Animals
         private void CloseHitZones()
         {
             AnimalHitZoneUtils.RemoveZones(hitZones);
+        }
+        /// <summary>
+        /// Get animal bone location
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        protected Vector3D GetBoneLocation(string name)
+        {
+            if (string.IsNullOrEmpty(name) || Character == null)
+                return Vector3D.Zero;
+            MySkinnedEntity charEnt = Character as MySkinnedEntity;
+            if (charEnt == null || charEnt.AnimationController == null)
+                return Vector3D.Zero;
+            int boneIndex;
+            if (charEnt.AnimationController.FindBone(name, out boneIndex) == null)
+                return Vector3D.Zero;
+            Vector3D localPosition = charEnt.BoneAbsoluteTransforms[boneIndex].Translation;
+            //AquaExpansionSession.Insance.Log(true,$"Bone {name} local {localPosition} animal {Entity?.DisplayName}");
+            return localPosition;
+        }
+        /// <summary>
+        /// Maintain waste management
+        /// </summary>
+        private void WasteSupport()
+        {
+            if (!IsValid() || Character.IsDead)
+                return;
+            if (wasteTaskPending)
+                return;
+            wasteTaskPending = true;
+            scheduler.Schedule(AnimalEjectWaste, 5, false, 0);
+        }
+        /// <summary>
+        /// Eject waste
+        /// </summary>
+        private void AnimalEjectWaste()
+        {
+            if (!IsValid() || Character.IsDead || Deffinition == null)
+            {
+                wasteTaskPending = false;
+                return;
+            }
+            SeaAnimalWasteDefinition def = Deffinition.WasteDefinition;
+            if (def == null)
+            {
+                wasteTaskPending = false;
+                return;
+            }
+            Vector3D wastePos = Vector3D.Transform(def.LocalPosition,Character.WorldMatrix);
+            if (!string.IsNullOrEmpty(def.GasEffect))
+            {
+                MyVisualScriptLogicProvider.CreateParticleEffectAtPosition(def.GasEffect,wastePos);
+            }
+            wasteTaskPending = false;
         }
         /// <summary>
         /// Close Markers

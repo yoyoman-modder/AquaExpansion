@@ -11,12 +11,10 @@ namespace AquaExpansion.UnderwaterFarmPlot
     {
         private IMyFunctionalBlock block;
         private UnderwaterFarmPlotBase logic;
-
         public UnderwaterFarmPlotActivateUseObject(IMyEntity owner, string dummyName, IMyModelDummy dummyData, uint shapeKey) : base(owner, dummyData)
         {
             block = owner as IMyFunctionalBlock;
         }
-
         public override UseActionEnum SupportedActions => UseActionEnum.Manipulate
                                                         | UseActionEnum.Close
                                                         | UseActionEnum.BuildPlanner
@@ -26,7 +24,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                                                         | UseActionEnum.UseFinished; // gets called when releasing manipulate
         public override UseActionEnum PrimaryAction => UseActionEnum.Manipulate;
         public override UseActionEnum SecondaryAction => UseActionEnum.OpenTerminal;
-
         public override MyActionDescription GetActionInfo(UseActionEnum actionEnum)
         {
             switch (actionEnum)
@@ -44,8 +41,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                     };
             }
         }
-        
-
         public override void Use(UseActionEnum actionEnum, IMyEntity user)
         {
             switch (actionEnum)
@@ -56,7 +51,6 @@ namespace AquaExpansion.UnderwaterFarmPlot
                     break;
             }
         }
-
         private void ActivateEvent()
         {
             logic = block.GameLogic.GetAs<UnderwaterFarmPlotBase>();

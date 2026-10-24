@@ -29,25 +29,25 @@ namespace AquaExpansion.Core.Animals
                     new SequenceNode(// run children in order until one fails
                         new SelectorNode(//ticks its children sequentually until one succeeds
                             new SequenceNode(
-                                new DangerDepth(5, Sensor),//checks if depth not danger for animal
+                                new DangerDepth(Deffinition.DangerDepth, Sensor),//checks if depth not danger for animal
                                 new HealthAbove(100),//checks health above  value
                                 new SelectorNode(
                                     new SequenceNode(
                                         new HealthAbove(50),
                                         new DetectPlayer(100),//detect random player from nearby targets store target to chase
-                                        new ChaseTarget(100,1.5f,1,5,Sensor)//chase player target
+                                        new ChaseTarget(100,1.5f, Deffinition.Minseekdepth, Deffinition.DangerDepth, Sensor)//chase player target
                                     ),
                                     new RandomSelectorNode(
-                                        new Wander(5, Deffinition.DesiredDepth,5, Sensor),//wander random swimming
-                                        new SwimAway(3),
-                                        new Wander(10, Deffinition.DesiredDepth,5, Sensor)//wander random swimming
+                                        new Wander(5, Deffinition.DesiredDepth, Deffinition.DangerDepth, Sensor),//wander random swimming
+                                        new SwimAway(3,Deffinition.MaxSpeed),
+                                        new Wander(10, Deffinition.DesiredDepth, Deffinition.DangerDepth, Sensor)//wander random swimming
                                     )
                                 )
                             ),
                             new RandomSelectorNode(
-                                new SwimAway(3),
-                                new SwimAway(5),
-                                new SwimAway(10)
+                                new SwimAway(3,Deffinition.MaxSpeed),
+                                new SwimAway(5,Deffinition.MaxSpeed),
+                                new SwimAway(10,Deffinition.MaxSpeed)
                             )
                         )
                     )
@@ -95,11 +95,6 @@ namespace AquaExpansion.Core.Animals
                 }
                 
             }
-            /*AquaExpansionSession.Insance.Log(true, "Shark Movement: " +
-    "Direction=" + Movement.DesiredDirection +
-    " Speed=" + Movement.DesiredSpeed +
-    " Depth=" + Movement.DesiredDepth +
-    " Forward=" + Character.WorldMatrix.Forward);*/
             SeaCreatureMovement.Update(Character,Movement,Sensor,Movement.IsMoving,MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS);
         }
         /// <summary>
@@ -141,9 +136,22 @@ namespace AquaExpansion.Core.Animals
             var head = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,1);
             var body = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,2);
             var tail = SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String,3);
-            AnimalHitZoneUtils.AddZone(hitZones,this, head.Name, head.LocalPosition, head.Radius, head.DamageMultiplier);
-            AnimalHitZoneUtils.AddZone(hitZones, this, body.Name, body.LocalPosition, body.Radius, body.DamageMultiplier);
-            AnimalHitZoneUtils.AddZone(hitZones, this, tail.Name, tail.LocalPosition, tail.Radius, tail.DamageMultiplier);
+            AnimalHitZoneUtils.AddZone(hitZones,this, head.Name, GetBoneLocation(head.Bonename), head.Radius, head.DamageMultiplier);
+            AnimalHitZoneUtils.AddZone(hitZones, this, body.Name, GetBoneLocation(body.Bonename), body.Radius, body.DamageMultiplier);
+            AnimalHitZoneUtils.AddZone(hitZones, this, tail.Name, GetBoneLocation(tail.Bonename), tail.Radius, tail.DamageMultiplier);
         }
+        protected override Vector3D[] UpdateBoneLocations()
+        {
+            if (boneLocations == null || boneLocations.Length < 3)
+                return boneLocations;
+            boneLocations[0] = GetBoneLocation(SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String, 1).Bonename);
+            boneLocations[1] = GetBoneLocation(SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String, 2).Bonename);
+            boneLocations[2] = GetBoneLocation(SeaAnimalHitZoneDatabase.Get(Character.Definition.Id.SubtypeId.String, 3).Bonename);
+            return boneLocations;
+        }
+        protected override void InitCollisionZones()
+        {
+            base.InitCollisionZones();
+        }   
     }
 }

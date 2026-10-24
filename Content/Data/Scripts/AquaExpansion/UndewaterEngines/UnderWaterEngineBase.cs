@@ -72,7 +72,6 @@ namespace AquaExpansion.UndewaterEngines
             }
             NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -89,7 +88,6 @@ namespace AquaExpansion.UndewaterEngines
                 }
             }
         }
-
         public override void OnAddedToScene()
         {
             base.OnAddedToScene();
@@ -109,7 +107,6 @@ namespace AquaExpansion.UndewaterEngines
             if (flameDummies.Count == 0)
                 flameDummies = null;
         }
-
         private void SetInfo(StringBuilder info)
         {
             info.AppendLine($"{Tdepth} {(float)Math.Round(WaterDepth)} m");
@@ -124,7 +121,6 @@ namespace AquaExpansion.UndewaterEngines
                 info.AppendLine($"{TDeepwarning}");
             }
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -137,7 +133,6 @@ namespace AquaExpansion.UndewaterEngines
             SetEngineBlades();
             base.UpdateOnceBeforeFrame();
         }
-
         public override void UpdateAfterSimulation10()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -151,7 +146,6 @@ namespace AquaExpansion.UndewaterEngines
             AquaExpansionSession.Insance.UpdateTerminal(block);
             base.UpdateAfterSimulation10();
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -174,7 +168,6 @@ namespace AquaExpansion.UndewaterEngines
             //AquaExpansionSession.Insance.Log(true, $"DummyFlames {flameDummies.Count}");
             base.UpdateBeforeSimulation();
         }
-
         private void UpdateCahedDummy()
         {
             if (flameDummies == null)
@@ -187,7 +180,6 @@ namespace AquaExpansion.UndewaterEngines
                 Flameforward = FlameWorld.Forward;
             }
         }
-
         private float CalculatePowerConsumption()
         {
             if (block == null || !block.IsFunctional || !block.Enabled || block.Closed || !block.IsWorking)
@@ -217,7 +209,6 @@ namespace AquaExpansion.UndewaterEngines
             PowerConsumption = targetMultiplier;
             return PowerConsumption;
         }
-
         private void UpdatePowerConsumption()
         {
             if (block == null || !block.IsFunctional || !block.Enabled || block.Closed || !block.IsWorking)
@@ -231,8 +222,6 @@ namespace AquaExpansion.UndewaterEngines
             }
             block.PowerConsumptionMultiplier = MathHelper.Lerp(block.PowerConsumptionMultiplier, CalculatePowerConsumption(), 0.1f);
         }
-
-
         private void GetCurrentWaterStats(out MyTuple<float, float, float, int> waterdata)
         {
             waterdata = new MyTuple<float, float, float, int>(0f, 0f, 0f, 0);
@@ -247,7 +236,6 @@ namespace AquaExpansion.UndewaterEngines
                 WaterPressure = AquaExpansionSession.Insance.GetPressurebyGrid(grid);
             }
         }
-
         private void SetEngineBlades()
         {
             if (block == null || block.Closed)
@@ -261,13 +249,11 @@ namespace AquaExpansion.UndewaterEngines
                 }
             }
         }
-
         private void Clear()
         {
             if (block?.CubeGrid?.Physics != null)
                 block.AppendingCustomInfo -= AppendCustomInfo;
         }
-
         public override void Close()
         {
             Clear();

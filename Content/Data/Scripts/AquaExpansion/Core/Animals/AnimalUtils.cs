@@ -19,22 +19,14 @@ namespace AquaExpansion.Core.Animals
     /// Animal type
     /// </summary>
     public enum SeaAnimalType
-    {
-        Shark,
-        Fish,
-        Mammal,
-        Ray,
-        Cephalopod,
-        Jellyfish,
-        Crustacean,
-        Reptile
-    }
+    { Shark,Fish,Mammal,Ray,Cephalopod,Jellyfish,Crustacean,Reptile }
     /// <summary>
     /// Animal behavior type
     /// </summary>
     public enum SeaAnimalBehavior { Predator, Passive }
     public enum SeaAnimalFoodSystemStage { Idle, Processing, Finished, Full }
     public enum SeaAnimalWasteType { Gas, Solid }
+    public enum SeaAnimalZoneMode { Local,Bone }
     /// <summary>
     /// Animal Utility class
     /// </summary>
@@ -48,7 +40,7 @@ namespace AquaExpansion.Core.Animals
         /// <param name="size"></param>
         public static void DebugBox(Vector3D position, Color color, double size = 0.02)
         {
-            Color c = color * 10f;
+            Color c = color;
             MatrixD world = MatrixD.CreateTranslation(position);
             BoundingBoxD box = new BoundingBoxD(new Vector3D(-size), new Vector3D(size));
             MySimpleObjectDraw.DrawTransparentBox(
@@ -567,6 +559,9 @@ namespace AquaExpansion.Core.Animals
         public float HealthDamage;
         public float AttackCenter;
         public float Agression;
+        public SeaAnimalWasteDefinition WasteDefinition;
+        public float Minseekdepth;
+        public float DangerDepth;
         public SeaCreatureDefinition Clone()
         {
             return new SeaCreatureDefinition
@@ -588,14 +583,21 @@ namespace AquaExpansion.Core.Animals
                 AttackInterval = this.AttackInterval,
                 HealthDamage = this.HealthDamage,
                 AttackCenter = this.AttackCenter,
-                Agression = this.Agression
+                Agression = this.Agression,
+                WasteDefinition = this.WasteDefinition,
+                Minseekdepth = this.Minseekdepth,
+                DangerDepth = this.DangerDepth
             };
         }
     }
+    /// <summary>
+    /// Waste deffinition
+    /// </summary>
     public class SeaAnimalWasteDefinition
     {
         public string GasEffect;
         public string SolidComponent;
+        public Vector3D LocalPosition;
     }
     /// <summary>
     /// Animal database
@@ -628,7 +630,34 @@ namespace AquaExpansion.Core.Animals
                 AttackInterval = 90,
                 HealthDamage = 20f,
                 AttackCenter = 1.5f,
-                Agression = 50
+                Agression = 50,
+                WasteDefinition = SeaAnimalFoodItemsDatabase.GetWasteDefinitionByID(1),
+                Minseekdepth = 0.5f,
+                DangerDepth = 5f
+            });
+            RegisterAnimal(new SeaCreatureDefinition 
+            {
+                Type = SeaAnimalType.Shark,
+                Behavior = SeaAnimalBehavior.Passive,
+                Subtypeid = "AquaWhaleShark",
+                DesiredSpeed = 2f,
+                MaxSpeed = 5f,
+                DesiredDepth = 10f,
+                TurnSpeed = 1f,
+                ForwardForce = 50f,
+                DepthGain = 50f,
+                MaxBuoyancyForce = 500f,
+                VerticalDamping = 45f,
+                Acceleration = 5f,
+                Food = SeaAnimalFoodItemsDatabase.GetFoodByID(1),
+                AttackRadius = 1.0f,
+                HealthDamage = 5f,
+                AttackCenter = 1.0f,
+                AttackInterval = 10,
+                Agression = 0,
+                WasteDefinition = SeaAnimalFoodItemsDatabase.GetWasteDefinitionByID(2),
+                Minseekdepth = 1f,
+                DangerDepth = 6f
             });
         }
         /// <summary>
@@ -747,7 +776,8 @@ namespace AquaExpansion.Core.Animals
             //Food
             RegisterFood(1, "AquaAnimalMeatRaw");
             //Waste
-
+            RegisterWaste(1,"AquaWhiteSharkWasteCloud", SeaAnimalWasteType.Gas, new Vector3D(0,-0.2,-1.0));
+            RegisterWaste(2, "AquaWhaleSharkWasteCloud", SeaAnimalWasteType.Gas, new Vector3D(0, -0.2, -1.0));
         }
         /// <summary>
         /// Register Food
@@ -764,7 +794,7 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         /// <param name="id"></param>
         /// <param name="subtype"></param>
-        private static void RegisterWaste(int id, string subtype, SeaAnimalWasteType type)
+        private static void RegisterWaste(int id, string subtype, SeaAnimalWasteType type, Vector3D position)
         {
             SeaAnimalWasteDefinition definition;
             if (!SeaAnimalWasteEffectsbyID.TryGetValue(id, out definition))
@@ -781,6 +811,7 @@ namespace AquaExpansion.Core.Animals
                     definition.SolidComponent = subtype;
                     break;
             }
+            definition.LocalPosition = position;
         }
         /// <summary>
         /// Get animal food by ID
@@ -814,6 +845,16 @@ namespace AquaExpansion.Core.Animals
                 }
             }
             AquaExpansionSession.Insance.Log(true, $"Animal Waste NOT FOUND (id): {id}, Type: {type}");
+            return null;
+        }
+        public static SeaAnimalWasteDefinition GetWasteDefinitionByID(int id)
+        {
+            SeaAnimalWasteDefinition definition;
+            if (SeaAnimalWasteEffectsbyID.TryGetValue(id, out definition))
+            {
+                return definition;
+            }
+            AquaExpansionSession.Insance.Log(true, $"Animal Waste NOT FOUND (id): {id}");
             return null;
         }
         /// <summary>
@@ -905,6 +946,7 @@ namespace AquaExpansion.Core.Animals
         public static void Init()
         {
             RegisterAnimalComponent("AquaWhiteShark", () => new SeaCreatureWhiteShark());
+            RegisterAnimalComponent("AquaWhaleShark", () => new SeaCreatureWhaleShark());
         }
         /// <summary>
         /// Register AnimalComponent by subtype and factory function to create the component
@@ -1027,6 +1069,24 @@ namespace AquaExpansion.Core.Animals
             UpdateSteering(character, movement, desiredDirection);
             UpdatePropulsion(character, movement, MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS);
             UpdateDepth(character, movement);
+            /*if (!run ||
+           character == null ||
+           character.Physics == null ||
+           movement == null ||
+           !movement.IsMoving ||
+           dt <= 0f)
+                return;
+            Vector3D desiredDirection = movement.DesiredDirection;
+            bool voxelRecovery = UpdateObstacleAvoidance(
+                character,
+                movement,
+                sensor,
+                ref desiredDirection);
+            movement.UseDepthControl = !voxelRecovery;
+            movement.DesiredDirection = desiredDirection;
+            UpdateSteering(character, movement, desiredDirection);
+            UpdatePropulsion(character, movement, dt);
+            UpdateDepth(character, movement);*/
         }
         /// <summary>
         /// Update Obstacle Avoidance
@@ -1227,14 +1287,9 @@ namespace AquaExpansion.Core.Animals
             float speedChange = movement.Acceleration * dt;
             forwardSpeed = MathHelper.Clamp(targetSpeed,Math.Max(0f, forwardSpeed - speedChange),Math.Max(targetSpeed, forwardSpeed + speedChange));
             Vector3 verticalVelocity = Vector3.Up * Vector3.Dot(velocity, Vector3.Up);
-            Vector3 lateralVelocity = velocity
-                - forward * Vector3.Dot(velocity, forward)
-                - verticalVelocity;
+            Vector3 lateralVelocity = velocity - forward * Vector3.Dot(velocity, forward) - verticalVelocity;
             lateralVelocity *= Math.Max(0f, 1f - 2f * dt);
-            Vector3 newVelocity =
-                forward * forwardSpeed +
-                verticalVelocity +
-                lateralVelocity;
+            Vector3 newVelocity = forward * forwardSpeed + verticalVelocity + lateralVelocity;
             character.Physics.LinearVelocity = newVelocity;
         }
         /// <summary>
@@ -1324,62 +1379,35 @@ namespace AquaExpansion.Core.Animals
                 character.Physics == null ||
                 sensor == null)
                 return false;
-
             if (!sensor.IsGroundDetected ||
                 sensor.GroundDistance > 2f ||
                 sensor.GroundDistance < 0f)
                 return false;
-
-            IMyVoxelBase voxel =
-                sensor.GroundHitEntity as IMyVoxelBase;
-
+            IMyVoxelBase voxel = sensor.GroundHitEntity as IMyVoxelBase;
             if (voxel == null)
                 return false;
-
-            Vector3D up =
-                character.WorldMatrix.Up;
-
+            Vector3D up = character.WorldMatrix.Up;
             if (up.LengthSquared() < 0.001)
                 return true;
-
             up.Normalize();
-
-            Vector3 velocity =
-                character.Physics.LinearVelocity;
-
-            float upwardSpeed =
-                (float)Vector3D.Dot(
-                    velocity,
-                    up);
-
+            Vector3 velocity = character.Physics.LinearVelocity;
+            float upwardSpeed = (float)Vector3D.Dot(velocity,up);
             const float maximumRecoverySpeed = 4.0f;
             const float maximumSpeedChange = 0.35f;
-
             if (upwardSpeed >= maximumRecoverySpeed)
                 return true;
-
-            float speedChange =
-                maximumRecoverySpeed -
-                upwardSpeed;
-
+            float speedChange = maximumRecoverySpeed - upwardSpeed;
             if (speedChange >
                 maximumSpeedChange)
             {
-                speedChange =
-                    maximumSpeedChange;
+                speedChange = maximumSpeedChange;
             }
-
-            Vector3D impulse =
-                up *
-                character.Physics.Mass *
-                speedChange;
-
+            Vector3D impulse = up * character.Physics.Mass * speedChange;
             character.Physics.AddForce(
                 MyPhysicsForceType.APPLY_WORLD_IMPULSE_AND_WORLD_ANGULAR_IMPULSE,
                 impulse,
                 null,
                 null);
-
             return true;
         }
     }
@@ -1946,6 +1974,19 @@ namespace AquaExpansion.Core.Animals
                 "White Shark", // bot name
                 5f // spawn safety radius
                 ));
+            Register(new SeaAnimalSpawnDefinition(
+                 "AquaWhaleShark",// SubtypeId
+                 "AquaWhaleShark_Bot",// botSubtype
+                  4,
+                10f, 
+                20f, 
+                100f, 
+                200f, 
+                60, 
+                1000f,
+                "Whale Shark",
+                6f
+                ));
         }
         private static void Register(SeaAnimalSpawnDefinition definition)
         {
@@ -1981,6 +2022,7 @@ namespace AquaExpansion.Core.Animals
         public static void Init()
         {
             RegisterGuid("AquaWhiteShark", new Guid("D33FD442-888A-4BF4-A41E-8F016FF10484"));
+            RegisterGuid("AquaWhaleShark", new Guid("D36CB712-A769-4737-B61D-FA67F7691177"));
         }
         private static void RegisterGuid(string subtype, Guid guid)
         {
@@ -2102,12 +2144,14 @@ namespace AquaExpansion.Core.Animals
         public Vector3D LocalPosition;
         public float Radius;
         public float DamageMultiplier;
-        public AnimalHitZoneDefinition(string name, Vector3D localposition, float radius, float damageMultiplier)
+        public string Bonename;
+        public AnimalHitZoneDefinition(string name, Vector3D localposition, float radius, float damageMultiplier,string bonename)
         {
             Name = name;
             LocalPosition = localposition;
             Radius = radius;
             DamageMultiplier = damageMultiplier;
+            Bonename = bonename;
         }
     }
     /// <summary>
@@ -2283,7 +2327,7 @@ namespace AquaExpansion.Core.Animals
                 zone.Radius,
                 ref color,
                 MySimpleObjectRasterizer.Solid,
-                60,
+                20,
                 MyStringId.GetOrCompute("Square"),
                 MyStringId.GetOrCompute("Square"),
                 0.01f);
@@ -2301,17 +2345,38 @@ namespace AquaExpansion.Core.Animals
                 "Head",
                 new Vector3D(0.0, 0.0, -1.5),
                 0.3f,
-                2.0f));
+                2.0f,
+                "Head"));
             Register("AquaWhiteShark", 2, new AnimalHitZoneDefinition(
                 "Body",
                 new Vector3D(0.0, 0.0, -0.8),
-                0.3f,
-                1.0f));
+                0.35f,
+                1.0f,
+                "SpineMid"));
             Register("AquaWhiteShark", 3, new AnimalHitZoneDefinition(
                 "Tail",
                 new Vector3D(0.0, 0.0, 1.0),
                 0.2f,
-                0.75f));
+                0.75f,
+                "TailEnd"));
+            Register("AquaWhaleShark", 4, new AnimalHitZoneDefinition(
+                "Head",
+                new Vector3D(0.0, 0.0, -4.0),
+                1.0f,
+                2.0f,
+                "Head"));
+            Register("AquaWhaleShark", 5, new AnimalHitZoneDefinition(
+                "Body",
+                new Vector3D(0.0, 0.0, -2.0),
+                1.0f,
+                1.0f,
+                "SpineMid2"));
+            Register("AquaWhaleShark", 6, new AnimalHitZoneDefinition(
+                "Tail",
+                new Vector3D(0.0, 0.0, 1.0),
+                0.65f,
+                0.75f,
+                "TallEnd"));
         }
         private static void Register(string subtype, int id, AnimalHitZoneDefinition definition)
         {
@@ -2336,6 +2401,22 @@ namespace AquaExpansion.Core.Animals
             if (!subdict.TryGetValue(id, out definition))
                 return null;
             return definition;
+        }
+    }
+    public class AnimaCollisionZone
+    {
+        public SeaCreatureBase Host;
+        public string Name;
+        public Vector3D BoneLocalPosition;
+        public Vector3D WorldPosition;
+        public float Radius;
+        public AnimaCollisionZone(SeaCreatureBase host, string name, Vector3D bonelocalPosition, float radius)
+        {
+            Host = host;
+            Name = name;
+            BoneLocalPosition = bonelocalPosition;
+            Radius = radius;
+            
         }
     }
     public class SeaGodProtectionZone
@@ -2442,7 +2523,6 @@ namespace AquaExpansion.Core.Animals
             {
                 return;
             }
-            //Vector4 c = color;
             MatrixD matrix = MatrixD.CreateTranslation(zone.WorldPosition);
             MySimpleObjectDraw.DrawTransparentSphere(
                 ref matrix,
@@ -2519,6 +2599,51 @@ namespace AquaExpansion.Core.Animals
             }
             results.Clear();
             return Zone != null;
+        }
+    }
+    public static class SeaAnimalTargetCoordinator
+    {
+        private static readonly Dictionary<long, long> Assignments = new Dictionary<long, long>();
+        public static IMyPlayer SelectTarget(long sharkId, List<IMyPlayer> players)
+        {
+            if (players == null || players.Count == 0)
+                return null;
+            int minTargets = int.MaxValue;
+            List<IMyPlayer> candidates = new List<IMyPlayer>();
+            for (int i = 0; i < players.Count; i++)
+            {
+                IMyPlayer player = players[i];
+                if (player == null)
+                    continue;
+                int count = 0;
+                foreach (KeyValuePair<long, long> assignment in Assignments)
+                {
+                    if (assignment.Key != sharkId &&
+                        assignment.Value == player.IdentityId)
+                    {
+                        count++;
+                    }
+                }
+                if (count < minTargets)
+                {
+                    minTargets = count;
+                    candidates.Clear();
+                    candidates.Add(player);
+                }
+                else if (count == minTargets)
+                {
+                    candidates.Add(player);
+                }
+            }
+            if (candidates.Count == 0)
+                return null;
+            IMyPlayer selected = candidates[MyUtils.GetRandomInt(0, candidates.Count)];
+            Assignments[sharkId] = selected.IdentityId;
+            return selected;
+        }
+        public static void ReleaseTarget(long sharkId)
+        {
+            Assignments.Remove(sharkId);
         }
     }
 }

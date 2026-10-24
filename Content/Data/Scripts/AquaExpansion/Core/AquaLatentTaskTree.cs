@@ -10,7 +10,6 @@ namespace AquaExpansion.Core
     {
         bridgeConnect
     }
-
     // Serializable task entry
     [ProtoContract]
     public class AquaLatentEntry
@@ -19,8 +18,6 @@ namespace AquaExpansion.Core
         [ProtoMember(2)] public int ExecuteAtTick;
         [ProtoMember(3)] public string Tag;
     }
-
-
     // Save container
     [ProtoContract]
     public class AquaSchedulerSaveData

@@ -24,7 +24,7 @@
 			<Stats>
 				<Stat Name="BatteryCharge" Value="1.5" Time="1"/>
 			</Stats>
-			<UseSound>ArcPlayEat</UseSound>
+			<!--<UseSound>ArcPlayEat</UseSound>-->
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
 			<MinimumOfferAmount>0</MinimumOfferAmount>
 			<MaximumOfferAmount>0</MaximumOfferAmount>

@@ -34,7 +34,6 @@ namespace AquaExpansion.SaltGenerator
         private MyFixedPoint lastSaltAmount = 0;
         private double WaterPressure;
         private string TPressure = "Pressure:";
-
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);
@@ -55,7 +54,6 @@ namespace AquaExpansion.SaltGenerator
             }
             NeedsUpdate = MyEntityUpdateEnum.BEFORE_NEXT_FRAME | MyEntityUpdateEnum.EACH_FRAME | MyEntityUpdateEnum.EACH_100TH_FRAME | MyEntityUpdateEnum.EACH_10TH_FRAME;
         }
-
         private void AppendCustomInfo(IMyTerminalBlock block, StringBuilder info)
         {
             if (block != null && !block.Closed)
@@ -72,7 +70,6 @@ namespace AquaExpansion.SaltGenerator
                 }
             }
         }
-
         private void SetInfo(StringBuilder info)
         {
             if (block == null || block.Closed||grid == null || grid.Closed)
@@ -91,7 +88,6 @@ namespace AquaExpansion.SaltGenerator
                 info.AppendLine($"{Tsalt} {(float)Math.Round(saltP)}%");
             }
         }
-
         private void GetCurrentWaterData()
         {
             if (block != null && !block.Closed && block.Enabled && block.IsFunctional && WaterModAPI.IsUnderwater(block.GetPosition()) && block.IsWorking)
@@ -105,7 +101,6 @@ namespace AquaExpansion.SaltGenerator
                 }
             }
         }
-
         private void CalculateSaltEffect()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed || !block.IsWorking)
@@ -120,7 +115,6 @@ namespace AquaExpansion.SaltGenerator
             salteffect = 1f + depthFactor * (saltBoost - 1f);
             salteffect = MathHelper.Clamp(salteffect, 1f, 3f);
         }
-
         public override void UpdateOnceBeforeFrame()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -132,7 +126,6 @@ namespace AquaExpansion.SaltGenerator
             block.AppendingCustomInfo += AppendCustomInfo;
             base.UpdateOnceBeforeFrame();
         }
-
         public override void UpdateBeforeSimulation()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -145,7 +138,6 @@ namespace AquaExpansion.SaltGenerator
                 block.Enabled = false;
             base.UpdateBeforeSimulation();
         }
-
         public override void UpdateAfterSimulation10()
         {
             if (block == null || block.Closed || block.MarkedForClose)
@@ -160,7 +152,6 @@ namespace AquaExpansion.SaltGenerator
             AquaExpansionSession.Insance.UpdateTerminal(block);
             base.UpdateAfterSimulation10();
         }
-
         private void UpdateGeneratorOutput()
         {
             if (block == null || !block.Enabled || !block.IsFunctional || block.Closed || !block.IsWorking)
@@ -208,7 +199,6 @@ namespace AquaExpansion.SaltGenerator
             outputInv.AddItems((MyFixedPoint)bonus, salt);
             lastSaltAmount = currentSalt;
         }
-
         private void Clear()
         {
             if (block?.CubeGrid?.Physics != null)
@@ -216,7 +206,6 @@ namespace AquaExpansion.SaltGenerator
                 block.AppendingCustomInfo -= AppendCustomInfo;
             }
         }
-
         public override void Close()
         {
             Clear();

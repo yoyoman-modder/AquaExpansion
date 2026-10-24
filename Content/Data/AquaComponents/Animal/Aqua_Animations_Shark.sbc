@@ -71,5 +71,76 @@
             <Public>false</Public>
             <SupportedSkeletons>Arachnid</SupportedSkeletons>
         </Animation>
+
+		<Animation>
+			<Id>
+				<TypeId>AnimationDefinition</TypeId>
+				<SubtypeId>IdleWhaleShark</SubtypeId>
+			</Id>
+			<DisplayName>IdleWhaleShark</DisplayName>
+			<Description>IdleWhaleShark</Description>
+			<Icon>Textures\GUI\Icons\Fake.dds</Icon>
+			<AnimationModel>Models\Characters\Animations\AWhaleShark_idleN.mwm</AnimationModel>
+			<ClipIndex>0</ClipIndex>
+			<InfluenceArea>Body</InfluenceArea>
+			<Public>false</Public>
+			<SupportedSkeletons>Arachnid</SupportedSkeletons>
+		</Animation>
+		<Animation>
+			<Id>
+				<TypeId>AnimationDefinition</TypeId>
+				<SubtypeId>AttackWhaleShark</SubtypeId>
+			</Id>
+			<DisplayName>AttackWhaleShark</DisplayName>
+			<Description>AttackWhaleShark</Description>
+			<Icon>Textures\GUI\Icons\Fake.dds</Icon>
+			<AnimationModel>Models\Characters\Animations\AWhaleShark_idleN.mwm</AnimationModel>
+			<ClipIndex>0</ClipIndex>
+			<InfluenceArea>Body</InfluenceArea>
+			<Public>false</Public>
+			<SupportedSkeletons>Arachnid</SupportedSkeletons>
+		</Animation>
+		<Animation>
+			<Id>
+				<TypeId>AnimationDefinition</TypeId>
+				<SubtypeId>SwimWhaleShark</SubtypeId>
+			</Id>
+			<DisplayName>SwimWhaleShark</DisplayName>
+			<Description>SwimWhaleShark</Description>
+			<Icon>Textures\GUI\Icons\Fake.dds</Icon>
+			<AnimationModel>Models\Characters\Animations\AWhaleShark_idleN.mwm</AnimationModel>
+			<ClipIndex>0</ClipIndex>
+			<InfluenceArea>Body</InfluenceArea>
+			<Public>false</Public>
+			<SupportedSkeletons>Arachnid</SupportedSkeletons>
+		</Animation>
+		<Animation>
+			<Id>
+				<TypeId>AnimationDefinition</TypeId>
+				<SubtypeId>BoostWhaleShark</SubtypeId>
+			</Id>
+			<DisplayName>BoostWhaleShark</DisplayName>
+			<Description>BoostWhaleShark</Description>
+			<Icon>Textures\GUI\Icons\Fake.dds</Icon>
+			<AnimationModel>Models\Characters\Animations\AWhaleShark_idleN.mwm</AnimationModel>
+			<ClipIndex>0</ClipIndex>
+			<InfluenceArea>Body</InfluenceArea>
+			<Public>false</Public>
+			<SupportedSkeletons>Arachnid</SupportedSkeletons>
+		</Animation>
+		<Animation>
+			<Id>
+				<TypeId>AnimationDefinition</TypeId>
+				<SubtypeId>DeathWhaleShark</SubtypeId>
+			</Id>
+			<DisplayName>DeathWhaleShark</DisplayName>
+			<Description>DeathWhaleShark</Description>
+			<Icon>Textures\GUI\Icons\Fake.dds</Icon>
+			<AnimationModel>Models\Characters\Animations\AWhaleShark_idleN.mwm</AnimationModel>
+			<ClipIndex>0</ClipIndex>
+			<InfluenceArea>Body</InfluenceArea>
+			<Public>false</Public>
+			<SupportedSkeletons>Arachnid</SupportedSkeletons>
+		</Animation>
     </Animations>
 </Definitions>

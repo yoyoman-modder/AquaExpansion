@@ -1679,7 +1679,7 @@ namespace AquaExpansion.Core
         {
             if (MyAPIGateway.Input.IsNewKeyPressed(MyKeys.Control))
             {
-                SpawnTestAnimal("AquaShark_Bot", "White Shark");
+                SpawnTestAnimal("AquaWhaleShark_Bot", "Whale Shark");
             }
         }
         private string GetShipWelderEffect(IMyShipWelder block)
@@ -2278,7 +2278,6 @@ namespace AquaExpansion.Core
                 return !MyAPIGateway.Multiplayer.IsServer;
             }
         }
-        // Replace the AccessNetworkSession method with the following implementation
         private void AccessNetworkSession()
         {
             

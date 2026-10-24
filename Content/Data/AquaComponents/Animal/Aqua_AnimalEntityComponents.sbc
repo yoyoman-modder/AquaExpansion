@@ -14,6 +14,15 @@
 				<guid>D33FD442-888A-4BF4-A41E-8F016FF10484</guid>
 			</RegisteredStorageGuids>
 		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_ModStorageComponentDefinition">
+			<Id>
+				<TypeId>ModStorageComponent</TypeId>
+				<SubtypeId>AquaWhaleShark</SubtypeId>
+			</Id>
+			<RegisteredStorageGuids>
+				<guid>D36CB712-A769-4737-B61D-FA67F7691177</guid>
+			</RegisteredStorageGuids>
+		</EntityComponent>
 		<!-- End Region Mod Storage-->
 		<!-- Region Cnoveoir-->
 		<!--End Region Cnoveoir-->
@@ -31,6 +40,26 @@
 				<Stat>
 					<TypeId>MyObjectBuilder_EntityStat</TypeId>
 					<SubtypeId>WhiteSharkBridge</SubtypeId>
+				</Stat>
+			</Stats>
+			<Scripts>
+				<Script>SpaceStatEffect</Script>
+				<Script>SeaAnimalConnector</Script>
+			</Scripts>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_EntityStatComponentDefinition">
+			<Id>
+				<TypeId>CharacterStatComponent</TypeId>
+				<SubtypeId>AquaWhaleShark</SubtypeId>
+			</Id>
+			<Stats>
+				<Stat>
+					<TypeId>MyObjectBuilder_EntityStat</TypeId>
+					<SubtypeId>WhaleSharkHealth</SubtypeId>
+				</Stat>
+				<Stat>
+					<TypeId>MyObjectBuilder_EntityStat</TypeId>
+					<SubtypeId>WhaleSharkBridge</SubtypeId>
 				</Stat>
 			</Stats>
 			<Scripts>

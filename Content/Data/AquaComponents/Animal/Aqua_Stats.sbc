@@ -21,7 +21,25 @@
 			<MinValue>0</MinValue>
 			<MaxValue>1</MaxValue>
 		</Stat>
-		<!-- End Region Aqua animal stats-->
-    </StatDefinitions>
-
+	<Stat xsi:type="MyObjectBuilder_EntityStatDefinition">
+		<Id>
+			<TypeId>MyObjectBuilder_EntityStat</TypeId>
+			<SubtypeId>WhaleSharkHealth</SubtypeId>
+		</Id>
+		<Name>Health</Name>
+		<MinValue>0</MinValue>
+		<DefaultValue>500</DefaultValue>
+		<MaxValue>500</MaxValue>
+	</Stat>
+		<Stat xsi:type="MyObjectBuilder_EntityStatDefinition">
+			<Id>
+				<TypeId>MyObjectBuilder_EntityStat</TypeId>
+				<SubtypeId>WhaleSharkBridge</SubtypeId>
+			</Id>
+			<Name>SeaAnimalBridge</Name>
+			<MinValue>0</MinValue>
+			<MaxValue>1</MaxValue>
+		</Stat>
+	<!-- End Region Aqua animal stats-->
+	</StatDefinitions>
 </Definitions>

@@ -10,5 +10,14 @@
 				<Component BuilderType="MyObjectBuilder_CharacterStatComponent" SubtypeId="AquaWhiteShark" ForceCreate="true"/>
 			</DefaultComponents>
 		</Container>
+		<Container>
+			<Id>
+				<TypeId>MyObjectBuilder_Character</TypeId>
+				<SubtypeId>AquaWhaleShark</SubtypeId>
+			</Id>
+			<DefaultComponents>
+				<Component BuilderType="MyObjectBuilder_CharacterStatComponent" SubtypeId="AquaWhaleShark" ForceCreate="true"/>
+			</DefaultComponents>
+		</Container>
     </EntityContainers>
 </Definitions>
