@@ -645,7 +645,7 @@
 			<PhysicalMaterial>Metal</PhysicalMaterial>
 			<Stats>
 				<Stat Name="Health" Value="-0.90" Time="60"/>
-				<Stat Name="Food" Value="0.000" Time="60"/>
+				<Stat Name="Food" Value="0.120" Time="60"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>

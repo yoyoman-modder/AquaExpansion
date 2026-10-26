@@ -44,6 +44,7 @@ namespace AquaExpansion.Core.Animals
         private bool foodTaskPending;
         private bool wasteTaskPending;
         protected Vector3D[] boneLocations;
+        private bool foodConsumptionScheduled;
         /// <summary>
         /// Init Sea Creature
         /// </summary>
@@ -313,14 +314,20 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void LifeSupport()
         {
-            if (!IsValid() || Character.IsDead)
+            /*if (!IsValid() || Character.IsDead)
                 return;
             if (AnimalEnergy() >= 75f)
                 return;
             if (foodTaskPending)
                 return;
             foodTaskPending = true;
-            scheduler.Schedule(InsertEnergyFood, 5, false, 0);
+            scheduler.Schedule(InsertEnergyFood, 5, false, 0);*/
+            if (!IsValid() || Character.IsDead)
+                return;
+            if (AnimalEnergy() >= 75f || foodTaskPending)
+                return;
+            foodTaskPending = true;
+            scheduler.Schedule(InsertEnergyFood,5, false, 0);
         }
         /// <summary>
         /// Get Inventory
@@ -364,7 +371,7 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void InsertEnergyFood()
         {
-            if (!IsValid() || Character.IsDead)
+            /*if (!IsValid() || Character.IsDead)
             {
                 foodTaskPending = false;
                 return;
@@ -389,6 +396,30 @@ namespace AquaExpansion.Core.Animals
             }
             var obj = (MyObjectBuilder_PhysicalObject)MyObjectBuilderSerializer.CreateNewObject(itemdef);
             inv.AddItems(FoodAmount, obj);
+            scheduler.Schedule(AnimalGetEnergy, 2, false, 0);*/
+            if (!foodTaskPending || !IsValid() || Character.IsDead || inv == null)
+            {
+                foodTaskPending = false;
+                return;
+            }
+            if (inv.IsFull ||
+                string.IsNullOrEmpty(Deffinition.Food) ||
+                !AnimalFoodSubtypes.Contains(Deffinition.Food))
+            {
+                foodTaskPending = false;
+                return;
+            }
+            var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
+            if (itemdef == null)
+            {
+                foodTaskPending = false;
+                return;
+            }
+            var obj = (MyObjectBuilder_PhysicalObject)MyObjectBuilderSerializer.CreateNewObject(itemdef);
+            inv.AddItems(1, obj);
+            if (foodConsumptionScheduled)
+                return;
+            foodConsumptionScheduled = true;
             scheduler.Schedule(AnimalGetEnergy, 2, false, 0);
         }
         /// <summary>
@@ -426,17 +457,37 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void AnimalGetEnergy()
         {
-            if (!IsValid() || Character.IsDead)
+            /*if (!IsValid() || Character.IsDead)
             {
                 foodTaskPending = false;
                 return;
             }
             var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
             if (itemdef != null)
+            { 
                 inv.ConsumeItem(itemdef, 1, Character.EntityId);
-            //AquaExpansionSession.Insance.Log(true, $"Animal get Energy");
+            }
             foodTaskPending = false;
-            WasteSupport();
+            WasteSupport();*/
+            if (!foodTaskPending || !foodConsumptionScheduled)
+                return;
+            foodConsumptionScheduled = false;
+            try
+            {
+                if (!IsValid() || Character.IsDead || inv == null)
+                    return;
+
+                var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
+                if (itemdef == null)
+                    return;
+
+                inv.ConsumeItem(itemdef, 1, Character.EntityId);
+                WasteSupport();
+            }
+            finally
+            {
+                foodTaskPending = false;
+            }
         }
         /// <summary>
         /// Animal Health internal

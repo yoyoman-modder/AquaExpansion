@@ -967,6 +967,24 @@
 			</Results>
 			<BaseProductionTimeInSeconds>8</BaseProductionTimeInSeconds>
 		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_FishMeat_Animal_WhaleShark</SubtypeId>
+			</Id>
+			<DisplayName>Toxic Whale Shark Meat Processing</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>S</IconSymbol>
+			<Prerequisites>
+				<Item Amount="1" TypeId="ConsumableItem" SubtypeId="AquaAnimalRaw_WhaleSharkMeat_Raw" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="10" TypeId="ConsumableItem" SubtypeId="AquaFish_BigFishPieces" />
+				<Item Amount="6" TypeId="ConsumableItem" SubtypeId="AquaFish_Oil" />
+			</Results>
+			<BaseProductionTimeInSeconds>15</BaseProductionTimeInSeconds>
+		</Blueprint>
 		<!--End Animal-->
 		<!--Drinks-->
 		<Blueprint>

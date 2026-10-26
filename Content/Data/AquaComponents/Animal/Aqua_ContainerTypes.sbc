@@ -18,5 +18,20 @@
                 </Item>
             </Items>
         </ContainerType>
+		<ContainerType CountMin="2" CountMax="3">
+			<Id>
+				<TypeId>ContainerTypeDefinition</TypeId>
+				<SubtypeId>Aqua_WhaleSharkLoot</SubtypeId>
+			</Id>
+			<Items>
+				<Item AmountMin="2" AmountMax="3">
+					<Frequency>1.0</Frequency>
+					<Id>
+						<TypeId>ConsumableItem</TypeId>
+						<SubtypeId>AquaAnimalRaw_WhaleSharkMeat_Raw</SubtypeId>
+					</Id>
+				</Item>
+			</Items>
+		</ContainerType>
     </ContainerTypes>
 </Definitions>

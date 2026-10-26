@@ -24,8 +24,39 @@
 			<Model>Models\Items\CreatureOrgans.mwm</Model>
 			<PhysicalMaterial>Metal</PhysicalMaterial>
 			<Stats>
-				<Stat Name="Health" Value="-0.050" Time="30"/>
+				<Stat Name="Health" Value="-0.090" Time="30"/>
 				<Stat Name="Food" Value="0.120" Time="30"/>
+			</Stats>
+			<UseSound>ArcPlayEat</UseSound>
+			<MinimalPricePerUnit>0</MinimalPricePerUnit>
+			<MinimumOfferAmount>0</MinimumOfferAmount>
+			<MaximumOfferAmount>0</MaximumOfferAmount>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</PhysicalItem>
+		<PhysicalItem xsi:type="MyObjectBuilder_ConsumableItemDefinition">
+			<Id>
+				<TypeId>ConsumableItem</TypeId>
+				<SubtypeId>AquaAnimalRaw_WhaleSharkMeat_Raw</SubtypeId>
+			</Id>
+			<DisplayName>Toxic Whale Shark Meat (Raw)</DisplayName>
+			<Description>
+				Raw meat from a massive whale shark.
+				Extremely toxic and dangerous for consumption.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\CreatureOrgans.dds</Icon>
+			<IconSymbol>SHARK</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>100.0</Mass>
+			<Volume>500.0</Volume>
+			<Model>Models\Items\CreatureOrgans.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<Stats>
+				<Stat Name="Health" Value="-0.90" Time="60"/>
+				<Stat Name="Food" Value="0.120" Time="60"/>
 			</Stats>
 			<UseSound>ArcPlayEat</UseSound>
 			<MinimalPricePerUnit>0</MinimalPricePerUnit>
