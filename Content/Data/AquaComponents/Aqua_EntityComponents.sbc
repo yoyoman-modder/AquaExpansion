@@ -181,6 +181,10 @@
 					<TypeId>Component</TypeId>
 					<SubtypeId>AquaAnchorBaseSet_Large</SubtypeId>
 				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaAnchorDLCSet_Large</SubtypeId>
+				</Entry>
 			</InputConstraint>
 		</EntityComponent>
 		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
@@ -194,6 +198,10 @@
 				<Entry>
 					<TypeId>Component</TypeId>
 					<SubtypeId>AquaAnchorBaseSet_Small</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>AquaAnchorDLCSet_Small</SubtypeId>
 				</Entry>
 			</InputConstraint>
 		</EntityComponent>

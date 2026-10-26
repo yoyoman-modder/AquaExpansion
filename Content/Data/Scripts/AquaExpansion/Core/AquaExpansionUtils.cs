@@ -3308,6 +3308,34 @@ namespace AquaExpansion.Core
                 DragResistance = 100000f,
                 DragSpeed = 10.0f
             });
+            Register(new AquaSeaAnchorDefinition
+            {
+                NumericId = 3,
+                Id = "DLCAnchorLarge",
+                Maxcablelength = 100f,
+                CableModel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelPath("AquaSeaAnchorRopeBase.mwm")),
+                Anchormodel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelPath("AquaDLCAnchorPart.mwm")),
+                Cablescale = 0.05f,
+                Height = 2f,
+                Stiffness = 10000f,
+                HoldForce = 120000f,
+                DragResistance = 240000f,
+                DragSpeed = 5.0f
+            });
+            Register(new AquaSeaAnchorDefinition
+            {
+                NumericId = 4,
+                Id = "DLCAnchorSmall",
+                Maxcablelength = 100f,
+                CableModel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelSmallPath("AquaSeaAnchorRopeBaseS.mwm")),
+                Anchormodel = AquaModpathUtils.GetModPaths(AquaModpathUtils.GetDetailedModelSmallPath("AquaDLCAnchorSPart.mwm")),
+                Cablescale = 0.015f,
+                Height = 0.7f,
+                Stiffness = 5500f,
+                HoldForce = 50000f,
+                DragResistance = 100000f,
+                DragSpeed = 10.0f
+            });
         }
         /// <summary>
         /// Register Anchor
@@ -4240,6 +4268,24 @@ namespace AquaExpansion.Core
                     }
                 }
             });
+            Register(new AquaSeaAnchorEquipOrder(2, "DLCAnchorLarge", 1)
+            {
+                AnchorItemToEquip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(3)),
+                        1
+                    }
+                },
+                Anchorresult = AquaSeaAnchorDatabase.Get(3),
+                AnchorItemToUnequip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetUnEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(3)),
+                        1
+                    }
+                }
+            });
             //small orders
             RegisterSmall(new AquaSeaAnchorEquipOrder(1, "BaseAnchorSmall", 1)
             {
@@ -4255,6 +4301,24 @@ namespace AquaExpansion.Core
                 {
                     {
                         SetUnEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(2)),
+                        1
+                    }
+                }
+            });
+            RegisterSmall(new AquaSeaAnchorEquipOrder(2, "DLCAnchorSmall", 1)
+            {
+                AnchorItemToEquip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(4)),
+                        1
+                    }
+                },
+                Anchorresult = AquaSeaAnchorDatabase.Get(4),
+                AnchorItemToUnequip = new Dictionary<MyDefinitionId, MyFixedPoint>
+                {
+                    {
+                        SetUnEquipedAnchor(AquaSeaAnchorItemsDatabase.GetAnchorbyID(4)),
                         1
                     }
                 }
@@ -4952,6 +5016,8 @@ namespace AquaExpansion.Core
         {
             RegisterAnchor(1, "AquaAnchorBaseSet_Large");
             RegisterAnchor(2, "AquaAnchorBaseSet_Small");
+            RegisterAnchor(3, "AquaAnchorDLCSet_Large");
+            RegisterAnchor(4, "AquaAnchorDLCSet_Small");
         }
         /// <summary>
         /// Register anchor

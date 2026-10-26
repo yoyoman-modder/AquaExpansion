@@ -76,8 +76,7 @@ namespace AquaExpansion.Core
         private float OxygenRefillRate = 0.1f;           // Oxygen base refill
         private float MaxDepthForRefill = 50f;
         private float minJetpackstartDepth = 2f;
-        public static readonly Dictionary<MyStringHash, DivingGearData> GearData =
-            new Dictionary<MyStringHash, DivingGearData>
+        public static readonly Dictionary<MyStringHash, DivingGearData> GearData = new Dictionary<MyStringHash, DivingGearData>
         {
                 {
                  MyStringHash.GetOrCompute("NoGear"),

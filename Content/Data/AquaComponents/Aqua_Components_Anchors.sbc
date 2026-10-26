@@ -56,6 +56,60 @@
 			<Health>18</Health>
 			<CanPlayerOrder>false</CanPlayerOrder>
 		</Component>
+		<Component>
+			<Public>true</Public>
+			<Id>
+				<TypeId>Component</TypeId>
+				<SubtypeId>AquaAnchorDLCSet_Large</SubtypeId>
+			</Id>
+			<DisplayName>Anchor Set Blacked 1t</DisplayName>
+			<Description>
+				Heavy-duty black steel anchor designed to securely hold vessels in place on the seabed.
+				Deploy using a compatible winch block.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\AquaDLCAnchor.dds</Icon>
+			<IconSymbol>ANCHOR</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>1000</Mass>
+			<Volume>1000</Volume>
+			<Model>Models\Items\AquaDLCAnchor.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<MaxIntegrity>30</MaxIntegrity>
+			<DropProbability>0.5</DropProbability>
+			<Health>18</Health>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</Component>
+		<Component>
+			<Public>true</Public>
+			<Id>
+				<TypeId>Component</TypeId>
+				<SubtypeId>AquaAnchorDLCSet_Small</SubtypeId>
+			</Id>
+			<DisplayName>Anchor Set Blacked 500kg</DisplayName>
+			<Description>
+				Heavy-duty black steel anchor designed to securely hold vessels in place on the seabed. 
+				Deploy using a compatible winch block.
+			</Description>
+			<Icon>Textures\GUI\Icons\Items\AquaDLCAnchorS.dds</Icon>
+			<IconSymbol>ANCHOR</IconSymbol>
+			<Size>
+				<X>0.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>500</Mass>
+			<Volume>125</Volume>
+			<Model>Models\Items\AquaDLCAnchorS.mwm</Model>
+			<PhysicalMaterial>Metal</PhysicalMaterial>
+			<MaxIntegrity>30</MaxIntegrity>
+			<DropProbability>0.5</DropProbability>
+			<Health>18</Health>
+			<CanPlayerOrder>false</CanPlayerOrder>
+		</Component>
 		<!--END Anchor Items-->
 	</Components>
 </Definitions>

@@ -1011,6 +1011,25 @@
 		<Blueprint>
 			<Id>
 				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_AnchorBlackedSetLarge1000</SubtypeId>
+			</Id>
+			<DisplayName>Anchor Set Blacked 1t</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\AquaDLCAnchor.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>NACI</IconSymbol>
+			<Prerequisites>
+				<Item Amount="50" TypeId="Component" SubtypeId="SteelPlate" />
+				<Item Amount="10" TypeId="Component" SubtypeId="Construction" />
+				<Item Amount="6" TypeId="Component" SubtypeId="LargeTube" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="Component" SubtypeId="AquaAnchorDLCSet_Large" />
+			</Results>
+			<BaseProductionTimeInSeconds>12</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
 				<SubtypeId>Aqua_AnchorSetSmall500</SubtypeId>
 			</Id>
 			<DisplayName>Anchor Set Small 500kg</DisplayName>
@@ -1024,6 +1043,25 @@
 			</Prerequisites>
 			<Results>
 				<Item Amount="1" TypeId="Component" SubtypeId="AquaAnchorBaseSet_Small" />
+			</Results>
+			<BaseProductionTimeInSeconds>12</BaseProductionTimeInSeconds>
+		</Blueprint>
+		<Blueprint>
+			<Id>
+				<TypeId>BlueprintDefinition</TypeId>
+				<SubtypeId>Aqua_AnchorBlackedSetSmall500</SubtypeId>
+			</Id>
+			<DisplayName>Anchor Set Blacked 500kg</DisplayName>
+			<Icon>Textures\GUI\Icons\Items\AquaDLCAnchorS.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<IconSymbol>NACI</IconSymbol>
+			<Prerequisites>
+				<Item Amount="16" TypeId="Component" SubtypeId="SteelPlate" />
+				<Item Amount="2" TypeId="Component" SubtypeId="Construction" />
+				<Item Amount="6" TypeId="Component" SubtypeId="SmallTube" />
+			</Prerequisites>
+			<Results>
+				<Item Amount="1" TypeId="Component" SubtypeId="AquaAnchorDLCSet_Small" />
 			</Results>
 			<BaseProductionTimeInSeconds>12</BaseProductionTimeInSeconds>
 		</Blueprint>
