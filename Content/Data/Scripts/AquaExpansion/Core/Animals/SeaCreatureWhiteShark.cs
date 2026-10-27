@@ -30,24 +30,25 @@ namespace AquaExpansion.Core.Animals
                         new SelectorNode(//ticks its children sequentually until one succeeds
                             new SequenceNode(
                                 new DangerDepth(Deffinition.DangerDepth, Sensor),//checks if depth not danger for animal
-                                new HealthAbove(100),//checks health above  value
+                                new HealthAbove(50),//checks health above  value
                                 new SelectorNode(
                                     new SequenceNode(
-                                        new HealthAbove(50),
+                                        new HealthAbove(80),
                                         new DetectPlayer(100),//detect random player from nearby targets store target to chase
-                                        new ChaseTarget(100,1.5f, Deffinition.Minseekdepth, Deffinition.DangerDepth, Sensor)//chase player target
+                                        new ChaseTarget(100,1.5f,Deffinition.Minseekdepth,Deffinition.DangerDepth,Sensor,8f,10f),//chase player target
+                                        new FastAttack(8f,10f,0.7f,Deffinition.DesiredSpeed,Deffinition.MaxSpeed,2,Deffinition.DangerDepth,Sensor,Attack) //bring fast speed stright attack
                                     ),
                                     new RandomSelectorNode(
-                                        new Wander(5, Deffinition.DesiredDepth, Deffinition.DangerDepth, Sensor),//wander random swimming
-                                        new SwimAway(3,Deffinition.MaxSpeed),
-                                        new Wander(10, Deffinition.DesiredDepth, Deffinition.DangerDepth, Sensor)//wander random swimming
+                                        new Wander(5,Deffinition.DesiredDepth,Deffinition.DangerDepth,Sensor),//wander random swimming
+                                        new SwimAway(3, 6),
+                                        new Wander(10,Deffinition.DesiredDepth,Deffinition.DangerDepth,Sensor)//wander random swimming
                                     )
                                 )
                             ),
                             new RandomSelectorNode(
-                                new SwimAway(3,Deffinition.MaxSpeed),
-                                new SwimAway(5,Deffinition.MaxSpeed),
-                                new SwimAway(10,Deffinition.MaxSpeed)
+                                new SwimAway(3,6f),
+                                new SwimAway(5,6f),
+                                new SwimAway(10,6f)
                             )
                         )
                     )

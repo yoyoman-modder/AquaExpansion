@@ -23,7 +23,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal behavior type
     /// </summary>
-    public enum SeaAnimalBehavior { Predator, Passive }
+    public enum SeaAnimalBehavior { Predator, Passive, None }
     public enum SeaAnimalFoodSystemStage { Idle, Processing, Finished, Full }
     public enum SeaAnimalWasteType { Gas, Solid }
     public enum SeaAnimalZoneMode { Local,Bone }
@@ -522,7 +522,7 @@ namespace AquaExpansion.Core.Animals
         public float MaxBuoyancyForce;
         public float VerticalDamping;
         public float Acceleration;
-        public float CurrentYaw;
+        //public float CurrentYaw;
         public float MaxSpeed;
     }
     /// <summary>
@@ -535,6 +535,8 @@ namespace AquaExpansion.Core.Animals
         public float HealhDamage;
         public float AttackCenter;
         public float Agression;
+        public bool Attacked;
+        public bool IsFastAttacking;
     }
     /// <summary>
     /// Animal Definition
@@ -617,22 +619,22 @@ namespace AquaExpansion.Core.Animals
                 Behavior = SeaAnimalBehavior.Predator,
                 Subtypeid = "AquaWhiteShark",
                 DesiredSpeed = 4f,
-                MaxSpeed = 6f,
+                MaxSpeed = 12f,
                 DesiredDepth = 10f,
                 TurnSpeed = 2f,
                 ForwardForce = 50f,
                 DepthGain = 50f,
                 MaxBuoyancyForce = 500f,
                 VerticalDamping = 45f,
-                Acceleration = 10f,
+                Acceleration = 12f,
                 Food = SeaAnimalFoodItemsDatabase.GetFoodByID(1),
                 AttackRadius = 0.5f,
-                AttackInterval = 90,
+                AttackInterval = 30,
                 HealthDamage = 20f,
                 AttackCenter = 1.5f,
                 Agression = 50,
                 WasteDefinition = SeaAnimalFoodItemsDatabase.GetWasteDefinitionByID(1),
-                Minseekdepth = 0.5f,
+                Minseekdepth = 0.3f,
                 DangerDepth = 5f
             });
             RegisterAnimal(new SeaCreatureDefinition 
@@ -641,7 +643,7 @@ namespace AquaExpansion.Core.Animals
                 Behavior = SeaAnimalBehavior.Passive,
                 Subtypeid = "AquaWhaleShark",
                 DesiredSpeed = 2f,
-                MaxSpeed = 5f,
+                MaxSpeed = 6f,
                 DesiredDepth = 10f,
                 TurnSpeed = 1f,
                 ForwardForce = 50f,
@@ -999,38 +1001,6 @@ namespace AquaExpansion.Core.Animals
         public static Dictionary<string, Func<MyGameLogicComponent>> FillAnimalComponents()
         {
             return new Dictionary<string, Func<MyGameLogicComponent>>(SeaAnimalsLogicData);
-        }
-    }
-    /// <summary>
-    /// Animal Navigator for moving toward a target position
-    /// </summary>
-    public class SeaCreatureNavigator
-    {
-        public Vector3D TargetPosition;
-        public bool HasTarget;
-        public double ArriveDistance = 2.0;
-        /// <summary>
-        /// Update
-        /// </summary>
-        /// <param name="character"></param>
-        /// <param name="movement"></param>
-        /// <returns></returns>
-        public bool Update(IMyCharacter character, SeadCreatureMovementData movement)
-        {
-            if (!HasTarget)
-                return false;
-            Vector3D toTarget = TargetPosition - character.GetPosition();
-            double distance = toTarget.Length();
-            if (distance <= ArriveDistance)
-            {
-                movement.IsMoving = false;
-                HasTarget = false;
-                return true;
-            }
-            toTarget.Normalize();
-            movement.IsMoving = true;
-            movement.DesiredDirection = toTarget;
-            return false;
         }
     }
     /// <summary>
@@ -1943,7 +1913,7 @@ namespace AquaExpansion.Core.Animals
         public readonly Vector3D SpawnPosition;
         public SeaAnimalSpawnRecord(
             long entityId,
-             long waterPlanetId,
+            long waterPlanetId,
             string subtypeId,
             Vector3D spawnPosition)
         {
@@ -2604,7 +2574,7 @@ namespace AquaExpansion.Core.Animals
     public static class SeaAnimalTargetCoordinator
     {
         private static readonly Dictionary<long, long> Assignments = new Dictionary<long, long>();
-        public static IMyPlayer SelectTarget(long sharkId, List<IMyPlayer> players)
+        public static IMyPlayer SelectTarget(long sharkId,List<IMyPlayer> players)
         {
             if (players == null || players.Count == 0)
                 return null;

@@ -1,6 +1,7 @@
 ﻿using AquaExpansion.Core.Animals;
 using Jakaria.API;
 using Sandbox.Game.Components;
+using Sandbox.Game.Entities.Character;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node makes the character chase a target character. (Action)
     /// </summary>
-    public class ChaseTarget : BehaviorNode
+    public class ChaseTargetContinuous : BehaviorNode
     {
         private readonly double chaseRange;
         private readonly float depthOffset;
@@ -138,7 +139,7 @@ namespace AquaExpansion.Core.BT
         private int GridAvoidanceTimer;
         private float GridAvoidanceDepth;
         private readonly float dangDepth;
-        public ChaseTarget(double range,float offset,float minimumDepth,float dangerdepth,AnimalSensor animalSensor)
+        public ChaseTargetContinuous(double range,float offset,float minimumDepth,float dangerdepth,AnimalSensor animalSensor)
         {
             chaseRange = range;
             depthOffset = offset;
@@ -324,25 +325,6 @@ namespace AquaExpansion.Core.BT
         }
         private void UpdateTargetDepth(IMyCharacter character,IMyCharacter target)
         {
-            /*if (character == null ||
-                character.MarkedForClose |
-                target == null ||
-                target.MarkedForClose ||
-                target.IsDead)
-                return;
-            float targetDepth = GetTargetDepth(target);
-            UpdateGroundAvoidance();
-            UpdateGridAvoidance();
-            float avoidanceDepth = GroundAvoidanceDepth + GridAvoidanceDepth;
-            if (avoidanceDepth > 5.0f)
-                avoidanceDepth = 5.0f;
-            float desiredDepth = targetDepth - avoidanceDepth;
-            if (desiredDepth < minDepth)
-                desiredDepth = minDepth;
-            BB.Set<float>("TargetDepth",targetDepth);
-            BB.Set<float>("AvoidanceDepth",GroundAvoidanceDepth);
-            BB.Set<float>("GridAvoidanceDepth",GridAvoidanceDepth);
-            BB.Set<float>("DesiredDepth",desiredDepth);*/
             if (character == null ||
                 character.MarkedForClose ||
                 target == null ||
@@ -356,8 +338,6 @@ namespace AquaExpansion.Core.BT
             if (avoidanceDepth > 10.0f)
                 avoidanceDepth = 10.0f;
             float currentDepth = Math.Abs(AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character));
-            // Avoid the obstacle by aiming shallower than the shark's current depth.
-            // Continue aiming for the target too, if it is shallower.
             float desiredDepth = targetDepth;
             float avoidanceTargetDepth = currentDepth - avoidanceDepth;
             if (avoidanceTargetDepth < desiredDepth)
@@ -368,7 +348,6 @@ namespace AquaExpansion.Core.BT
             BB.Set<float>("AvoidanceDepth", GroundAvoidanceDepth);
             BB.Set<float>("GridAvoidanceDepth", GridAvoidanceDepth);
             BB.Set<float>("DesiredDepth", desiredDepth);
-            //Log($"target {targetDepth} desired {desiredDepth}");
         }
         public override void Start(IMyCharacter character)
         {
@@ -392,7 +371,6 @@ namespace AquaExpansion.Core.BT
                 sensor.IsDangerousDepth(character,dangDepth))
             {
                 ClearTarget();
-                //Log($"danger depth {sensor.IsDangerousDepth(character, dangDepth)}");
                 return SetState(NodeState.Failure);
             }
             IMyPlayer player;
@@ -400,7 +378,6 @@ namespace AquaExpansion.Core.BT
             if (!GetTarget(out player,out target))
             {
                 ClearTarget();
-                //Log("invalid target");
                 return SetState(NodeState.Failure);
             }
             Vector3D position = character.GetPosition();
@@ -410,7 +387,6 @@ namespace AquaExpansion.Core.BT
             if (distanceSquared > chaseRange * chaseRange)
             {
                 ClearTarget();
-                //Log("target out of range");
                 return SetState(NodeState.Failure);
             }
             BB.Set<Vector3D>("TargetPosition",targetPosition);
@@ -427,7 +403,6 @@ namespace AquaExpansion.Core.BT
                 BB.Set<Vector3>("DesiredDirection",Vector3.Zero);
             }
             UpdateTargetDepth(character,target);
-            //Log($"target {target.DisplayName}");
             return SetState(NodeState.Running);
         }
         public override void End(IMyCharacter character)
@@ -440,10 +415,427 @@ namespace AquaExpansion.Core.BT
         }
     }
     /// <summary>
+    /// This node makes the character chase a target character. New version that work with FastAttack for predators (Action)
+    /// </summary>
+    public class ChaseTarget : BehaviorNode
+    {
+        private readonly double chaseRange;
+        private readonly float depthOffset;
+        private readonly float minDepth;
+        private readonly AnimalSensor sensor;
+        private readonly float dangDepth;
+        private readonly float minimumAttackDistance;
+        private readonly float maximumAttackDistance;
+        private int GroundAvoidanceTimer;
+        private float GroundAvoidanceDepth;
+        private int GridAvoidanceTimer;
+        private float GridAvoidanceDepth;
+        public ChaseTarget(
+            double range,
+            float offset,
+            float minimumDepth,
+            float dangerdepth,
+            AnimalSensor animalSensor,
+            float minAttackDistance = 8f,
+            float maxAttackDistance = 10f)
+        {
+            chaseRange = range;
+            depthOffset = offset;
+            minDepth = minimumDepth;
+            sensor = animalSensor;
+            dangDepth = dangerdepth;
+            minimumAttackDistance = minAttackDistance;
+            maximumAttackDistance = maxAttackDistance;
+            GroundAvoidanceTimer = 0;
+            GroundAvoidanceDepth = 0.0f;
+            GridAvoidanceTimer = 0;
+            GridAvoidanceDepth = 0.0f;
+        }
+        private void ClearTarget()
+        {
+            if (BB == null)
+                return;
+            BB.Set<bool>("HasTarget", false);
+            BB.Clear("Target");
+            BB.Clear("TargetPlayer");
+            BB.Clear("TargetPosition");
+            BB.Clear("TargetDistance");
+            BB.Clear("DesiredDirection");
+            BB.Clear("DesiredDepth");
+            BB.Clear("TargetDepth");
+            BB.Clear("AvoidanceDepth");
+            BB.Clear("GridAvoidanceDepth");
+        }
+        private bool GetTarget(out IMyPlayer player,out IMyCharacter target)
+        {
+            player = null;
+            target = null;
+            if (BB == null ||
+                !BB.Has("HasTarget") ||
+                !BB.Get<bool>("HasTarget"))
+                return false;
+            player = BB.Get<IMyPlayer>("TargetPlayer");
+            target = BB.Get<IMyCharacter>("Target");
+            if (player == null || player.IsBot)
+                return false;
+            if (target == null ||
+                target.MarkedForClose ||
+                target.IsDead)
+                return false;
+            if (!WaterModAPI.IsUnderwater(target.GetPosition()))
+                return false;
+            if (AnimalUtils.isPlayerCovered(player))
+                return false;
+            if (AnimalUtils.isPlayersGridPressurated(target))
+                return false;
+            return true;
+        }
+        private float GetTargetDepth(IMyCharacter target)
+        {
+            if (target == null ||
+                target.MarkedForClose ||
+                target.IsDead)
+                return minDepth;
+            float depth = Math.Abs(AquaExpansionSession.Insance.GetWaterDepthbyCharacter(target));
+            depth -= depthOffset;
+            if (depth < minDepth)
+                depth = minDepth;
+            return depth;
+        }
+        private bool IsGridDanger()
+        {
+            if (sensor == null)
+                return false;
+            if (sensor.DownGridObstacleDetected)
+                return true;
+            if (sensor.IsObstacleAhead)
+                return true;
+            return false;
+        }
+        private void UpdateGridAvoidance()
+        {
+            const int delay = 8;
+            const float initialDepth = 2.0f;
+            const float step = 1.0f;
+            const float recovery = 0.08f;
+            const float maxDepth = 8.0f;
+            bool danger = IsGridDanger();
+            if (danger)
+            {
+                GridAvoidanceTimer++;
+                if (GridAvoidanceDepth <= 0.0f)
+                {
+                    GridAvoidanceDepth = initialDepth;
+                    GridAvoidanceTimer = 0;
+                }
+                else if (GridAvoidanceTimer >= delay)
+                {
+                    GridAvoidanceDepth += step;
+                    if (GridAvoidanceDepth > maxDepth)
+                        GridAvoidanceDepth = maxDepth;
+                    GridAvoidanceTimer = 0;
+                }
+            }
+            else
+            {
+                GridAvoidanceTimer = 0;
+                if (GridAvoidanceDepth > 0.0f)
+                {
+                    GridAvoidanceDepth -= recovery;
+                    if (GridAvoidanceDepth < 0.0f)
+                        GridAvoidanceDepth = 0.0f;
+                }
+            }
+        }
+        private void UpdateGroundAvoidance()
+        {
+            const float safeDistance = 3.0f;
+            const float initialDepth = 2.0f;
+            const float step = 1.0f;
+            const float recovery = 0.05f;
+            const int delay = 20;
+            bool danger = false;
+            if (sensor != null)
+            {
+                if (sensor.IsGroundDetected &&
+                    sensor.GroundDistance < safeDistance)
+                {
+                    danger = true;
+                }
+                if (sensor.DownGridObstacleDetected &&
+                    sensor.GroundDistance < safeDistance)
+                {
+                    danger = true;
+                }
+            }
+            if (danger)
+            {
+                GroundAvoidanceTimer++;
+                if (GroundAvoidanceDepth <= 0.0f)
+                {
+                    GroundAvoidanceDepth = initialDepth;
+                    GroundAvoidanceTimer = 0;
+                }
+                else if (GroundAvoidanceTimer >= delay)
+                {
+                    GroundAvoidanceDepth += step;
+                    if (GroundAvoidanceDepth > 8.0f)
+                        GroundAvoidanceDepth = 8.0f;
+                    GroundAvoidanceTimer = 0;
+                }
+            }
+            else
+            {
+                GroundAvoidanceTimer = 0;
+                if (GroundAvoidanceDepth > 0.0f)
+                {
+                    GroundAvoidanceDepth -= recovery;
+                    if (GroundAvoidanceDepth < 0.0f)
+                        GroundAvoidanceDepth = 0.0f;
+                }
+            }
+        }
+        private Vector3 GetAvoidanceDirection(Vector3 chaseDirection)
+        {
+            if (sensor == null)
+                return chaseDirection;
+            Vector3 direction = chaseDirection;
+            if (direction.LengthSquared() < 0.001f)
+                return direction;
+            direction.Normalize();
+            bool frontDanger = sensor.IsObstacleAhead;
+            bool downDanger = sensor.DownGridObstacleDetected || sensor.IsGroundDetected;
+            if (!frontDanger && !downDanger)
+                return direction;
+            Vector3 up = Vector3.Up;
+            float verticalBias = 0.0f;
+            if (frontDanger)
+                verticalBias += 0.65f;
+            if (downDanger)
+                verticalBias += 0.9f;
+            direction += up * verticalBias;
+            if (direction.LengthSquared() > 0.001f)
+                direction.Normalize();
+            return direction;
+        }
+        private void UpdateTargetDepth(IMyCharacter character,IMyCharacter target)
+        {
+            if (character == null ||
+                character.MarkedForClose ||
+                target == null ||
+                target.MarkedForClose ||
+                target.IsDead)
+                return;
+            float targetDepth = GetTargetDepth(target);
+            UpdateGroundAvoidance();
+            UpdateGridAvoidance();
+            float avoidanceDepth = GroundAvoidanceDepth + GridAvoidanceDepth;
+            if (avoidanceDepth > 10.0f)
+                avoidanceDepth = 10.0f;
+            float currentDepth = Math.Abs(AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character));
+            float desiredDepth = targetDepth;
+            float avoidanceTargetDepth = currentDepth - avoidanceDepth;
+            if (avoidanceTargetDepth < desiredDepth)
+                desiredDepth = avoidanceTargetDepth;
+            if (desiredDepth < minDepth)
+                desiredDepth = minDepth;
+            BB.Set<float>("TargetDepth", targetDepth);
+            BB.Set<float>("AvoidanceDepth", GroundAvoidanceDepth);
+            BB.Set<float>("GridAvoidanceDepth", GridAvoidanceDepth);
+            BB.Set<float>("DesiredDepth", desiredDepth);
+        }
+        public override void Start(IMyCharacter character)
+        {
+            State = NodeState.Running;
+            GroundAvoidanceTimer = 0;
+            GroundAvoidanceDepth = 0.0f;
+            GridAvoidanceTimer = 0;
+            GridAvoidanceDepth = 0.0f;
+        }
+        public override NodeState Tick(IMyCharacter character, float dt)
+        {
+            SetCurrentNode();
+            if (character == null ||
+                character.MarkedForClose ||
+                character.IsDead)
+            {
+                ClearTarget();
+                return SetState(NodeState.Failure);
+            }
+            if (sensor == null ||
+                sensor.IsDangerousDepth(character, dangDepth))
+            {
+                ClearTarget();
+                return SetState(NodeState.Failure);
+            }
+            IMyPlayer player;
+            IMyCharacter target;
+            if (!GetTarget(out player, out target))
+            {
+                ClearTarget();
+                return SetState(NodeState.Failure);
+            }
+            Vector3D position = character.GetPosition();
+            Vector3D targetPosition = target.GetPosition();
+            Vector3D direction = targetPosition - position;
+            double distanceSquared = direction.LengthSquared();
+            if (distanceSquared > chaseRange * chaseRange)
+            {
+                ClearTarget();
+                return SetState(NodeState.Failure);
+            }
+            double distance = Math.Sqrt(distanceSquared);
+            BB.Set<Vector3D>("TargetPosition", targetPosition);
+            BB.Set<double>("TargetDistance", distance);
+            if (distanceSquared > 0.0001)
+            {
+                direction.Normalize();
+                Vector3 chaseDirection = (Vector3)direction;
+                Vector3 avoidanceDirection = GetAvoidanceDirection(chaseDirection);
+                BB.Set<Vector3>("DesiredDirection", avoidanceDirection);
+            }
+            else
+            {
+                BB.Set<Vector3>("DesiredDirection", Vector3.Zero);
+            }
+            UpdateTargetDepth(character, target);
+            if (distance >= minimumAttackDistance &&
+                distance <= maximumAttackDistance)
+            {
+                return SetState(NodeState.Success);
+            }
+            return SetState(NodeState.Running);
+        }
+        public override void End(IMyCharacter character)
+        {
+            GroundAvoidanceTimer = 0;
+            GroundAvoidanceDepth = 0.0f;
+            GridAvoidanceTimer = 0;
+            GridAvoidanceDepth = 0.0f;
+        }
+    }
+    /// <summary>
     /// This node detects nearby player within a certain range (True  != 0) .(Conditional)
     /// </summary>
     public class DetectPlayer : BehaviorNode
     {
+        /* private readonly double range;
+         public DetectPlayer(double r)
+         {
+             range = r;
+         }
+         private bool GetNearbyPlayers(Vector3D position,double searchRange,out List<IMyPlayer> players)
+         {
+             List<IMyPlayer> tempP = new List<IMyPlayer>();
+             BoundingSphereD sphere = new BoundingSphereD(position,searchRange);
+             List<IMyEntity> tempE = MyAPIGateway.Entities.GetTopMostEntitiesInSphere(ref sphere);
+             foreach (IMyEntity ent in tempE)
+             {
+                 IMyCharacter ch = ent as IMyCharacter;
+                 if (ch == null ||
+                     ch.Closed ||
+                     ch.IsDead ||
+                     ch.IsBot)
+                     continue;
+                 if (!WaterModAPI.IsUnderwater(ch.GetPosition()))
+                     continue;
+                 if (AnimalUtils.isPlayersGridPressurated(ch))
+                     continue;
+                 IMyPlayer player = MyAPIGateway.Players.GetPlayerControllingEntity(ch);
+                 if (player == null ||
+                     player.IsBot)
+                     continue;
+                 if (AnimalUtils.isPlayerCovered(player))
+                     continue;
+                 tempP.Add(player);
+             }
+             players = tempP;
+             return tempP.Count > 0;
+         }
+         private void ClearTarget(IMyCharacter character)
+         {
+             if (character != null)
+             {
+                 SeaAnimalTargetCoordinator.ReleaseTarget(character.EntityId);
+             }
+             BB.Set<bool>("HasTarget",false);
+             BB.Clear("Target");
+             BB.Clear("TargetPlayer");
+             BB.Clear("TargetPosition");
+             BB.Clear("TargetDistance");
+         }
+         private bool SetRandomTarget(IMyCharacter character,List<IMyPlayer> players)
+         {
+             if (players == null ||
+                 players.Count == 0)
+                 return false;
+             int index = MyUtils.GetRandomInt(0,players.Count);
+             IMyPlayer player = players[index];
+             IMyPlayer player = SeaAnimalTargetCoordinator.SelectTarget(character.EntityId,players);
+             if (player == null ||
+                 player.Character == null ||
+                 player.Character.MarkedForClose ||
+                 player.Character.Closed ||
+                 player.Character.IsDead ||
+                 !WaterModAPI.IsUnderwater(player.Character.GetPosition()) ||
+                 AnimalUtils.isPlayersGridPressurated(player.Character) ||
+                 AnimalUtils.isPlayerCovered(player))
+                 return false;
+             IMyCharacter target = player.Character;
+             Vector3D targetPosition = target.GetPosition();
+             Vector3D difference = targetPosition - character.GetPosition();
+             BB.Set<IMyPlayer>("TargetPlayer",player);
+             BB.Set<IMyCharacter>("Target",target);
+             BB.Set<Vector3D>("TargetPosition",targetPosition);
+             BB.Set<double>("TargetDistance",difference.Length());
+             BB.Set<bool>("HasTarget",true);
+             return true;
+         }
+         public override void Start(IMyCharacter character)
+         {
+             State = NodeState.Running;
+         }
+         public override NodeState Tick(IMyCharacter character, float dt)
+         {
+             SetCurrentNode();
+             if (character == null ||
+                 character.MarkedForClose ||
+                 BB == null)
+                 return SetState(NodeState.Failure);
+             if (BB.Get<bool>("HasTarget"))
+             {
+                 IMyCharacter target = BB.Get<IMyCharacter>("Target");
+                 IMyPlayer player = BB.Get<IMyPlayer>("TargetPlayer");
+                 if (target != null &&
+                     player != null &&
+                     !target.MarkedForClose &&
+                     !target.IsDead &&
+                     !player.IsBot &&
+                     WaterModAPI.IsUnderwater(target.GetPosition()) &&
+                     !AnimalUtils.isPlayersGridPressurated(target) &&
+                     !AnimalUtils.isPlayerCovered(player))
+                 {
+                     return SetState(NodeState.Success);
+                 }
+                 ClearTarget(character);
+             }
+             List<IMyPlayer> players;
+             if (!GetNearbyPlayers(character.GetPosition(),range,out players))
+             {
+                 ClearTarget(character);
+                 return SetState(NodeState.Failure);
+             }
+             if (!SetRandomTarget(character, players))
+             {
+                 ClearTarget(character);
+                 return SetState(NodeState.Failure);
+             }
+             return SetState(NodeState.Success);
+         }
+         public override void End(IMyCharacter character)
+         {
+
+         }*/
         private readonly double range;
         private float retargetTimer;
         private const float RetargetInterval = 5f;
@@ -494,7 +886,7 @@ namespace AquaExpansion.Core.BT
         {
             if (players == null || players.Count == 0)
                 return false;
-            IMyPlayer player = SeaAnimalTargetCoordinator.SelectTarget(character.EntityId, players);
+            IMyPlayer player = SeaAnimalTargetCoordinator.SelectTarget(character.EntityId,players);
             if (player == null ||
                 player.Character == null ||
                 player.Character.MarkedForClose ||
@@ -786,6 +1178,126 @@ namespace AquaExpansion.Core.BT
                 BB.Clear("DesiredSpeed");
                 BB.Clear("DesiredDepth");
             }
+        }
+    }
+    /// <summary>
+    /// Fast predator Attack in range to fast strike target. Also work with ChaseTarget
+    /// </summary>
+    public class FastAttack : BehaviorNode
+    {
+        private readonly float minimumDistance;
+        private readonly float maximumDistance;
+        private readonly float minimumFacingDot;
+        private readonly float normalSpeed;
+        private readonly float sprintSpeed;
+        private readonly float timeout;
+        private readonly float dangerDepth;
+        private readonly AnimalSensor sensor;
+        private readonly SeaCreatureAttackData attack;
+        private float elapsedTime;
+        private bool attackStarted;
+        public FastAttack(
+            float minimumDistance,
+            float maximumDistance,
+            float minimumFacingDot,
+            float normalSpeed,
+            float sprintSpeed,
+            float timeout,
+            float dangerDepth,
+            AnimalSensor sensor,
+            SeaCreatureAttackData attack)
+        {
+            this.minimumDistance = minimumDistance;
+            this.maximumDistance = maximumDistance;
+            this.minimumFacingDot = minimumFacingDot;
+            this.normalSpeed = normalSpeed;
+            this.sprintSpeed = sprintSpeed;
+            this.timeout = timeout;
+            this.dangerDepth = dangerDepth;
+            this.sensor = sensor;
+            this.attack = attack;
+        }
+        public override void Start(IMyCharacter character)
+        {
+            SetCurrentNode();
+            elapsedTime = 0f;
+            attackStarted = false;
+            if (attack != null)
+            {
+                attack.IsFastAttacking = false;
+                attack.Attacked = false;
+            }
+            if (BB != null)
+                BB.Set<float>("DesiredSpeed", normalSpeed);
+        }
+        public override NodeState Tick(IMyCharacter character, float dt)
+        {
+            if (character == null ||
+                character.MarkedForClose ||
+                character.IsDead ||
+                character.Physics == null ||
+                sensor == null ||
+                attack == null ||
+                BB == null)
+            {
+                return SetState(NodeState.Failure);
+            }
+            if (attack.Attacked)
+                return SetState(NodeState.Success);
+            if (sensor.IsDangerousDepth(character, dangerDepth))
+                return SetState(NodeState.Failure);
+            if (!BB.Has("HasTarget") ||
+                !BB.Get<bool>("HasTarget"))
+            {
+                return SetState(NodeState.Failure);
+            }
+            IMyCharacter target = BB.Get<IMyCharacter>("Target");
+            if (target == null ||
+                target.MarkedForClose ||
+                target.IsDead)
+            {
+                return SetState(NodeState.Failure);
+            }
+            Vector3D direction = target.GetPosition() - character.GetPosition();
+            double distanceSquared = direction.LengthSquared();
+            if (distanceSquared <= 0.001)
+                return SetState(NodeState.Failure);
+            double distance = Math.Sqrt(distanceSquared);
+            direction.Normalize();
+            if (!attackStarted)
+            {
+                if (distance < minimumDistance ||
+                    distance > maximumDistance)
+                {
+                    return SetState(NodeState.Failure);
+                }
+                BB.Set<Vector3D>("DesiredDirection", direction);
+                BB.Set<float>("DesiredSpeed", normalSpeed);
+                Vector3D forward = character.WorldMatrix.Forward;
+                forward.Normalize();
+                double facingDot = Vector3D.Dot(forward, direction);
+                if (facingDot < minimumFacingDot)
+                    return SetState(NodeState.Running);
+                attack.Attacked = false;
+                attack.IsFastAttacking = true;
+                attackStarted = true;
+                elapsedTime = 0f;
+            }
+            BB.Set<Vector3D>("DesiredDirection", direction);
+            BB.Set<float>("DesiredSpeed", sprintSpeed);
+            elapsedTime += dt;
+            if (elapsedTime >= timeout)
+                return SetState(NodeState.Failure);
+            if (attack.Attacked)
+                return SetState(NodeState.Success);
+            return SetState(NodeState.Running);
+        }
+        public override void End(IMyCharacter character)
+        {
+            if (attack != null)
+                attack.IsFastAttacking = false;
+            if (BB != null)
+                BB.Set<float>("DesiredSpeed", normalSpeed);
         }
     }
     // ======== Base Behavior Nodes / Blackboard  ========
