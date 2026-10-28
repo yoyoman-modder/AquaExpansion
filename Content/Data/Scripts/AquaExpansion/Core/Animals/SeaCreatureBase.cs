@@ -314,14 +314,6 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void LifeSupport()
         {
-            /*if (!IsValid() || Character.IsDead)
-                return;
-            if (AnimalEnergy() >= 75f)
-                return;
-            if (foodTaskPending)
-                return;
-            foodTaskPending = true;
-            scheduler.Schedule(InsertEnergyFood, 5, false, 0);*/
             if (!IsValid() || Character.IsDead)
                 return;
             if (AnimalEnergy() >= 75f || foodTaskPending)
@@ -371,32 +363,6 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void InsertEnergyFood()
         {
-            /*if (!IsValid() || Character.IsDead)
-            {
-                foodTaskPending = false;
-                return;
-            }
-            if (inv == null || inv.IsFull)
-            {
-                foodTaskPending = false;
-                return;
-            }
-            if (string.IsNullOrEmpty(Deffinition.Food) ||
-                !AnimalFoodSubtypes.Contains(Deffinition.Food))
-            {
-                foodTaskPending = false;
-                return;
-            }
-            FoodAmount = 1;
-            var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
-            if (itemdef == null)
-            {
-                foodTaskPending = false;
-                return;
-            }
-            var obj = (MyObjectBuilder_PhysicalObject)MyObjectBuilderSerializer.CreateNewObject(itemdef);
-            inv.AddItems(FoodAmount, obj);
-            scheduler.Schedule(AnimalGetEnergy, 2, false, 0);*/
             if (!foodTaskPending || !IsValid() || Character.IsDead || inv == null)
             {
                 foodTaskPending = false;
@@ -457,18 +423,6 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void AnimalGetEnergy()
         {
-            /*if (!IsValid() || Character.IsDead)
-            {
-                foodTaskPending = false;
-                return;
-            }
-            var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
-            if (itemdef != null)
-            { 
-                inv.ConsumeItem(itemdef, 1, Character.EntityId);
-            }
-            foodTaskPending = false;
-            WasteSupport();*/
             if (!foodTaskPending || !foodConsumptionScheduled)
                 return;
             foodConsumptionScheduled = false;
@@ -480,7 +434,6 @@ namespace AquaExpansion.Core.Animals
                 var itemdef = GetSubtypebyObjectBuilder(Deffinition.Food);
                 if (itemdef == null)
                     return;
-
                 inv.ConsumeItem(itemdef, 1, Character.EntityId);
                 WasteSupport();
             }
@@ -615,61 +568,6 @@ namespace AquaExpansion.Core.Animals
         /// </summary>
         private void AnimalAttackSphere()
         {
-            /*if (!IsValid() || Character.IsDead)
-                return;
-            if (Deffinition == null)
-                return;
-            if (Deffinition.Behavior != SeaAnimalBehavior.Predator)
-                return;
-            if (Attack == null)
-                return;
-            if (Attack.AttackInterval <= 0)
-                return;
-            if (animalTick % Attack.AttackInterval != 0)
-                return;
-            Attack.Attacked = false;
-            Vector3D animalPosition = Character.GetPosition();
-            Vector3D forward = Character.WorldMatrix.Forward;
-            forward.Normalize();
-            Vector3D spherePosition = animalPosition + forward * Deffinition.AttackCenter;
-            float radius = Attack.AttackRadius;
-            BoundingSphereD sphere = new BoundingSphereD(spherePosition,radius);
-            //AnimalUtils.DebugSphere(spherePosition, Color.Red, radius);
-            List<IMyEntity> entities = MyAPIGateway.Entities.GetTopMostEntitiesInSphere(ref sphere);
-            if (entities == null)
-                return;
-            IMyCharacter closestTarget = null;
-            double closestDistanceSquared = double.MaxValue;
-            double radiusSquared = radius * radius;
-            foreach (IMyEntity entity in entities)
-            {
-                if (entity == null ||
-                    entity == Character ||
-                    entity.MarkedForClose)
-                    continue;
-                IMyCharacter target = entity as IMyCharacter;
-                if (target == null ||
-                    target.IsDead ||
-                    target.MarkedForClose)
-                    continue;
-                Vector3D closestPoint = AnimalUtils.GetClosestPointOnAABB(target.PositionComp.WorldAABB,spherePosition);
-                double distanceSquared = Vector3D.DistanceSquared(spherePosition,closestPoint);
-                if (distanceSquared > radiusSquared)
-                    continue;
-                if (distanceSquared < closestDistanceSquared)
-                {
-                    closestDistanceSquared = distanceSquared;
-                    closestTarget = target;
-                }
-            }
-            if (closestTarget == null)
-                return;
-            closestTarget.DoDamage(Attack.HealhDamage,MyStringHash.GetOrCompute("Enviroment"),true,null,Character.EntityId);
-            Attack.Attacked = true;
-            if (Attack.Attacked)
-            {
-                
-            }*/
             if (!IsValid() || Character.IsDead)
                 return;
             if (Deffinition == null)

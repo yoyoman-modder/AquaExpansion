@@ -494,6 +494,11 @@ namespace AquaExpansion.Core.Animals
                 return true;
             return false;
         }
+        /// <summary>
+        /// Check if player in pressuarated grid
+        /// </summary>
+        /// <param name="character"></param>
+        /// <returns></returns>
         public static bool isPlayersGridPressurated(IMyCharacter character)
         {
             if (character == null || character.IsDead || character.Closed || character.MarkedForClose)
@@ -503,6 +508,29 @@ namespace AquaExpansion.Core.Animals
             if (ox >= AquaExpansionSession.Insance.MIN_ENVOXYGENLEVEL)
                 return true;
             return false;
+        }
+        /// <summary>
+        /// Check if character on seabed
+        /// </summary>
+        /// <param name="character"></param>
+        /// <param name="checkdist"></param>
+        /// <returns></returns>
+        public static bool isCharacterOnSeabed(IMyCharacter character, double checkdist = 0.5)
+        {
+            if (character == null ||
+                character.IsDead ||
+                character.Closed ||
+                character.MarkedForClose ||
+                character.Physics == null)
+                return false;
+            Vector3D start = character.GetPosition();
+            Vector3D end = start + Vector3D.Up * checkdist;
+            //DebugLine(start,end,Color.Red);
+            IHitInfo hitInfo = null;
+            MyAPIGateway.Physics.CastRay(start, end, out hitInfo);
+            if (hitInfo == null || hitInfo.HitEntity == null)
+                return false;
+            return hitInfo.HitEntity is IMyVoxelBase;
         }
     }
     /// <summary>

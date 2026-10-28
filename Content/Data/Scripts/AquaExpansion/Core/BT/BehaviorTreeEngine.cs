@@ -700,7 +700,8 @@ namespace AquaExpansion.Core.BT
             }
             UpdateTargetDepth(character, target);
             if (distance >= minimumAttackDistance &&
-                distance <= maximumAttackDistance)
+                distance <= maximumAttackDistance &&
+                !AnimalUtils.isCharacterOnSeabed(target,1))
             {
                 return SetState(NodeState.Success);
             }

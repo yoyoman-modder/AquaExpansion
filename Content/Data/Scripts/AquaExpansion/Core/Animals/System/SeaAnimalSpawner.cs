@@ -155,8 +155,7 @@ namespace AquaExpansion.Core.Animals.System
                 return;
             if (string.IsNullOrWhiteSpace(definition.BotSubtype))
                 return;
-            long entityId =
-                MyVisualScriptLogicProvider.SpawnBot(definition.BotSubtype,position,Vector3.Zero,Vector3.Zero,definition.Name);
+            long entityId = MyVisualScriptLogicProvider.SpawnBot(definition.BotSubtype,position,Vector3.Zero,Vector3.Zero,definition.Name);
             if (entityId == 0)
             {
                 MyLog.Default.WriteLineAndConsole("[SeaAnimalSpawner] SpawnBot failed: " + definition.BotSubtype);
