@@ -1364,7 +1364,7 @@ namespace AquaExpansion.Core.Combat
     /// <summary>
     /// MissileState tracks the state of a missile in the game world, including its last collision point, whether it is underwater, and its water trajectory type
     /// </summary>
-    public class MissileState
+    public sealed class MissileState
     {
         public IMyMissile Missile;
         public WaterTrajectoryType WaterState;
@@ -1380,7 +1380,7 @@ namespace AquaExpansion.Core.Combat
     /// <summary>
     /// AquaProjectile represents a projectile in the game world, tracking its position, velocity, damage, and water interaction state
     /// </summary>
-    public class AquaProjectile
+    public sealed class AquaProjectile
     {
         public long Id;
         public long SourceProjectileId;
@@ -1748,7 +1748,7 @@ namespace AquaExpansion.Core.Combat
                 0f,
                 0f,
                 0));
-            // large railgun
+            //large railgun
             Register(new HydroAmmoProfile(
                "LargeRailgunSlug",
                 2000f,
@@ -1767,7 +1767,7 @@ namespace AquaExpansion.Core.Combat
                 0f,
                 0f,
                 0));
-            // small railgun
+            //small railgun
             Register(new HydroAmmoProfile(
                "SmallRailgunSlug",
                 2000f,
@@ -1786,7 +1786,7 @@ namespace AquaExpansion.Core.Combat
                 0f,
                 0f,
                 0));
-            //torpedo
+            //aqua small torpedo
             Register(new HydroAmmoProfile(
               "Aqua_SmallTorpedo",
                50f,
@@ -1805,6 +1805,140 @@ namespace AquaExpansion.Core.Combat
                15f, //engine acceleration
                1f,
                1));
+            //WF3 support
+            //small piercing caliber
+            Register(new HydroAmmoProfile(
+                "SmallPiercingCaliber",         
+                  1.0f,                  
+                  0.050f,                 
+                  SplashType.Bullet,     
+                  35f,                   
+                  5f,                   
+                  0.35f,                 
+                  2.2f,                  
+                  10f,                   
+                  21f,                   
+                  0.88f,                 
+                  0.75f,                 
+                  "AquaBulletTrailSmall",
+                  0f,                    
+                  0f,                    
+                  0f,                    
+                  0));
+            //antipersonel
+            Register(new HydroAmmoProfile(
+                "AntiPersonnelTurretMunition",
+                  1.0f,
+                  0.050f,
+                  SplashType.Bullet,
+                  35f,
+                  5f,
+                  0.35f,
+                  2.2f,
+                  10f,
+                  21f,
+                  0.88f,
+                  0.75f,
+                  "AquaBulletTrailSmall",
+                  0f,
+                  0f,
+                  0f,
+                  0));
+           //missile homing
+            Register(new HydroAmmoProfile(
+               "MissileHoming",
+                45f,
+                0.05f,
+                SplashType.Missile,
+                20f,
+                10f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                "AquaMissileTrail",
+                0.40f,
+                0.1f, //engine acceleration
+                0.10f,
+                0));
+            //torpedo
+            Register(new HydroAmmoProfile(
+               "Torpedo",
+                45f,
+                0.05f,
+                SplashType.Missile,
+                20f,
+                10f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                "AquaMissileTrail",
+                0.40f,
+                0.1f, //engine acceleration
+                0.10f,
+                0));
+            //torpedo heavy
+            Register(new HydroAmmoProfile(
+               "Torpedo_Heavy",
+                45f,
+                0.05f,
+                SplashType.Missile,
+                20f,
+                10f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                "AquaMissileTrail",
+                0.40f,
+                0.1f, //engine acceleration
+                0.10f,
+                0));
+            //torpedo seeking
+            Register(new HydroAmmoProfile(
+               "Torpedo_Seeking",
+                45f,
+                0.05f,
+                SplashType.Missile,
+                20f,
+                10f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                "AquaMissileTrail",
+                0.40f,
+                0.1f, //engine acceleration
+                0.10f,
+                0));
+            //torpedo piercing
+            Register(new HydroAmmoProfile(
+               "Torpedo_Piercing",
+                45f,
+                0.05f,
+                SplashType.Missile,
+                20f,
+                10f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                "AquaMissileTrail",
+                0.40f,
+                0.1f, //engine acceleration
+                0.10f,
+                0));
         }
         private static void Register(HydroAmmoProfile profile)
         {

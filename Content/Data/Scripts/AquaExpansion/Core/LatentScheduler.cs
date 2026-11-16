@@ -4,10 +4,10 @@ using VRage.Game;
 
 namespace AquaExpansion.Core
 {
-    public class LatentScheduler
+    public sealed class LatentScheduler
     {
         private readonly double deltaTime = MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS;
-        private class LatentEntry
+        private sealed class LatentEntry
         {
             public string Key;
             public Action Action;

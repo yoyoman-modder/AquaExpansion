@@ -32,7 +32,7 @@ namespace AquaExpansion.Core
     /// <summary>
     /// Main utilite class
     /// </summary>
-    public class AquaExpansionUtils
+    public sealed class AquaExpansionUtils
     {
         public List<AquaFarmingRecipe> Recipes = new List<AquaFarmingRecipe>();
         private HashSet<string> SporeSubtypes = new HashSet<string>();
@@ -2409,7 +2409,7 @@ namespace AquaExpansion.Core
     /// <summary>
     /// Class for Process virtual blueprints
     /// </summary>
-    public class AquaFarmingRecipe
+    public sealed class AquaFarmingRecipe
     {
         public Dictionary<MyDefinitionId, MyFixedPoint> SporeToGrowPrerequisites = new Dictionary<MyDefinitionId, MyFixedPoint>();
         public AquaPlantDefinition PlantResult;
@@ -2453,7 +2453,7 @@ namespace AquaExpansion.Core
     /// <summary>
     /// Class for process virual fishing blueprins
     /// </summary>
-    public class AquaFishingRecipe
+    public sealed class AquaFishingRecipe
     {
         public Dictionary<MyDefinitionId, MyFixedPoint> BaitPrerequisites = new Dictionary<MyDefinitionId, MyFixedPoint>();
         public AquaFishDefinition FishResult;
@@ -2473,7 +2473,7 @@ namespace AquaExpansion.Core
     /// <summary>
     /// Class for Process virtual Orders
     /// </summary>
-    public class AquaSeaAnchorEquipOrder
+    public sealed class AquaSeaAnchorEquipOrder
     {
         public Dictionary<MyDefinitionId, MyFixedPoint> AnchorItemToEquip = new Dictionary<MyDefinitionId, MyFixedPoint>();
         public AquaSeaAnchorDefinition Anchorresult;
@@ -2491,7 +2491,7 @@ namespace AquaExpansion.Core
     /// <summary>
     /// Plant definition class for defining the plant properies and requirements to grow
     /// </summary>
-    public class AquaPlantDefinition
+    public sealed class AquaPlantDefinition
     {
         // identity
         public int NumericId;     // used for save/load
@@ -2518,7 +2518,7 @@ namespace AquaExpansion.Core
     /// <summary>
     /// Fish definition class for defining the fish properies and requirements to catch
     /// </summary>
-    public class AquaFishDefinition
+    public sealed class AquaFishDefinition
     {
         // identity
         public int NumericId;     // used for save/load
@@ -2542,7 +2542,7 @@ namespace AquaExpansion.Core
     /// <summary>
     ///  Anchor definition class for defining the cable and anchor properies
     /// </summary>
-    public class AquaSeaAnchorDefinition
+    public sealed class AquaSeaAnchorDefinition
     {
         // identity
         public int NumericId;     // used for save/load
@@ -2562,7 +2562,7 @@ namespace AquaExpansion.Core
     /// Running instance of a plant with all the necessary data to track its growth progress
     /// </summary>
     [ProtoContract]
-    public class AquaPlantInstance
+    public sealed class AquaPlantInstance
     {
         [ProtoIgnore] public AquaPlantDefinition Def;
         [ProtoIgnore] public string DefId;
@@ -2579,7 +2579,7 @@ namespace AquaExpansion.Core
     /// Running instance of a fish with all the necessary data to track catch progress
     /// </summary>
     [ProtoContract]
-    public class AquaFishInstance
+    public sealed class AquaFishInstance
     {
         [ProtoIgnore] public AquaFishDefinition fishDef;
         [ProtoIgnore] public string DefId;
@@ -2596,7 +2596,7 @@ namespace AquaExpansion.Core
     /// Running instance of a anchor with all the necessary data
     /// </summary>
     [ProtoContract]
-    public class AquaSeaAnchorInstance
+    public sealed class AquaSeaAnchorInstance
     {
         [ProtoIgnore] public AquaSeaAnchorDefinition anchordef;
         [ProtoIgnore] public string DefId;
@@ -3391,7 +3391,7 @@ namespace AquaExpansion.Core
     /// SavePlantData
     /// </summary>
     [ProtoContract]
-    public class AquaSavePlantData
+    public sealed class AquaSavePlantData
     {
         [ProtoMember(1)] public int DefId;
         [ProtoMember(2)] public int Stage;
@@ -3403,7 +3403,7 @@ namespace AquaExpansion.Core
     /// Save FishData
     /// </summary>
     [ProtoContract]
-    public class AquaSaveFishData
+    public sealed class AquaSaveFishData
     {
         [ProtoMember(1)] public int DefId;
         [ProtoMember(2)] public int Stage;
@@ -3415,7 +3415,7 @@ namespace AquaExpansion.Core
     /// SaveData
     /// </summary>
     [ProtoContract]
-    public class AquaFarmSaveData
+    public sealed class AquaFarmSaveData
     {
         [ProtoMember(1)] public AquaSavePlantData Plant;
         [ProtoMember(2)] public int RecipeId;
@@ -3425,7 +3425,7 @@ namespace AquaExpansion.Core
     /// Save Anchor data
     /// </summary>
     [ProtoContract]
-    public class AquaSeaAnchorSaveData
+    public sealed class AquaSeaAnchorSaveData
     {
         [ProtoMember(1)] public int DefId;
         [ProtoMember(2)] public float Cablelength;
@@ -3436,7 +3436,7 @@ namespace AquaExpansion.Core
     /// Save FishingData
     /// </summary>
     [ProtoContract]
-    public class AquaFishingSaveData
+    public sealed class AquaFishingSaveData
     {
         [ProtoMember(1)] public AquaSaveFishData Fish;
         [ProtoMember(2)] public int RecipeId;
@@ -4992,7 +4992,7 @@ namespace AquaExpansion.Core
         }
     }
     [ProtoContract]
-    public class AnchorStorage
+    public sealed class AnchorStorage
     {
         [ProtoMember(1)] public AquaSeaAnchorSaveData Anchor;
         [ProtoMember(2)] public int OrderID;

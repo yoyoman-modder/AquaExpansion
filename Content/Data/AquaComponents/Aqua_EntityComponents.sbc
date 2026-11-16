@@ -218,6 +218,10 @@
 					<SubtypeId>Missile200mm</SubtypeId>
 				</Entry>
 				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Missile200mmHoming</SubtypeId>
+				</Entry>
+				<Entry>
 				<TypeId>AmmoMagazine</TypeId>
 				<SubtypeId>AquaSmallTorpedo</SubtypeId>
 				</Entry>
@@ -233,6 +237,68 @@
 				<Entry>
 					<TypeId>AmmoMagazine</TypeId>
 					<SubtypeId>Missile200mm</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Missile200mmHoming</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSmallTorpedo</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>AmmoFilterLargeTorpedoLauncher</SubtypeId>
+			</Id>
+			<Size x="1" y="1" z="1.4" />
+			<InputConstraint Whitelist="true" Description="DisplayName_InventoryConstraint_BlockWeaponTorpedo" Icon="Textures\GUI\Icons\FilterMissile.dds">
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo_Heavy</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo_Seeking</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo_Piercing</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSmallTorpedo</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>AmmoFilterSmallTorpedoLauncher</SubtypeId>
+			</Id>
+			<Size x="0.5" y="0.5" z="1.4" />
+			<InputConstraint Whitelist="true" Description="DisplayName_InventoryConstraint_BlockWeaponTorpedo" Icon="Textures\GUI\Icons\FilterMissile.dds">
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo_Heavy</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo_Seeking</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>Torpedo_Piercing</SubtypeId>
 				</Entry>
 				<Entry>
 					<TypeId>AmmoMagazine</TypeId>

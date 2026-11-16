@@ -57,7 +57,7 @@ namespace AquaExpansion.UnderwaterFarmPlot
         private float processTime;
         private float time = 0f;
         long originalGridId;
-        bool clear;
+        //bool clear;
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);

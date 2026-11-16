@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace AquaExpansion.Core
 {
-    public class BioLatentScheduler
+    public sealed class BioLatentScheduler
     {
-        private class LatentEntry
+        private sealed class LatentEntry
         {
             public string Key;
             public Action Action;

@@ -428,7 +428,7 @@
 			<Description>
 				Base ingredient for food and predator bait.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -458,7 +458,7 @@
 			<Description>
 				Medical items, fuel additives, industrial chemicals.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -488,7 +488,7 @@
 			<Description>
 				Protein Lure Canister crafting.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -518,7 +518,7 @@
 			<Description>
 				Large untreated chunks of aquatic creature flesh rich in nutrients, but unsafe for long-term human consumption.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -550,7 +550,7 @@
 			<Description>
 				Compact processed nutrient meal for long-duration expeditions.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -580,7 +580,7 @@
 			<Description>
 				Pan-fried fish preserved in nutrient oil.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -610,7 +610,7 @@
 			<Description>
 				Industrial-grade edible protein slurry.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -640,7 +640,7 @@
 			<Description>
 				Rich nutrient-dense meal for deep ocean operations.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -670,7 +670,7 @@
 			<Description>
 				Military-grade compressed aquatic survival ration.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -700,7 +700,7 @@
 			<Description>
 				Bioactive gel rich in restorative omega compounds.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<IconSymbol>FISH</IconSymbol>
 			<Size>
 				<X>0.2</X>

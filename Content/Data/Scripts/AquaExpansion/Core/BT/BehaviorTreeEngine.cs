@@ -1,7 +1,6 @@
 ﻿using AquaExpansion.Core.Animals;
 using Jakaria.API;
 using Sandbox.Game.Components;
-using Sandbox.Game.Entities.Character;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -21,7 +20,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node makes the character idle. (Action)
     /// </summary>
-    public class Idle : BehaviorNode
+    public sealed class Idle : BehaviorNode
     {
         private float timer;
         private float duration;
@@ -53,7 +52,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node makes the character wander around randomly. (Action)
     /// </summary>
-    public class Wander : BehaviorNode
+    public sealed class Wander : BehaviorNode
     {
         private readonly float duration;
         private readonly float baseDepth;
@@ -128,7 +127,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node makes the character chase a target character. (Action)
     /// </summary>
-    public class ChaseTargetContinuous : BehaviorNode
+    public sealed class ChaseTargetContinuous : BehaviorNode
     {
         private readonly double chaseRange;
         private readonly float depthOffset;
@@ -417,7 +416,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node makes the character chase a target character. New version that work with FastAttack for predators (Action)
     /// </summary>
-    public class ChaseTarget : BehaviorNode
+    public sealed class ChaseTarget : BehaviorNode
     {
         private readonly double chaseRange;
         private readonly float depthOffset;
@@ -718,7 +717,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node detects nearby player within a certain range (True  != 0) .(Conditional)
     /// </summary>
-    public class DetectPlayer : BehaviorNode
+    public sealed class DetectPlayer : BehaviorNode
     {
         /* private readonly double range;
          public DetectPlayer(double r)
@@ -972,7 +971,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node checks if the characters health is above a certain threshold (True = >=) .(Conditional)
     /// </summary>
-    public class HealthAbove : BehaviorNode
+    public sealed class HealthAbove : BehaviorNode
     {
         private readonly double minimumHealth;
         public HealthAbove(double health)
@@ -1013,7 +1012,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node waits for a specified duration before succeeding. Can be one-shot or resetable. (Logic)
     /// </summary>
-    public class Timer : BehaviorNode
+    public sealed class Timer : BehaviorNode
     {
         private readonly float duration;
         private readonly bool oneShot;
@@ -1055,7 +1054,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// this node checks if the character depth not dangerous and no obstacles below in meters (True = >= && !obstacle).(Conditional)
     /// </summary>
-    public class DangerDepth : BehaviorNode
+    public sealed class DangerDepth : BehaviorNode
     {
         private readonly float minDepth;
         private readonly AnimalSensor sensor;
@@ -1089,7 +1088,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node  set character  direction away from current direction
     /// </summary>
-    public class SwimAway : BehaviorNode
+    public sealed class SwimAway : BehaviorNode
     {
         private readonly float duration;
         private float timer;
@@ -1184,7 +1183,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// Fast predator Attack in range to fast strike target. Also work with ChaseTarget
     /// </summary>
-    public class FastAttack : BehaviorNode
+    public sealed class FastAttack : BehaviorNode
     {
         private readonly float minimumDistance;
         private readonly float maximumDistance;
@@ -1347,7 +1346,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This is a simple blackboard implementation for sharing data between nodes. (Memory)
     /// </summary>
-    public class Blackboard
+    public sealed class Blackboard
     {
         private readonly Dictionary<string, object> data = new Dictionary<string, object>();
         private BehaviorNode currentNode;
@@ -1403,7 +1402,7 @@ namespace AquaExpansion.Core.BT
     /// The selected child remains active until it returns Success or Failure.
     /// A new random child is selected on the next execution.
     /// </summary>
-    public class RandomSelectorNode : BehaviorNode
+    public sealed class RandomSelectorNode : BehaviorNode
     {
         public readonly List<BehaviorNode> children;
         private int current;
@@ -1473,7 +1472,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node ticks its children is sequentally until one fails. AND logic, stops on first Failure. (Composite)
     /// </summary>
-    public class SequenceNode : BehaviorNode
+    public sealed class SequenceNode : BehaviorNode
     {
         public readonly List<BehaviorNode> children;
         private int current;
@@ -1547,7 +1546,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node ticks its children sequentually until one succeeds. OR logic, stops on first Success. Support many Children Nodes (Composite)
     /// </summary>
-    public class SelectorNode : BehaviorNode
+    public sealed class SelectorNode : BehaviorNode
     {
         public readonly List<BehaviorNode> children;
         private int current;
@@ -1621,7 +1620,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This node repeats its child indefinitely Only ONE Child Node . (Composite)
     /// </summary>
-    public class LoopNode : BehaviorNode
+    public sealed class LoopNode : BehaviorNode
     {
         private readonly BehaviorNode child;
         private bool childStarted;
@@ -1676,7 +1675,7 @@ namespace AquaExpansion.Core.BT
     /// <summary>
     /// This is the main Behavior Tree class that manages the execution of the tree.
     /// </summary>
-    public class BehaviorTree
+    public sealed class BehaviorTree
     {
         public readonly BehaviorNode root;
         private readonly Blackboard bb;

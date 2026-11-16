@@ -9,7 +9,7 @@ using VRageMath;
 namespace AquaExpansion.AquaExpansion.TSS
 {
     [MyTextSurfaceScript("AquaCompass", "Aqua Compass")]
-    class AquaGridCompass : MyTSSCommon
+    public sealed class AquaGridCompass : MyTSSCommon
     {
         public static float ASPECT_RATIO = 3f;
         public static float DECORATION_RATIO = 0.25f;
@@ -64,7 +64,6 @@ namespace AquaExpansion.AquaExpansion.TSS
 
                 };
                 frame.Add(Text2);
-
                 AddBrackets(frame, new Vector2(64, 256), innerSize.Y / 256 * 0.9f, (m_size.X - innerSize.X) / 2);
             }
         }

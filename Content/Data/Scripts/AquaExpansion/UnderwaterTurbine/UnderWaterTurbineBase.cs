@@ -53,7 +53,7 @@ namespace AquaExpansion.UnderwaterTurbine
         private float Boost = 0f;
         long originalGridId;
         public AquaExpansionUtils utils;
-        private bool disabledByWaterRules;
+        //private bool disabledByWaterRules;
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             base.Init(objectBuilder);

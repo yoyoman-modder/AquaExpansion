@@ -1201,7 +1201,6 @@ namespace AquaExpansion.Core
                 return;
             }
             var character = player.Character;
-
             if (character == null ||
                 character.Closed ||
                 character.IsDead)

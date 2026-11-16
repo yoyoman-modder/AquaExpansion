@@ -63,7 +63,7 @@
 				<SubtypeId>Aqua_SeaweedSpores_Green</SubtypeId>
 			</Id>
 			<DisplayName>Green Seaweed Spores</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Prerequisites>
@@ -81,7 +81,7 @@
 				<SubtypeId>Aqua_SeaweedSpores_Brown</SubtypeId>
 			</Id>
 			<DisplayName>Brown Seaweed Spores</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Prerequisites>
@@ -99,7 +99,7 @@
 				<SubtypeId>Aqua_SeaweedSpores_Red</SubtypeId>
 			</Id>
 			<DisplayName>Red Seaweed Spores</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\SeedPack_Algae.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Prerequisites>
@@ -409,7 +409,7 @@
 				<SubtypeId>Aqua_FishMeat_Barracuda</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Barracuda)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -426,7 +426,7 @@
 				<SubtypeId>Aqua_FishMeat_BlueTang</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Blue Tang)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -443,7 +443,7 @@
 				<SubtypeId>Aqua_FishMeat_ClownFish</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Clown Fish)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -460,7 +460,7 @@
 				<SubtypeId>Aqua_FishMeat_GiantGrouper</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Giant Grouper)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -477,7 +477,7 @@
 				<SubtypeId>Aqua_FishMeat_LionFish</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Lion Fish)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -494,7 +494,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishA</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish A)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -511,7 +511,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishB</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish B)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -528,7 +528,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishC</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish C)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -545,7 +545,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishD</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish D)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -562,7 +562,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishE</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish E)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -579,7 +579,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishF</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish F)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -596,7 +596,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishG</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish G)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -613,7 +613,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishH</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish H)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -630,7 +630,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishI</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish I)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -647,7 +647,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishJ</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish J)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -664,7 +664,7 @@
 				<SubtypeId>Aqua_FishMeat_ReefFishK</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Reef Fish K)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -681,7 +681,7 @@
 				<SubtypeId>Aqua_FishMeat_TinyYellowFish</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Tiny Yellow Fish)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -698,7 +698,7 @@
 				<SubtypeId>Aqua_FishMeat_YellowTang</SubtypeId>
 			</Id>
 			<DisplayName>Fish meat (Yellow Tang)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -715,7 +715,7 @@
 				<SubtypeId>Aqua_FishMeat_Big_Fish_Pieces</SubtypeId>
 			</Id>
 			<DisplayName>Big Fish Pieces Cut</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -733,7 +733,7 @@
 				<SubtypeId>Aqua_FishFluid_Oil</SubtypeId>
 			</Id>
 			<DisplayName>Fish Oil</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -751,7 +751,7 @@
 				<SubtypeId>Aqua_Fish_Protein_Paste</SubtypeId>
 			</Id>
 			<DisplayName>Fish Protein Paste</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -769,7 +769,7 @@
 				<SubtypeId>Aqua_Fish_Protein_Ration_Pack</SubtypeId>
 			</Id>
 			<DisplayName>Protein Ration Pack</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -787,7 +787,7 @@
 				<SubtypeId>Aqua_Fish_Fried_Fish_Meal</SubtypeId>
 			</Id>
 			<DisplayName>Fried Fish Meal</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -805,7 +805,7 @@
 				<SubtypeId>Aqua_Fish_Nutrient_Paste_Tube</SubtypeId>
 			</Id>
 			<DisplayName>Nutrient Paste Tube</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -823,7 +823,7 @@
 				<SubtypeId>Aqua_Fish_Deepwater_Stew</SubtypeId>
 			</Id>
 			<DisplayName>Deepwater Stew</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -842,7 +842,7 @@
 				<SubtypeId>Aqua_Fish_Omega_Nutrient_Block</SubtypeId>
 			</Id>
 			<DisplayName>Omega Nutrient Block</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -861,7 +861,7 @@
 				<SubtypeId>Aqua_Fish_Oil_Medical_Gel</SubtypeId>
 			</Id>
 			<DisplayName>Fish Oil Medical Gel</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -881,7 +881,7 @@
 				<SubtypeId>Aqua_FishMeat_Nurse_Shark</SubtypeId>
 			</Id>
 			<DisplayName>Big Fish Pieces (Nurse Shark)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -899,7 +899,7 @@
 				<SubtypeId>Aqua_FishMeat_Sea_Turtle</SubtypeId>
 			</Id>
 			<DisplayName>Big Fish Pieces (Sea Turtle)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -917,7 +917,7 @@
 				<SubtypeId>Aqua_FishMeat_Bottlenose_Dolphin</SubtypeId>
 			</Id>
 			<DisplayName>Big Fish Pieces (Bottlenose Dolphin)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -935,7 +935,7 @@
 				<SubtypeId>Aqua_FishMeat_Whale_Shark</SubtypeId>
 			</Id>
 			<DisplayName>Big Fish Pieces (Whale Shark)</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -955,7 +955,7 @@
 				<SubtypeId>Aqua_FishMeat_Animal_WhiteShark</SubtypeId>
 			</Id>
 			<DisplayName>Toxic White Shark Meat Processing</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>
@@ -973,7 +973,7 @@
 				<SubtypeId>Aqua_FishMeat_Animal_WhaleShark</SubtypeId>
 			</Id>
 			<DisplayName>Toxic Whale Shark Meat Processing</DisplayName>
-			<Icon>Textures\GUI\Icons\Items\MealPack_Empty.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\MealPack_Unknown.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
 			<IconSymbol>S</IconSymbol>
 			<Prerequisites>

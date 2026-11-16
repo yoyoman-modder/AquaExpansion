@@ -536,7 +536,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal Movement Data
     /// </summary>
-    public class SeadCreatureMovementData
+    public sealed class SeadCreatureMovementData
     {
         public bool IsMoving = true;
         public Vector3D DesiredDirection;
@@ -556,7 +556,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal Attack Data
     /// </summary>
-    public class SeaCreatureAttackData
+    public sealed class SeaCreatureAttackData
     {
         public float AttackRadius;
         public int AttackInterval;
@@ -569,7 +569,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal Definition
     /// </summary>
-    public class SeaCreatureDefinition
+    public sealed class SeaCreatureDefinition
     {
         public SeaAnimalType Type;
         public SeaAnimalBehavior Behavior;
@@ -623,7 +623,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Waste deffinition
     /// </summary>
-    public class SeaAnimalWasteDefinition
+    public sealed class SeaAnimalWasteDefinition
     {
         public string GasEffect;
         public string SolidComponent;
@@ -1412,7 +1412,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal Sensor Array Component
     /// </summary>
-    public class AnimalSensor
+    public sealed class AnimalSensor
     {
         public float SenseDistance = 5f;
         public float AngleOffset = 0.35f;
@@ -1874,7 +1874,7 @@ namespace AquaExpansion.Core.Animals
             return false;
         }
     }
-    public class AnimalDigestiveOrder
+    public sealed class AnimalDigestiveOrder
     {
         public Dictionary<MyDefinitionId, MyFixedPoint> FoodPrerequisites = new Dictionary<MyDefinitionId, MyFixedPoint>();
         public Dictionary<string, Dictionary<SeaAnimalWasteType, int>> WasteResults = new Dictionary<string, Dictionary<SeaAnimalWasteType, int>>();
@@ -1889,7 +1889,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal Spawn Deffinition
     /// </summary>
-    public class SeaAnimalSpawnDefinition
+    public sealed class SeaAnimalSpawnDefinition
     {
         public string SubtypeId;
         public string BotSubtype;
@@ -1933,7 +1933,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal Spawn Record
     /// </summary>
-    public class SeaAnimalSpawnRecord
+    public sealed class SeaAnimalSpawnRecord
     {
         public readonly long EntityId;
         public readonly long WaterPlanetId;
@@ -2062,7 +2062,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal population data for a specific water planet and animal subtype.
     /// </summary>
-    public class SeaAnimalPopulationData
+    public sealed class SeaAnimalPopulationData
     {
         public long WaterPlanetId;
         public string SubtypeId;
@@ -2114,7 +2114,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal HitZone
     /// </summary>
-    public class AnimalHitZone
+    public sealed class AnimalHitZone
     {
         public SeaCreatureBase Host;
         public string Name;
@@ -2136,7 +2136,7 @@ namespace AquaExpansion.Core.Animals
     /// <summary>
     /// Animal HitZone Definition
     /// </summary>
-    public class AnimalHitZoneDefinition
+    public sealed class AnimalHitZoneDefinition
     {
         public string Name;
         public Vector3D LocalPosition;
@@ -2401,7 +2401,7 @@ namespace AquaExpansion.Core.Animals
             return definition;
         }
     }
-    public class AnimaCollisionZone
+    public sealed class AnimaCollisionZone
     {
         public SeaCreatureBase Host;
         public string Name;
@@ -2417,7 +2417,7 @@ namespace AquaExpansion.Core.Animals
             
         }
     }
-    public class SeaGodProtectionZone
+    public sealed class SeaGodProtectionZone
     {
         public IMyCharacter Player;
         public Vector3D LocalPosition;
@@ -2434,7 +2434,7 @@ namespace AquaExpansion.Core.Animals
             Protect = protect;
         }
     }
-    public class SeaGodProtectionZoneUtils
+    public static class SeaGodProtectionZoneUtils
     {
         private static readonly MyDynamicAABBTreeD SeaGodzoneTree = new MyDynamicAABBTreeD();
         private static readonly Dictionary<SeaGodProtectionZone, int> zoneProxies = new Dictionary<SeaGodProtectionZone, int>();

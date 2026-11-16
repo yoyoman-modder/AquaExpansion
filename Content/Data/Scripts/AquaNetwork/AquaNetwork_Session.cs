@@ -31,7 +31,7 @@ namespace AquaNetwork
             //Net.ExceptionHandler = (e) => Log.Error(e);
             //Net.ErrorHandler = (msg) => Log.Error(msg);
             // To test if serialization works in singleplayer when using SendToServer().
-            AquaNet.SerializeTest = true;
+            AquaNet.SerializeTest = false;
             // Re-usable for sending
             PacketExample = new PacketSimpleExample();
             AquaDiverState = new AquaDiverState();

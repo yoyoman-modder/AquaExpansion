@@ -20,7 +20,6 @@ namespace AquaExpansion.UndewaterEngines
         private IMyThrust block;
         private IMyEntity e;
         private IMyCubeGrid grid;
-        private long originalGridId;
         private MyThrust thrust;
         private float WaterDepth;//current depth
         private float saltLevel = 0f;
@@ -55,7 +54,6 @@ namespace AquaExpansion.UndewaterEngines
             base.Init(objectBuilder);
             block = (IMyThrust)Entity;
             grid = block.CubeGrid;
-            originalGridId = grid.EntityId;
             if (block != null)
             {
                 
