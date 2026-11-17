@@ -302,7 +302,7 @@
               <ValueVector3>
                 <X>0</X>
                 <Y>0</Y>
-                <Z>15</Z>
+                <Z>0</Z>
               </ValueVector3>
             </Property>
             <Property AnimationType="Const" Name="Rotation velocity var" Type="Float">

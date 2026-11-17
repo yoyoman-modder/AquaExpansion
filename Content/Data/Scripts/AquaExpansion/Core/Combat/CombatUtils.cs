@@ -1333,6 +1333,12 @@ namespace AquaExpansion.Core.Combat
             effect.Autodelete = true;
             MyParticlesManager.RemoveParticleEffect(effect);
         }
+        /// <summary>
+        /// Missile self destructs when it reaches its max range or exits water if it is a torpedo.
+        /// </summary>
+        /// <param name="missile"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
         public static bool MissileSelfDestruct(IMyMissile missile, MissileState state)
         {
             if (missile == null ||
@@ -1497,27 +1503,27 @@ namespace AquaExpansion.Core.Combat
                   5f,                   // MaxRange (m)
                   0.35f,                 // WaterStability
                   2.2f,                  // EnergyLossCoefficient
-                  10f,                   // ProjectileMassDamage
-                  21f,                   // ProjectileHealthDamage
+                  CalculateDamage(50f, 10.59f),                   // ProjectileMassDamage
+                  CalculateDamage(100f, 34f),                   // ProjectileHealthDamage
                   0.88f,                 //ExitVelocityMultiplier
                   0.75f,                 //ExitDamageMultiplier
                   "AquaBulletTrailSmall",//Traileffect 
                   0f,                    //EngineTurn 
                   0f,                    //Engine Acceleration
                   0f,                    //Engine Multiplier
-                  0));                     //Torpedo mod)); 
+                  0));
             // small
             Register(new HydroAmmoProfile(
-                "SmallCaliber", 
-                2.2f, 
-                0.022f, 
+                "SmallCaliber",
+                2.2f,
+                0.022f,
                 SplashType.Bullet,
                 45f,
                 10f,
                 0.55f,
                 1.20f,
-                18f,
-                34f,
+                CalculateDamage(170f,10.59f),
+                CalculateDamage(100f, 34f),
                 0.92f,
                 0.85f,
                 "AquaBulletTrailSmall",
@@ -1531,8 +1537,8 @@ namespace AquaExpansion.Core.Combat
                 5f,
                 0.008f,
                 SplashType.Bullet,
-                70f,
-                50f,
+                CalculateDamage(90f, 10.59f),
+                CalculateDamage(33f, 34f),
                 0.92f,
                 0.75f,
                 55f,
@@ -1550,8 +1556,8 @@ namespace AquaExpansion.Core.Combat
                 15f,
                 0.005f,
                 SplashType.Bullet,
-                80f,
-                70f,
+                CalculateDamage(500f, 10.59f),
+                CalculateDamage(33f, 34f),
                 0.98f,
                 0.55f,
                 220f,
@@ -1808,42 +1814,42 @@ namespace AquaExpansion.Core.Combat
             //WF3 support
             //small piercing caliber
             Register(new HydroAmmoProfile(
-                "SmallPiercingCaliber",         
-                  1.0f,                  
-                  0.050f,                 
-                  SplashType.Bullet,     
-                  35f,                   
-                  5f,                   
-                  0.35f,                 
-                  2.2f,                  
-                  10f,                   
-                  21f,                   
-                  0.88f,                 
-                  0.75f,                 
-                  "AquaBulletTrailSmall",
-                  0f,                    
-                  0f,                    
-                  0f,                    
-                  0));
+                "SmallPiercingCaliber",
+                2.2f,
+                0.022f,
+                SplashType.Bullet,
+                45f,
+                10f,
+                0.55f,
+                1.20f,
+                CalculateDamage(250f, 10.59f),
+                CalculateDamage(100f, 34f),
+                0.92f,
+                0.85f,
+                "AquaBulletTrailSmall",
+                0f,
+                0f,
+                0f,
+                0));
             //antipersonel
             Register(new HydroAmmoProfile(
                 "AntiPersonnelTurretMunition",
-                  1.0f,
-                  0.050f,
-                  SplashType.Bullet,
-                  35f,
-                  5f,
-                  0.35f,
-                  2.2f,
-                  10f,
-                  21f,
-                  0.88f,
-                  0.75f,
-                  "AquaBulletTrailSmall",
-                  0f,
-                  0f,
-                  0f,
-                  0));
+                2.2f,
+                0.022f,
+                SplashType.Bullet,
+                45f,
+                10f,
+                0.55f,
+                1.20f,
+                CalculateDamage(250f, 10.59f),
+                CalculateDamage(100f, 34f),
+                0.92f,
+                0.85f,
+                "AquaBulletTrailSmall",
+                0f,
+                0f,
+                0f,
+                0));
            //missile homing
             Register(new HydroAmmoProfile(
                "MissileHoming",
@@ -1866,11 +1872,11 @@ namespace AquaExpansion.Core.Combat
             //torpedo
             Register(new HydroAmmoProfile(
                "Torpedo",
-                45f,
+                2000f,
                 0.05f,
                 SplashType.Missile,
                 20f,
-                10f,
+                20f,
                 0f,
                 0f,
                 0f,
@@ -1885,11 +1891,11 @@ namespace AquaExpansion.Core.Combat
             //torpedo heavy
             Register(new HydroAmmoProfile(
                "Torpedo_Heavy",
-                45f,
+                2000f,
                 0.05f,
                 SplashType.Missile,
                 20f,
-                10f,
+                20f,
                 0f,
                 0f,
                 0f,
@@ -1904,11 +1910,11 @@ namespace AquaExpansion.Core.Combat
             //torpedo seeking
             Register(new HydroAmmoProfile(
                "Torpedo_Seeking",
-                45f,
+                2000f,
                 0.05f,
                 SplashType.Missile,
                 20f,
-                10f,
+                20f,
                 0f,
                 0f,
                 0f,
@@ -1923,11 +1929,11 @@ namespace AquaExpansion.Core.Combat
             //torpedo piercing
             Register(new HydroAmmoProfile(
                "Torpedo_Piercing",
-                45f,
+                200f,
                 0.05f,
                 SplashType.Missile,
                 20f,
-                10f,
+                20f,
                 0f,
                 0f,
                 0f,
@@ -2091,6 +2097,10 @@ namespace AquaExpansion.Core.Combat
         public static void ClearRuntime()
         {
             RuntimeProfiles.Clear();
+        }
+        private static float CalculateDamage(float originalDamage, float coefficient)
+        {
+            return originalDamage * (coefficient / 100f);
         }
     }
     /// <summary>
