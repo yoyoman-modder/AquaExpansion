@@ -7,7 +7,7 @@
                 <SubtypeId>AquaSmallTorpedo</SubtypeId>
             </Id>
             <DisplayName>Small Torpedo</DisplayName>
-            <Icon>Textures\GUI\Icons\ammo\Small_Rocket.dds</Icon>
+            <Icon>Textures\GUI\Icons\ammo\Torpedo_Small.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
             <Size>
                 <X>1.2</X>
@@ -16,7 +16,7 @@
             </Size>
             <Mass>50</Mass>
             <Volume>50</Volume>
-            <Model>Models\Weapons\Projectile_Missile.mwm</Model>
+            <Model>Models\Weapons\Aqua_SmallTorpedo.mwm</Model>
             <PhysicalMaterial>Ammo</PhysicalMaterial>
             <Capacity>1</Capacity>
             <AmmoDefinitionId Subtype="Aqua_SmallTorpedo" />
@@ -26,6 +26,172 @@
             <MaximumOrderAmount>2000</MaximumOrderAmount>
             <CanPlayerOrder>true</CanPlayerOrder>
             <CanPlayerOffer>true</CanPlayerOffer>
+			<DefaultColor>
+				<R>23</R>
+				<G>107</G>
+				<B>120</B>
+				<A>1</A>
+			</DefaultColor>
         </AmmoMagazine>
-    </AmmoMagazines>
+		<AmmoMagazine>
+			<Id>
+				<TypeId>AmmoMagazine</TypeId>
+				<SubtypeId>AquaSmallTorpedoHoming</SubtypeId>
+			</Id>
+			<DisplayName>Small Guided Torpedo</DisplayName>
+			<Icon>Textures\GUI\Icons\Ammo\Torpedo_SmallHoming.dds</Icon>
+			<IconSymbol>SEA</IconSymbol>
+			<Size>
+				<X>1.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>50</Mass>
+			<Volume>50</Volume>
+			<Model>Models\Weapons\Aqua_SmallTorpedoHoming.mwm</Model>
+			<PhysicalMaterial>Ammo</PhysicalMaterial>
+			<Capacity>1</Capacity>
+			<AmmoDefinitionId Subtype="Aqua_SmallHomingTorpedo" />
+			<MinimumOfferAmount>20</MinimumOfferAmount>
+			<MaximumOfferAmount>200</MaximumOfferAmount>
+			<MinimumOrderAmount>100</MinimumOrderAmount>
+			<MaximumOrderAmount>2000</MaximumOrderAmount>
+			<CanPlayerOrder>true</CanPlayerOrder>
+			<CanPlayerOffer>true</CanPlayerOffer>
+			<DefaultColor>
+				<R>57</R>
+				<G>124</G>
+				<B>131</B>
+				<A>1</A>
+			</DefaultColor>
+		</AmmoMagazine>
+		<AmmoMagazine>
+			<Id>
+				<TypeId>AmmoMagazine</TypeId>
+				<SubtypeId>AquaStandardTorpedo</SubtypeId>
+			</Id>
+			<DisplayName>Standard Torpedo</DisplayName>
+			<Icon>Textures\GUI\Icons\Ammo\Torpedo_Standart.dds</Icon>
+			<IconSymbol>SEA</IconSymbol>
+			<Size>
+				<X>1.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>800</Mass>
+			<Volume>350</Volume>
+			<Model>Models\Weapons\Torpedo_Standard.mwm</Model>
+			<PhysicalMaterial>Ammo</PhysicalMaterial>
+			<Capacity>1</Capacity>
+			<AmmoDefinitionId Subtype="Aqua_StandardTorpedo" />
+			<MinimumOfferAmount>5</MinimumOfferAmount>
+			<MaximumOfferAmount>50</MaximumOfferAmount>
+			<MinimumOrderAmount>10</MinimumOrderAmount>
+			<MaximumOrderAmount>25</MaximumOrderAmount>
+			<CanPlayerOrder>true</CanPlayerOrder>
+			<CanPlayerOffer>true</CanPlayerOffer>
+			<DefaultColor>
+				<R>23</R>
+				<G>107</G>
+				<B>120</B>
+				<A>1</A>
+			</DefaultColor>
+		</AmmoMagazine>
+		<AmmoMagazine>
+			<Id>
+				<TypeId>AmmoMagazine</TypeId>
+				<SubtypeId>AquaHeavyTorpedo</SubtypeId>
+			</Id>
+			<DisplayName>Deep Strike Torpedo</DisplayName>
+			<Icon>Textures\GUI\Icons\Ammo\Torpedo_DeepStrike.dds</Icon>
+			<IconSymbol>SEA</IconSymbol>
+			<Size>
+				<X>1.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>800</Mass>
+			<Volume>350</Volume>
+			<Model>Models\Weapons\Torpedo_Heavy.mwm</Model>
+			<PhysicalMaterial>Ammo</PhysicalMaterial>
+			<Capacity>1</Capacity>
+			<AmmoDefinitionId Subtype="Aqua_HeavyTorpedo" />
+			<MinimumOfferAmount>5</MinimumOfferAmount>
+			<MaximumOfferAmount>25</MaximumOfferAmount>
+			<MinimumOrderAmount>10</MinimumOrderAmount>
+			<MaximumOrderAmount>25</MaximumOrderAmount>
+			<CanPlayerOrder>true</CanPlayerOrder>
+			<CanPlayerOffer>true</CanPlayerOffer>
+			<DefaultColor>
+				<R>36</R>
+				<G>81</G>
+				<B>107</B>
+				<A>1</A>
+			</DefaultColor>
+		</AmmoMagazine>
+		<AmmoMagazine>
+			<Id>
+				<TypeId>AmmoMagazine</TypeId>
+				<SubtypeId>AquaSeekTorpedo</SubtypeId>
+			</Id>
+			<DisplayName>Acoustic Homing Torpedo</DisplayName>
+			<Icon>Textures\GUI\Icons\Ammo\Torpedo_Aqustic.dds</Icon>
+			<IconSymbol>SEA</IconSymbol>
+			<Size>
+				<X>1.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>600</Mass>
+			<Volume>350</Volume>
+			<Model>Models\Weapons\Torpedo_Seeking.mwm</Model>
+			<PhysicalMaterial>Ammo</PhysicalMaterial>
+			<Capacity>1</Capacity>
+			<AmmoDefinitionId Subtype="Aqua_SeekTorpedo" />
+			<MinimumOfferAmount>5</MinimumOfferAmount>
+			<MaximumOfferAmount>25</MaximumOfferAmount>
+			<MinimumOrderAmount>10</MinimumOrderAmount>
+			<MaximumOrderAmount>25</MaximumOrderAmount>
+			<CanPlayerOrder>true</CanPlayerOrder>
+			<CanPlayerOffer>true</CanPlayerOffer>
+			<DefaultColor>
+				<R>57</R>
+				<G>124</G>
+				<B>131</B>
+				<A>1</A>
+			</DefaultColor>
+		</AmmoMagazine>
+		<AmmoMagazine>
+			<Id>
+				<TypeId>AmmoMagazine</TypeId>
+				<SubtypeId>AquaPiercingTorpedo</SubtypeId>
+			</Id>
+			<DisplayName>Naval Penetrator</DisplayName>
+			<Icon>Textures\GUI\Icons\Ammo\Torpedo_NavalPenetrator.dds</Icon>
+			<IconSymbol>SEA</IconSymbol>
+			<Size>
+				<X>1.2</X>
+				<Y>0.2</Y>
+				<Z>0.2</Z>
+			</Size>
+			<Mass>800</Mass>
+			<Volume>350</Volume>
+			<Model>Models\Weapons\Torpedo_Piercing.mwm</Model>
+			<PhysicalMaterial>Ammo</PhysicalMaterial>
+			<Capacity>1</Capacity>
+			<AmmoDefinitionId Subtype="Aqua_PiercingTorpedo" />
+			<MinimumOfferAmount>5</MinimumOfferAmount>
+			<MaximumOfferAmount>25</MaximumOfferAmount>
+			<MinimumOrderAmount>10</MinimumOrderAmount>
+			<MaximumOrderAmount>25</MaximumOrderAmount>
+			<CanPlayerOrder>true</CanPlayerOrder>
+			<CanPlayerOffer>true</CanPlayerOffer>
+			<DefaultColor>
+				<R>80</R>
+				<G>86</G>
+				<B>92</B>
+				<A>1</A>
+			</DefaultColor>
+		</AmmoMagazine>
+	</AmmoMagazines>
 </Definitions>

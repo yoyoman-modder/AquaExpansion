@@ -225,6 +225,10 @@
 				<TypeId>AmmoMagazine</TypeId>
 				<SubtypeId>AquaSmallTorpedo</SubtypeId>
 				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSmallTorpedoHoming</SubtypeId>
+				</Entry>
 			</InputConstraint>
 		</EntityComponent>
 		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
@@ -245,6 +249,10 @@
 				<Entry>
 					<TypeId>AmmoMagazine</TypeId>
 					<SubtypeId>AquaSmallTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSmallTorpedoHoming</SubtypeId>
 				</Entry>
 			</InputConstraint>
 		</EntityComponent>
@@ -273,7 +281,19 @@
 				</Entry>
 				<Entry>
 					<TypeId>AmmoMagazine</TypeId>
-					<SubtypeId>AquaSmallTorpedo</SubtypeId>
+					<SubtypeId>AquaStandardTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaHeavyTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSeekTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaPiercingTorpedo</SubtypeId>
 				</Entry>
 			</InputConstraint>
 		</EntityComponent>
@@ -302,7 +322,19 @@
 				</Entry>
 				<Entry>
 					<TypeId>AmmoMagazine</TypeId>
-					<SubtypeId>AquaSmallTorpedo</SubtypeId>
+					<SubtypeId>AquaStandardTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaHeavyTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaSeekTorpedo</SubtypeId>
+				</Entry>
+				<Entry>
+					<TypeId>AmmoMagazine</TypeId>
+					<SubtypeId>AquaPiercingTorpedo</SubtypeId>
 				</Entry>
 			</InputConstraint>
 		</EntityComponent>

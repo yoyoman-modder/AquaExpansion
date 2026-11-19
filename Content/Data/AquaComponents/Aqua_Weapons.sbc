@@ -80,6 +80,7 @@
 				<AmmoMagazine Subtype="Missile200mm" />
 				<AmmoMagazine Subtype="Missile200mmHoming" />
 				<AmmoMagazine Subtype="AquaSmallTorpedo" />
+				<AmmoMagazine Subtype="AquaSmallTorpedoHoming" />
 			</AmmoMagazines>
 			<SupportReloading>true</SupportReloading>
 		</Weapon>
@@ -96,6 +97,7 @@
 				<AmmoMagazine Subtype="Missile200mm" />
 				<AmmoMagazine Subtype="Missile200mmHoming" />
 				<AmmoMagazine Subtype="AquaSmallTorpedo" />
+				<AmmoMagazine Subtype="AquaSmallTorpedoHoming" />
 			</AmmoMagazines>
 			<ReloadTime>4000</ReloadTime>
 		</Weapon>
@@ -113,7 +115,10 @@
 				<AmmoMagazine Subtype="Torpedo_Heavy" />
 				<AmmoMagazine Subtype="Torpedo_Seeking" />
 				<AmmoMagazine Subtype="Torpedo_Piercing" />
-				<AmmoMagazine Subtype="AquaSmallTorpedo" />
+				<AmmoMagazine Subtype="AquaStandardTorpedo" />
+				<AmmoMagazine Subtype="AquaHeavyTorpedo" />
+				<AmmoMagazine Subtype="AquaSeekTorpedo" />
+				<AmmoMagazine Subtype="AquaPiercingTorpedo" />
 			</AmmoMagazines>
 			<ReloadTime>30000</ReloadTime>
 		</Weapon>
@@ -131,7 +136,10 @@
 				<AmmoMagazine Subtype="Torpedo_Heavy" />
 				<AmmoMagazine Subtype="Torpedo_Seeking" />
 				<AmmoMagazine Subtype="Torpedo_Piercing" />
-				<AmmoMagazine Subtype="AquaSmallTorpedo" />
+				<AmmoMagazine Subtype="AquaStandardTorpedo" />
+				<AmmoMagazine Subtype="AquaHeavyTorpedo" />
+				<AmmoMagazine Subtype="AquaSeekTorpedo" />
+				<AmmoMagazine Subtype="AquaPiercingTorpedo" />
 			</AmmoMagazines>
 			<ReloadTime>30000</ReloadTime>
 		</Weapon>

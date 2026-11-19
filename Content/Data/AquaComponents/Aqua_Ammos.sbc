@@ -14,12 +14,14 @@
                 <BackkickForce>0</BackkickForce>
                 <PhysicalMaterial>Missile</PhysicalMaterial>
                 <ExplosiveDamageMultiplier>2</ExplosiveDamageMultiplier>
+				<EndOfLifeSound>WepSmallWarheadExpl</EndOfLifeSound>
+				<EndOfLifeEffect>Explosion_Warhead_02</EndOfLifeEffect>
                 <DeathMessage>CauseOfDeath_HeavyWeapons</DeathMessage>
             </BasicProperties>
             <MissileProperties>
                 <MissileMass>50</MissileMass>
                 <MissileExplosionRadius>5</MissileExplosionRadius>
-                <MissileModelName>Models\Weapons\Projectile_Missile.mwm</MissileModelName>
+                <MissileModelName>Models\Weapons\Aqua_SmallTorpedo.mwm</MissileModelName>
                 <MissileAcceleration>20</MissileAcceleration>
                 <MissileInitialSpeed>20</MissileInitialSpeed>
                 <MissileSkipAcceleration>false</MissileSkipAcceleration>
@@ -27,5 +29,213 @@
                 <MissileTrailEffect>AquaMissileTrail</MissileTrailEffect>
             </MissileProperties>
         </Ammo>
+		<Ammo xsi:type="MyObjectBuilder_MissileAmmoDefinition">
+			<Id>
+				<TypeId>AmmoDefinition</TypeId>
+				<SubtypeId>Aqua_SmallHomingTorpedo</SubtypeId>
+			</Id>
+			<BasicProperties>
+				<DesiredSpeed>80</DesiredSpeed>
+				<SpeedVariance>0</SpeedVariance>
+				<MaxTrajectory>200</MaxTrajectory>
+				<IsExplosive>true</IsExplosive>
+				<BackkickForce>0</BackkickForce>
+				<PhysicalMaterial>Missile</PhysicalMaterial>
+				<ExplosiveDamageMultiplier>2</ExplosiveDamageMultiplier>
+				<EndOfLifeSound>WepSmallWarheadExpl</EndOfLifeSound>
+				<EndOfLifeEffect>Explosion_Warhead_02</EndOfLifeEffect>
+				<DeathMessage>CauseOfDeath_HeavyWeapons</DeathMessage>
+			</BasicProperties>
+			<MissileProperties>
+				<MissileMass>50</MissileMass>
+				<MissileExplosionRadius>3</MissileExplosionRadius>
+				<MissileModelName>Models\Weapons\Aqua_SmallTorpedoHoming.mwm</MissileModelName>
+				<MissileAcceleration>20</MissileAcceleration>
+				<MissileInitialSpeed>20</MissileInitialSpeed>
+				<MissileSkipAcceleration>false</MissileSkipAcceleration>
+				<MissileExplosionDamage>300</MissileExplosionDamage>
+				<MissileTrailEffect>AquaMissileTrail</MissileTrailEffect>
+				<Seeker>
+					<CanSeekCharacters>false</CanSeekCharacters>
+					<SeekDelay>0</SeekDelay>
+					<GuidanceRange>200</GuidanceRange>
+					<LockOnConeDegrees>45</LockOnConeDegrees>
+					<LockMaintainConeDegrees>135</LockMaintainConeDegrees>
+					<EnforceConeOnLaunch>false</EnforceConeOnLaunch>
+					<MaxTurnRateDegreesPerSecond>20</MaxTurnRateDegreesPerSecond>
+					<Guidance>TargetPrediction</Guidance>
+					<CountermeasureResilience>3</CountermeasureResilience>
+				</Seeker>
+			</MissileProperties>
+		</Ammo>
+		<Ammo xsi:type="MyObjectBuilder_MissileAmmoDefinition">
+			<Id>
+				<TypeId>AmmoDefinition</TypeId>
+				<SubtypeId>Aqua_StandardTorpedo</SubtypeId>
+			</Id>
+			<BasicProperties>
+				<DesiredSpeed>70</DesiredSpeed>
+				<SpeedVariance>0</SpeedVariance>
+				<MaxTrajectory>500</MaxTrajectory>
+				<IsExplosive>true</IsExplosive>
+				<BackkickForce>7500</BackkickForce>
+				<PhysicalMaterial>TorpedoStandard</PhysicalMaterial>
+				<ExplosiveDamageMultiplier>0.21</ExplosiveDamageMultiplier>
+				<EndOfLifeSound>WepLrgWarheadExpl</EndOfLifeSound>
+				<EndOfLifeEffect>Explosion_Warhead_15</EndOfLifeEffect>
+				<DeathMessage>CauseOfDeath_HeavyWeapons</DeathMessage>
+			</BasicProperties>
+			<MissileProperties>
+				<MissileMass>800</MissileMass>
+				<Integrity>100</Integrity>
+				<MissileExplosionRadius>8</MissileExplosionRadius>
+				<MissileModelName>Models\Weapons\Torpedo_Standard.mwm</MissileModelName>
+				<MissileAcceleration>20</MissileAcceleration>
+				<MissileInitialSpeed>20</MissileInitialSpeed>
+				<MissilePreserveLaunchMomentum>true</MissilePreserveLaunchMomentum>
+				<MissileSkipAcceleration>false</MissileSkipAcceleration>
+				<MissileExplosionDamage>3000</MissileExplosionDamage>
+				<MissileTrailEffect>AquaMissileTrail</MissileTrailEffect>
+				<Seeker>
+					<CanSeekCharacters>false</CanSeekCharacters>
+					<SeekDelay>0</SeekDelay>
+					<GuidanceRange>500</GuidanceRange>
+					<LockOnConeDegrees>45</LockOnConeDegrees>
+					<LockMaintainConeDegrees>75</LockMaintainConeDegrees>
+					<EnforceConeOnLaunch>false</EnforceConeOnLaunch>
+					<MaxTurnRateDegreesPerSecond>16</MaxTurnRateDegreesPerSecond>
+					<MaxLaunchOffAxisDegrees>180</MaxLaunchOffAxisDegrees>
+					<Guidance>TargetPrediction</Guidance>
+					<CountermeasureResilience>3</CountermeasureResilience>
+				</Seeker>
+			</MissileProperties>
+		</Ammo>
+		<Ammo xsi:type="MyObjectBuilder_MissileAmmoDefinition">
+			<Id>
+				<TypeId>AmmoDefinition</TypeId>
+				<SubtypeId>Aqua_HeavyTorpedo</SubtypeId>
+			</Id>
+			<BasicProperties>
+				<DesiredSpeed>60</DesiredSpeed>
+				<SpeedVariance>0</SpeedVariance>
+				<MaxTrajectory>500</MaxTrajectory>
+				<IsExplosive>true</IsExplosive>
+				<BackkickForce>7500</BackkickForce>
+				<PhysicalMaterial>TorpedoHeavy</PhysicalMaterial>
+				<ExplosiveDamageMultiplier>0.25</ExplosiveDamageMultiplier>
+				<EndOfLifeSound>WepLrgWarheadExpl</EndOfLifeSound>
+				<EndOfLifeEffect>Explosion_Warhead_30</EndOfLifeEffect>
+				<DeathMessage>CauseOfDeath_HeavyWeapons</DeathMessage>
+			</BasicProperties>
+			<MissileProperties>
+				<MissileMass>800</MissileMass>
+				<Integrity>100</Integrity>
+				<MissileExplosionRadius>10</MissileExplosionRadius>
+				<MissileModelName>Models\Weapons\Torpedo_Heavy.mwm</MissileModelName>
+				<MissileAcceleration>18</MissileAcceleration>
+				<MissileInitialSpeed>18</MissileInitialSpeed>
+				<MissilePreserveLaunchMomentum>true</MissilePreserveLaunchMomentum>
+				<MissileSkipAcceleration>false</MissileSkipAcceleration>
+				<MissileExplosionDamage>8000</MissileExplosionDamage>
+				<MissileTrailEffect>AquaMissileTrail</MissileTrailEffect>
+				<Seeker>
+					<CanSeekCharacters>false</CanSeekCharacters>
+					<SeekDelay>0</SeekDelay>
+					<GuidanceRange>500</GuidanceRange>
+					<LockOnConeDegrees>45</LockOnConeDegrees>
+					<LockMaintainConeDegrees>75</LockMaintainConeDegrees>
+					<EnforceConeOnLaunch>false</EnforceConeOnLaunch>
+					<MaxTurnRateDegreesPerSecond>10</MaxTurnRateDegreesPerSecond>
+					<MaxLaunchOffAxisDegrees>180</MaxLaunchOffAxisDegrees>
+					<Guidance>TargetPrediction</Guidance>
+					<CountermeasureResilience>3</CountermeasureResilience>
+				</Seeker>
+			</MissileProperties>
+		</Ammo>
+		<Ammo xsi:type="MyObjectBuilder_MissileAmmoDefinition">
+			<Id>
+				<TypeId>AmmoDefinition</TypeId>
+				<SubtypeId>Aqua_SeekTorpedo</SubtypeId>
+			</Id>
+			<BasicProperties>
+				<DesiredSpeed>80</DesiredSpeed>
+				<SpeedVariance>0</SpeedVariance>
+				<MaxTrajectory>500</MaxTrajectory>
+				<IsExplosive>true</IsExplosive>
+				<BackkickForce>7500</BackkickForce>
+				<PhysicalMaterial>TorpedoLight</PhysicalMaterial>
+				<ExplosiveDamageMultiplier>0.2</ExplosiveDamageMultiplier>
+				<EndOfLifeSound>WepSmallWarheadExpl</EndOfLifeSound>
+				<EndOfLifeEffect>Explosion_Warhead_02</EndOfLifeEffect>
+				<DeathMessage>CauseOfDeath_HeavyWeapons</DeathMessage>
+			</BasicProperties>
+			<MissileProperties>
+				<MissileMass>600</MissileMass>
+				<Integrity>100</Integrity>
+				<MissileExplosionRadius>5</MissileExplosionRadius>
+				<MissileModelName>Models\Weapons\Torpedo_Seeking.mwm</MissileModelName>
+				<MissileAcceleration>20</MissileAcceleration>
+				<MissileInitialSpeed>20</MissileInitialSpeed>
+				<MissilePreserveLaunchMomentum>true</MissilePreserveLaunchMomentum>
+				<MissileSkipAcceleration>false</MissileSkipAcceleration>
+				<MissileExplosionDamage>500</MissileExplosionDamage>
+				<MissileTrailEffect>AquaMissileTrail</MissileTrailEffect>
+				<Seeker>
+					<CanSeekCharacters>false</CanSeekCharacters>
+					<SeekDelay>0</SeekDelay>
+					<GuidanceRange>500</GuidanceRange>
+					<LockOnConeDegrees>45</LockOnConeDegrees>
+					<LockMaintainConeDegrees>90</LockMaintainConeDegrees>
+					<EnforceConeOnLaunch>false</EnforceConeOnLaunch>
+					<MaxTurnRateDegreesPerSecond>20</MaxTurnRateDegreesPerSecond>
+					<MaxLaunchOffAxisDegrees>180</MaxLaunchOffAxisDegrees>
+					<Guidance>TargetPrediction</Guidance>
+					<CountermeasureResilience>3</CountermeasureResilience>
+				</Seeker>
+			</MissileProperties>
+		</Ammo>
+		<Ammo xsi:type="MyObjectBuilder_MissileAmmoDefinition">
+			<Id>
+				<TypeId>AmmoDefinition</TypeId>
+				<SubtypeId>Aqua_PiercingTorpedo</SubtypeId>
+			</Id>
+			<BasicProperties>
+				<DesiredSpeed>70</DesiredSpeed>
+				<SpeedVariance>0</SpeedVariance>
+				<MaxTrajectory>500</MaxTrajectory>
+				<IsExplosive>true</IsExplosive>
+				<BackkickForce>7500</BackkickForce>
+				<PhysicalMaterial>LargeShell</PhysicalMaterial>
+				<ExplosiveDamageMultiplier>0.22</ExplosiveDamageMultiplier>
+				<EndOfLifeSound>WepSmallWarheadExpl</EndOfLifeSound>
+				<EndOfLifeEffect>Explosion_Warhead_02</EndOfLifeEffect>
+				<DeathMessage>CauseOfDeath_HeavyWeapons</DeathMessage>
+			</BasicProperties>
+			<MissileProperties>
+				<MissileMass>800</MissileMass>
+				<Integrity>100</Integrity>
+				<MissileExplosionRadius>5</MissileExplosionRadius>
+				<MissileModelName>Models\Weapons\Torpedo_Piercing.mwm</MissileModelName>
+				<MissileAcceleration>20</MissileAcceleration>
+				<MissileInitialSpeed>20</MissileInitialSpeed>
+				<MissilePreserveLaunchMomentum>true</MissilePreserveLaunchMomentum>
+				<MissileSkipAcceleration>false</MissileSkipAcceleration>
+				<MissileExplosionDamage>1500</MissileExplosionDamage>
+				<MissileHealthPool>20000</MissileHealthPool>
+				<MissileTrailEffect>AquaMissileTrail</MissileTrailEffect>
+				<Seeker>
+					<CanSeekCharacters>false</CanSeekCharacters>
+					<SeekDelay>0</SeekDelay>
+					<GuidanceRange>500</GuidanceRange>
+					<LockOnConeDegrees>45</LockOnConeDegrees>
+					<LockMaintainConeDegrees>75</LockMaintainConeDegrees>
+					<EnforceConeOnLaunch>false</EnforceConeOnLaunch>
+					<MaxTurnRateDegreesPerSecond>12</MaxTurnRateDegreesPerSecond>
+					<MaxLaunchOffAxisDegrees>180</MaxLaunchOffAxisDegrees>
+					<Guidance>TargetPrediction</Guidance>
+					<CountermeasureResilience>3</CountermeasureResilience>
+				</Seeker>
+			</MissileProperties>
+		</Ammo>
     </Ammos>
 </Definitions>

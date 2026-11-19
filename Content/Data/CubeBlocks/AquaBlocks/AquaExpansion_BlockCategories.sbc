@@ -35,6 +35,10 @@
 				<string>Thrust/UnderwaterEngineBasicDFlatXLarge</string>
 				<string>FunctionalBlock/AquaSeaAnchorL</string>
 				<string>FunctionalBlock/AquaSeaAnchorS</string>
+				<string>Thrust/UnderwaterEngineBasicRFlatSmall</string>
+				<string>Thrust/UnderwaterEngineBasicRFlatMedium</string>
+				<string>Thrust/UnderwaterEngineBasicRFlatLarge</string>
+				<string>Thrust/UnderwaterEngineBasicRFlatXLarge</string>
             </ItemIds>
         </Category>
     </CategoryClasses>

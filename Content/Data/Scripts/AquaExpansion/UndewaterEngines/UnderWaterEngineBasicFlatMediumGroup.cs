@@ -5,7 +5,7 @@ using VRage.ObjectBuilders;
 
 namespace AquaExpansionExperimental.UndewaterEngines
 {
-    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Thrust), false, "UnderwaterEngineBasicFlatMedium", "UnderwaterEngineBasicDFlatMedium")]
+    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Thrust), false, "UnderwaterEngineBasicFlatMedium", "UnderwaterEngineBasicDFlatMedium", "UnderwaterEngineBasicRFlatMedium")]
     public class UnderWaterEngineBasicFlatMediumGroup : UnderWaterEngineBase
     {
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)

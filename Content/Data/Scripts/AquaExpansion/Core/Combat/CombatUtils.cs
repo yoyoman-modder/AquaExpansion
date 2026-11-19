@@ -1945,6 +1945,102 @@ namespace AquaExpansion.Core.Combat
                 0.1f, //engine acceleration
                 0.10f,
                 0));
+            //water torpedoes new
+            //small homing torpedo
+            Register(new HydroAmmoProfile(
+              "Aqua_SmallHomingTorpedo",
+               50f,
+               0.003f,
+               SplashType.Missile,
+               20f,
+               200f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               "AquaMissileTrail",
+               1f,
+               15f, //engine acceleration
+               1f,
+               1));
+            //standart water torpedo
+            Register(new HydroAmmoProfile(
+              "Aqua_StandardTorpedo",
+               800f,
+               0.005f,
+               SplashType.Missile,
+               20f,
+               500f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               "AquaMissileTrail",
+               1f,
+               15f, //engine acceleration
+               1f,
+               1));
+            //heavy torpedo
+            Register(new HydroAmmoProfile(
+              "Aqua_HeavyTorpedo",
+               800f,
+               0.005f,
+               SplashType.Missile,
+               18f,
+               500f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               "AquaMissileTrail",
+               1f,
+               15f, //engine acceleration
+               1f,
+               1));
+            //seek torpedo
+            Register(new HydroAmmoProfile(
+              "Aqua_SeekTorpedo",
+               600f,
+               0.005f,
+               SplashType.Missile,
+               20f,
+               500f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               "AquaMissileTrail",
+               1f,
+               15f, //engine acceleration
+               1f,
+               1));
+            //armor piersing torpedo
+            Register(new HydroAmmoProfile(
+              "Aqua_PiercingTorpedo",
+               800f,
+               0.005f,
+               SplashType.Missile,
+               20f,
+               500f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               0f,
+               "AquaMissileTrail",
+               1f,
+               15f, //engine acceleration
+               1f,
+               1));
         }
         private static void Register(HydroAmmoProfile profile)
         {

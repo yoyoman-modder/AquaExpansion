@@ -102,6 +102,7 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
             {
                 case AquaWeaponBlockType.SmallGatlingGun:
                     weapon = CombatUtils.LoadWeaponDefinition(gat);
+                    //AquaExpansionSession.Insance.Log(true, $"weapon def {weapon.Id.SubtypeId}");
                     break;
                 case AquaWeaponBlockType.SmallMissileLauncher:
                     weapon = CombatUtils.LoadWeaponDefinition(missile);

@@ -173,7 +173,7 @@
 				Low resource yield
 				Easy to produce
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaSeaWeedSpores.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -201,7 +201,7 @@
 				Medium yield
 				Standard farming tier
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaSeaWeedSpores.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -230,7 +230,7 @@
 				Rare + valuable
 				Requires deeper underwater base
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaSeaWeedSpores.dds</Icon>
 			<IconSymbol>SEA</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -259,7 +259,7 @@
 				Compressed algae-based nutrient pellets engineered for aquatic farming systems.
 				Effective at attracting small and passive fish species.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaBait.dds</Icon>
 			<IconSymbol>BAIT</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -286,7 +286,7 @@
 				Pressurized organic bait mixture made from processed fish proteins and oils.
 				Designed to attract aggressive predators and large carnivorous species.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaBait.dds</Icon>
 			<IconSymbol>BAIT</IconSymbol>
 			<Size>
 				<X>0.2</X>
@@ -313,7 +313,7 @@
 				Experimental bio-signal emitter infused with unstable xenobiotic compounds.
 				Capable of attracting rare, mutated and deepwater lifeforms.
 			</Description>
-			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
+			<Icon>Textures\GUI\Icons\Items\AquaBait.dds</Icon>
 			<IconSymbol>BAIT</IconSymbol>
 			<Size>
 				<X>0.2</X>

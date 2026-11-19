@@ -73,6 +73,7 @@
 		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_SaltPowerCell" />
 		<Entry Class="SimpleComponents" BlueprintSubtypeId="Aqua_WaterFilter" />
 		<Entry Class="SimpleEquipment" BlueprintSubtypeId="Aqua_DiveGearT1" />
+		<Entry Class="Consumables" BlueprintSubtypeId="AquaWeapon_SmallTorpedo" />
 		<!--Patch Assembler -->
 		<Entry Class="Components" BlueprintSubtypeId="Aqua_SaltPowder_Refined" />
 		<Entry Class="Components" BlueprintSubtypeId="Aqua_SaltPowerCell" />
@@ -87,6 +88,11 @@
 		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_AnchorBlackedSetSmall500" />
 		<Entry Class="EliteEquipment" BlueprintSubtypeId="Aqua_AnchorBlackedSetLarge1000" />
 		<Entry Class="EliteConsumables" BlueprintSubtypeId="AquaWeapon_SmallTorpedo" />
+		<Entry Class="EliteConsumables" BlueprintSubtypeId="AquaWeapon_SmallTorpedoHoming" />
+		<Entry Class="EliteConsumables" BlueprintSubtypeId="AquaWeapon_StandardTorpedo" />
+		<Entry Class="EliteConsumables" BlueprintSubtypeId="AquaWeapon_HeavyTorpedo" />
+		<Entry Class="EliteConsumables" BlueprintSubtypeId="AquaWeapon_SeekTorpedo" />
+		<Entry Class="EliteConsumables" BlueprintSubtypeId="AquaWeapon_PiercingTorpedo" />
 		<!--Patch Food Processor -->
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Green" />
 		<Entry Class="FoodProcessorSeeds" BlueprintSubtypeId="Aqua_SeaweedSpores_Brown" />
