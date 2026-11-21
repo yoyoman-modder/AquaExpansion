@@ -137,14 +137,38 @@ namespace AquaExpansion.Core.Combat.Balistics
         private static void UpdateSmallMissile(IMySmallMissileLauncher mis)
         {
             if (mis == null ||
-                mis.Closed ||
-                mis.MarkedForClose)
+            mis.Closed ||
+            mis.MarkedForClose)
                 return;
             AquaWeaponBlockBase handler = mis.GameLogic.GetAs<AquaWeaponBlockBase>();
             if (handler == null)
                 return;
-            if (!mis.Enabled)
+            string registeredName = AquaForbiddenComponentsDatabase.GetComponentByID(3);
+            if (string.IsNullOrWhiteSpace(registeredName))
+                return;
+            bool hasRailgunComponent = false;
+            foreach (var comp in mis.Components)
+            {
+                if (comp == null)
+                    continue;
+                if (string.Equals(
+                    registeredName,
+                    comp.GetType().Name,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    hasRailgunComponent = true;
+                    break;
+                }
+            }
+            if (hasRailgunComponent)
+            {
+                if (mis.Enabled)
+                    mis.Enabled = false;
+            }
+            else if (!mis.Enabled)
+            {
                 mis.Enabled = true;
+            }
         }
         private static void UpdateTurret(IMyLargeTurretBase turret)
         {
@@ -152,12 +176,12 @@ namespace AquaExpansion.Core.Combat.Balistics
                 return;
             AquaExpansionSession.Insance.CheckUnderwaterBlockRules(turret, true);
         }
-        private static void UpdateRailgun(IMySmallMissileLauncher block)
+        /*private static void UpdateRailgun(IMySmallMissileLauncher block)
         {
             if (block == null || block.Closed || block.MarkedForClose)
                 return;
             AquaExpansionSession.Insance.CheckUnderwaterBlockRules(block, true);
-        }
+        }*/
         public static void UpdateHandWeapons(HashSet<IMyAutomaticRifleGun> handweapons)
         {
             foreach (IMyAutomaticRifleGun weapon in handweapons)
@@ -199,7 +223,7 @@ namespace AquaExpansion.Core.Combat.Balistics
                 UpdateTurret(block);
             }
         }
-        public static void UpdateWeaponRailguns(int tick, HashSet<IMySmallMissileLauncher> blocks)
+        /*public static void UpdateWeaponRailguns(int tick, HashSet<IMySmallMissileLauncher> blocks)
         {
             if (tick % 10 != 0)
                 return;
@@ -209,6 +233,6 @@ namespace AquaExpansion.Core.Combat.Balistics
                     continue;
                 UpdateRailgun(block);
             }
-        }
+        }*/
     }
 }

@@ -39,6 +39,9 @@
 				<string>Thrust/UnderwaterEngineBasicRFlatMedium</string>
 				<string>Thrust/UnderwaterEngineBasicRFlatLarge</string>
 				<string>Thrust/UnderwaterEngineBasicRFlatXLarge</string>
+				<string>BatteryBlock/LargeBlockSaltBankBattery</string>
+				<string>BatteryBlock/LargeBlockSaltBankBatteryOffset</string>
+				<string>BatteryBlock/SmallBlockSaltBankBattery</string>
             </ItemIds>
         </Category>
     </CategoryClasses>

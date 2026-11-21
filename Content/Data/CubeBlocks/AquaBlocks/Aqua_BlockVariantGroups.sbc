@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
      <BlockVariantGroups>
-        <BlockVariantGroup>
+		 <BlockVariantGroup>
+			 <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterSaltBatterySGroup" />
+			 <Icon>Textures\GUI\Icons\Cubes\BatteryReskin_Small.dds</Icon>
+			 <Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			 <DisplayName>Salt Battery Small</DisplayName>
+			 <Description>Salt Battery Small</Description>
+			 <Blocks>
+				 <Block Type="MyObjectBuilder_BatteryBlock" Subtype="SmallBlockSaltBattery" />
+				 <Block Type="MyObjectBuilder_BatteryBlock" Subtype="SmallBlockSaltBankBattery" />
+				 <Block Type="MyObjectBuilder_BatteryBlock" Subtype="SmallBlockSaltBatteryMicro" />
+			 </Blocks>
+		 </BlockVariantGroup>
+		 <BlockVariantGroup>
+			 <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterSaltBatteryLGroup" />
+			 <Icon>Textures\GUI\Icons\Cubes\BatteryReskin.dds</Icon>
+			 <Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			 <DisplayName>Salt Battery Large</DisplayName>
+			 <Description>Salt Battery Large</Description>
+			 <Blocks>
+				 <Block Type="MyObjectBuilder_BatteryBlock" Subtype="LargeBlockSaltBattery" />
+				 <Block Type="MyObjectBuilder_BatteryBlock" Subtype="LargeBlockSaltBankBattery" />
+				 <Block Type="MyObjectBuilder_BatteryBlock" Subtype="LargeBlockSaltBankBatteryOffset" />
+			 </Blocks>
+		 </BlockVariantGroup>
+		<BlockVariantGroup>
             <Id Type="MyObjectBuilder_BlockVariantGroup" Subtype="AquaUnderWaterTurbineGroup" />
             <Icon>Textures\GUI\Icons\Cubes\WindTurbine.dds</Icon>
 			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>

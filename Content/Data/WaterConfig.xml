@@ -22,6 +22,10 @@
 	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicDFlatLarge" Volume="12.27" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicFlatXLarge" Volume="147.26" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicDFlatXLarge" Volume="147.26" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicRFlatSmall" Volume="0.10" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicRFlatMedium" Volume="1.18" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicRFlatLarge" Volume="12.27" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="UnderwaterEngineBasicRFlatXLarge" Volume="147.26" FunctionalUnderwater="true" FunctionalAboveWater="false" PlayDamageEffect="false" />
 	  <!--End Aqua Blocks -->
 	  <!-- Vanilla Blocks -->
 	  <BlockConfig TypeId="WindTurbine" SubtypeId="LargeBlockWindTurbine" Volume="15.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
@@ -66,6 +70,10 @@
 	  <BlockConfig TypeId="Thrust" SubtypeId="LargeBlockSmallAtmosphericThrustSciFi" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="SmallBlockLargeAtmosphericThrustSciFi" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
 	  <BlockConfig TypeId="Thrust" SubtypeId="SmallBlockSmallAtmosphericThrustSciFi" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="SmallBlockSmallFlatAtmosphericThrustRound" Volume="0.10" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="SmallBlockLargeFlatAtmosphericThrustRound" Volume="1.18" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="LargeBlockSmallFlatAtmosphericThrustRound" Volume="12.27" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
+	  <BlockConfig TypeId="Thrust" SubtypeId="LargeBlockLargeFlatAtmosphericThrustRound" Volume="147.26" FunctionalUnderwater="false" FunctionalAboveWater="true" PlayDamageEffect="false" />
 	  <!--End Vanilla Blocks -->
   </BlockConfigs>
   <PlanetConfigs>

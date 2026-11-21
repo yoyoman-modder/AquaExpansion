@@ -198,6 +198,7 @@
 		</Definition>
 		<!--End Region AquaExpansion Production blocks-->
 		<!--Region AquaExpansion Battery blocks-->
+		<!--Region L Battery-->
 		<Definition xsi:type="MyObjectBuilder_BatteryBlockDefinition">
 			<Id>
 				<TypeId>BatteryBlock</TypeId>
@@ -232,6 +233,7 @@
 				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\BatteryReskinConstruction_3.mwm" />
 			</BuildProgressModels>
 			<EdgeType>Light</EdgeType>
+			<BlockPairName>LargeBlockSaltBattery</BlockPairName>
 			<BuildTimeSeconds>40</BuildTimeSeconds>
 			<ResourceSourceGroup>Battery</ResourceSourceGroup>
 			<MaxPowerOutput>10</MaxPowerOutput>
@@ -260,6 +262,154 @@
 			</TargetingGroups>
 			<DLC>Warfare2</DLC>
 		</Definition>
+		<Definition xsi:type="MyObjectBuilder_BatteryBlockDefinition">
+			<Id>
+				<TypeId>BatteryBlock</TypeId>
+				<SubtypeId>LargeBlockSaltBankBattery</SubtypeId>
+			</Id>
+			<DisplayName>Large Salt Battery Bank</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\HalfBlockBatteryBank.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<Description>Stores energy using saline electrochemical cells</Description>
+			<CubeSize>Large</CubeSize>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="1" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\Large\HalfBlockBatteryBank.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="10" />
+				<Component Subtype="Construction" Count="10" />
+				<Component Subtype="SaltPowerCell" Count="40">
+					<DeconstructId>
+						<TypeId>Ore</TypeId>
+						<SubtypeId>Scrap</SubtypeId>
+					</DeconstructId>
+				</Component>
+				<Component Subtype="Computer" Count="15" />
+				<Component Subtype="Construction" Count="10" />
+				<Component Subtype="SteelPlate" Count="30" />
+			</Components>
+			<CriticalComponent Subtype="SaltPowerCell" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Front" StartX="0.5" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Top" StartX="0" StartY="0" EndX="0.5" EndY="1" />
+				<MountPoint Side="Bottom" StartX="0" StartY="0" EndX="0.5" EndY="1" Default="true"/>
+				<MountPoint Side="Back" StartX="0" StartY="0" EndX="0.5" EndY="1" />
+				<MountPoint Side="Left" StartX="0" StartY="0" EndX="1" EndY="1" Enabled="false" />
+				<MountPoint Side="Left" StartX="0" StartY="0" EndX="0.3" EndY="1" />
+				<MountPoint Side="Left" StartX="0.3" StartY="0.9" EndX="0.9" EndY="1" />
+				<MountPoint Side="Left" StartX="0.3" StartY="0" EndX="0.9" EndY="0.2" />
+				<MountPoint Side="Left" StartX="0.9" StartY="0" EndX="1" EndY="1" />
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\HalfBlockBatteryBank_Construction_1.mwm" />
+				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\HalfBlockBatteryBank_Construction_2.mwm" />
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\HalfBlockBatteryBank_Construction_3.mwm" />
+			</BuildProgressModels>
+			<BlockPairName>LargeBlockSaltBankBattery</BlockPairName>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>30</BuildTimeSeconds>
+			<ResourceSourceGroup>Battery</ResourceSourceGroup>
+			<MaxPowerOutput>6</MaxPowerOutput>
+			<ResourceSinkGroup>BatteryBlock</ResourceSinkGroup>
+			<RequiredPowerInput>6</RequiredPowerInput>
+			<AdaptibleInput>true</AdaptibleInput>
+			<MaxStoredPower>1.5</MaxStoredPower>
+			<InitialStoredPowerRatio>0.3</InitialStoredPowerRatio>
+			<RechargeMultiplier>0.7</RechargeMultiplier>
+			<InventorySize>
+				<X>1</X>
+				<Y>1</Y>
+				<Z>1</Z>
+			</InventorySize>
+			<Public>true</Public>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<EmissiveColorPreset>Extended</EmissiveColorPreset>
+			<DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
+			<DestroySound>WepSmallWarheadExpl</DestroySound>
+			<PCU>15</PCU>
+			<MirroringX>Y</MirroringX>
+			<MirroringY>X</MirroringY>
+			<TargetingGroups>
+				<string>PowerSystems</string>
+			</TargetingGroups>
+			<DLC>Prosperity</DLC>
+		</Definition>
+		<Definition xsi:type="MyObjectBuilder_BatteryBlockDefinition">
+			<Id>
+				<TypeId>BatteryBlock</TypeId>
+				<SubtypeId>LargeBlockSaltBankBatteryOffset</SubtypeId>
+			</Id>
+			<DisplayName>Large Salt Battery Bank Offset</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\HalfBlockBatteryBankOffset.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<Description>Stores energy using saline electrochemical cells</Description>
+			<CubeSize>Large</CubeSize>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="1" y="1" z="1" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\Large\HalfBlockBatteryBank_Offset.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="10" />
+				<Component Subtype="Construction" Count="10" />
+				<Component Subtype="SaltPowerCell" Count="40">
+					<DeconstructId>
+						<TypeId>Ore</TypeId>
+						<SubtypeId>Scrap</SubtypeId>
+					</DeconstructId>
+				</Component>
+				<Component Subtype="Computer" Count="15" />
+				<Component Subtype="Construction" Count="10" />
+				<Component Subtype="SteelPlate" Count="30" />
+			</Components>
+			<CriticalComponent Subtype="SaltPowerCell" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Back" StartX="0.5" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Top" StartX="0.5" StartY="0" EndX="1" EndY="1" />
+				<MountPoint Side="Bottom" StartX="0.5" StartY="0" EndX="1" EndY="1" Default="true"/>
+				<MountPoint Side="Front" StartX="0" StartY="0" EndX="0.5" EndY="1" />
+				<MountPoint Side="Right" StartX="0" StartY="0" EndX="1" EndY="1" Enabled="false" />
+				<MountPoint Side="Right" StartX="0" StartY="0" EndX="1" EndY="0.1" />
+				<MountPoint Side="Right" StartX="0" StartY="0.9" EndX="1" EndY="1" />
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\HalfBlockBatteryBank_Offset_Construction_1.mwm" />
+				<Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\HalfBlockBatteryBank_Offset_Construction_2.mwm" />
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Large\HalfBlockBatteryBank_Offset_Construction_3.mwm" />
+			</BuildProgressModels>
+			<BlockPairName>LargeBlockSaltBankBatteryOffset</BlockPairName>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>30</BuildTimeSeconds>
+			<ResourceSourceGroup>Battery</ResourceSourceGroup>
+			<MaxPowerOutput>6</MaxPowerOutput>
+			<ResourceSinkGroup>BatteryBlock</ResourceSinkGroup>
+			<RequiredPowerInput>6</RequiredPowerInput>
+			<AdaptibleInput>true</AdaptibleInput>
+			<MaxStoredPower>1.5</MaxStoredPower>
+			<InitialStoredPowerRatio>0.3</InitialStoredPowerRatio>
+			<RechargeMultiplier>0.7</RechargeMultiplier>
+			<InventorySize>
+				<X>1</X>
+				<Y>1</Y>
+				<Z>1</Z>
+			</InventorySize>
+			<Public>true</Public>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<EmissiveColorPreset>Extended</EmissiveColorPreset>
+			<DestroyEffect>BlockDestroyedExplosion_Large</DestroyEffect>
+			<DestroySound>WepSmallWarheadExpl</DestroySound>
+			<PCU>15</PCU>
+			<MirroringX>Y</MirroringX>
+			<MirroringY>X</MirroringY>
+			<TargetingGroups>
+				<string>PowerSystems</string>
+			</TargetingGroups>
+			<DLC>Prosperity</DLC>
+		</Definition>
+		<!--End Region L Battery-->
+		<!--Region S Battery-->
 		<Definition xsi:type="MyObjectBuilder_BatteryBlockDefinition">
 			<Id>
 				<TypeId>BatteryBlock</TypeId>
@@ -301,6 +451,7 @@
 				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Small\BatteryReskinConstruction_2.mwm" />
 			</BuildProgressModels>
 			<EdgeType>Light</EdgeType>
+			<BlockPairName>SmallBlockSaltBattery</BlockPairName>
 			<BuildTimeSeconds>20</BuildTimeSeconds>
 			<ResourceSourceGroup>Battery</ResourceSourceGroup>
 			<MaxPowerOutput>3</MaxPowerOutput>
@@ -360,6 +511,7 @@
 				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Small\BatterySmall1x1_Construction_2.mwm" />
 			</BuildProgressModels>
 			<EdgeType>Light</EdgeType>
+			<BlockPairName>SmallBlockSaltBatteryMicro</BlockPairName>
 			<BuildTimeSeconds>8</BuildTimeSeconds>
 			<ResourceSourceGroup>Battery</ResourceSourceGroup>
 			<MaxPowerOutput>1</MaxPowerOutput>
@@ -385,6 +537,81 @@
 				<string>PowerSystems</string>
 			</TargetingGroups>
 		</Definition>
+		<Definition xsi:type="MyObjectBuilder_BatteryBlockDefinition">
+			<Id>
+				<TypeId>BatteryBlock</TypeId>
+				<SubtypeId>SmallBlockSaltBankBattery</SubtypeId>
+			</Id>
+			<DisplayName>Salt Battery Bank</DisplayName>
+			<Icon>Textures\GUI\Icons\Cubes\BatteryBank.dds</Icon>
+			<Icon>Textures\GUI\Icons\Cubes\AquaExpansionLogo.dds</Icon>
+			<Description>Stores energy using saline electrochemical cells</Description>
+			<CubeSize>Small</CubeSize>
+			<BlockTopology>TriangleMesh</BlockTopology>
+			<Size x="2" y="3" z="3" />
+			<ModelOffset x="0" y="0" z="0" />
+			<Model>Models\Cubes\Small\BatteryBank.mwm</Model>
+			<Components>
+				<Component Subtype="SteelPlate" Count="5" />
+				<Component Subtype="Construction" Count="2" />
+				<Component Subtype="SaltPowerCell" Count="20">
+					<DeconstructId>
+						<TypeId>Ore</TypeId>
+						<SubtypeId>Scrap</SubtypeId>
+					</DeconstructId>
+				</Component>
+				<Component Subtype="Computer" Count="2" />
+				<Component Subtype="Construction" Count="3" />
+				<Component Subtype="SteelPlate" Count="20" />
+			</Components>
+			<CriticalComponent Subtype="SaltPowerCell" Index="0" />
+			<MountPoints>
+				<MountPoint Side="Front" StartX="0" StartY="0" EndX="2" EndY="3" />
+				<MountPoint Side="Top" StartX="0" StartY="0" EndX="2" EndY="3" />
+				<MountPoint Side="Bottom" StartX="0" StartY="0" EndX="2" EndY="3" Default="true"/>
+				<MountPoint Side="Back" StartX="0" StartY="0" EndX="2" EndY="3" />
+				<MountPoint Side="Right" StartX="0" StartY="0" EndX="0.2" EndY="3" />
+				<MountPoint Side="Right" StartX="2.8" StartY="0" EndX="3" EndY="3" />
+				<MountPoint Side="Left" StartX="0" StartY="0" EndX="0.2" EndY="3" />
+				<MountPoint Side="Left" StartX="2.8" StartY="0" EndX="3" EndY="3" />
+				<MountPoint Side="Left" StartX="0.2" StartY="0" EndX="2.8" EndY="0.2" />
+				<MountPoint Side="Left" StartX="0.2" StartY="2.8" EndX="2.8" EndY="3" />
+			</MountPoints>
+			<BuildProgressModels>
+				<Model BuildPercentUpperBound="0.50" File="Models\Cubes\Small\BatteryBankConstruction_1.mwm" />
+				<Model BuildPercentUpperBound="1.00" File="Models\Cubes\Small\BatteryBankConstruction_2.mwm" />
+			</BuildProgressModels>
+			<BlockPairName>SmallBlockSaltBankBattery</BlockPairName>
+			<EdgeType>Light</EdgeType>
+			<BuildTimeSeconds>20</BuildTimeSeconds>
+			<ResourceSourceGroup>Battery</ResourceSourceGroup>
+			<MaxPowerOutput>4</MaxPowerOutput>
+			<ResourceSinkGroup>BatteryBlock</ResourceSinkGroup>
+			<RequiredPowerInput>4</RequiredPowerInput>
+			<MaxStoredPower>1</MaxStoredPower>
+			<InitialStoredPowerRatio>0.3</InitialStoredPowerRatio>
+			<RechargeMultiplier>0.7</RechargeMultiplier>
+			<InventorySize>
+				<X>1</X>
+				<Y>1</Y>
+				<Z>1</Z>
+			</InventorySize>
+			<Public>true</Public>
+			<DamageEffectName>Damage_Electrical_Damaged</DamageEffectName>
+			<DamagedSound>ParticleElectrical</DamagedSound>
+			<EmissiveColorPreset>Extended</EmissiveColorPreset>
+			<DestroyEffect>BlockDestroyedExplosion_Small</DestroyEffect>
+			<DestroySound>WepSmallWarheadExpl</DestroySound>
+			<PCU>15</PCU>
+			<MirroringX>Y</MirroringX>
+			<MirroringY>X</MirroringY>
+			<IsAirTight>true</IsAirTight>
+			<TargetingGroups>
+				<string>PowerSystems</string>
+			</TargetingGroups>
+			<DLC>Prosperity</DLC>
+		</Definition>
+		<!--End Region S Battery-->
 		<!--End Region AquaExpansion Battery blocks-->
 		<!--Region AquaExpansion Engine blocks-->
 		<!--Region S Engine-->

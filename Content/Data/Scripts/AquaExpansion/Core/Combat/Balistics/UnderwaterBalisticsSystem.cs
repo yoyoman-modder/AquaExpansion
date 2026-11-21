@@ -53,7 +53,6 @@ namespace AquaExpansion.Core.Combat.Balistics
             FilterWeaponBlocks(traced);
             WeaponProcessor.UpdatwWeaponBlocks(TrackedGatlings, TrackedSmallMissile);
             WeaponProcessor.UpdateWeaponTurrets(AquaExpansionSession.Insance.GetTick, TrackedTurrets);
-            //WeaponProcessor.UpdateWeaponRailguns(AquaExpansionSession.Insance.GetTick,TrackedRailguns);
         }
         private void OnProjectileAddedRemoved(ref MyProjectileInfo projectile, int index)
         {
@@ -167,7 +166,6 @@ namespace AquaExpansion.Core.Combat.Balistics
             FilterSmallGatling(AquaExpansionSession.Insance.GetTick, TrackedGatlings, traced);
             FilterSmallMissile(AquaExpansionSession.Insance.GetTick, TrackedSmallMissile, traced);
             FilterTurrets(AquaExpansionSession.Insance.GetTick, TrackedTurrets, traced);
-            //FilterRailguns(AquaExpansionSession.Insance.GetTick,TrackedRailguns, traced);
         }
         private void FilterSmallGatling(int tick, HashSet<IMySmallGatlingGun> gatlings, HashSet<IMyTerminalBlock> traced)
         {
@@ -248,11 +246,11 @@ namespace AquaExpansion.Core.Combat.Balistics
                 if (sm == null ||
                     sm.Closed ||
                     sm.MarkedForClose ||
-                    CombatUtils.WaterPlanet(sm.GetPosition()) == null)
+                    CombatUtils.WaterPlanet(sm.GetPosition()) == null ||
+                    !WaterModAPI.IsUnderwater(sm.GetPosition()))
                 {
                     if (toRemove == null)
-                        toRemove =
-                            new List<IMySmallMissileLauncher>();
+                        toRemove = new List<IMySmallMissileLauncher>();
                     toRemove.Add(sm);
                 }
             }
@@ -281,7 +279,6 @@ namespace AquaExpansion.Core.Combat.Balistics
                     block.MarkedForClose)
                     continue;
                 var sm = block as IMySmallMissileLauncher;
-
                 if (sm == null ||
                     sm.Closed ||
                     sm.MarkedForClose)
@@ -291,13 +288,17 @@ namespace AquaExpansion.Core.Combat.Balistics
                 // Space / non-water planet => don't register
                 if (CombatUtils.WaterPlanet(sm.GetPosition()) == null)
                     continue;
-                missiles.Add(sm);
-                /*AquaExpansionSession.Insance.Log(
+                var isUnderwater = WaterModAPI.IsUnderwater(sm.GetPosition());
+                if (isUnderwater && !missiles.Contains(sm))
+                {
+                    missiles.Add(sm);
+                    /*AquaExpansionSession.Insance.Log(
                     true,
                     "Added SmallMissile " +
                     sm.EntityId +
                     " count " +
                     missiles.Count);*/
+                }
             }
         }
         private void FilterTurrets(int tick, HashSet<IMyLargeTurretBase> turrets, HashSet<IMyTerminalBlock> traced)
@@ -306,11 +307,12 @@ namespace AquaExpansion.Core.Combat.Balistics
                 return;
             //Cleanup tracked
             List<IMyLargeTurretBase> toRemove = null;
-            foreach (var t in TrackedTurrets)
+            foreach (var t in turrets)
             {
                 if (t == null ||
                     t.Closed ||
                     t.MarkedForClose ||
+                    CombatUtils.WaterPlanet(t.GetPosition()) == null ||
                     !WaterModAPI.IsUnderwater(t.GetPosition()))
                 {
                     if (toRemove == null)
@@ -322,7 +324,7 @@ namespace AquaExpansion.Core.Combat.Balistics
             {
                 foreach (var tu in toRemove)
                 {
-                    TrackedTurrets.Remove(tu);
+                    turrets.Remove(tu);
                 }
             }
             //Main scan
@@ -333,22 +335,24 @@ namespace AquaExpansion.Core.Combat.Balistics
                 var turret = block as IMyLargeTurretBase;
                 if (turret == null || turret.Closed || turret.MarkedForClose)
                     continue;
+                if (CombatUtils.WaterPlanet(turret.GetPosition()) == null)
+                    continue;
                 var isUnderwater = WaterModAPI.IsUnderwater(turret.GetPosition());
                 if (isUnderwater && !TrackedTurrets.Contains(turret))
                 {
-                    TrackedTurrets.Add(turret);
+                    turrets.Add(turret);
                 }
             }
         }
-        private void FilterRailguns(int tick, HashSet<IMySmallMissileLauncher> missiles, HashSet<IMyTerminalBlock> traced)
+        /*private void FilterRailguns(int tick, HashSet<IMySmallMissileLauncher> railguns, HashSet<IMySmallMissileLauncher> missiles)
         {
             if (tick % 10 != 0)
                 return;
             // -----------------------------------------
-            // Cleanup
+            // Cleanup registered railguns
             // -----------------------------------------
             List<IMySmallMissileLauncher> toRemove = null;
-            foreach (var sm in missiles)
+            foreach (var sm in railguns)
             {
                 if (sm == null ||
                     sm.Closed ||
@@ -356,8 +360,8 @@ namespace AquaExpansion.Core.Combat.Balistics
                     CombatUtils.WaterPlanet(sm.GetPosition()) == null)
                 {
                     if (toRemove == null)
-                        toRemove =
-                            new List<IMySmallMissileLauncher>();
+                        toRemove = new List<IMySmallMissileLauncher>();
+
                     toRemove.Add(sm);
                 }
             }
@@ -365,54 +369,49 @@ namespace AquaExpansion.Core.Combat.Balistics
             {
                 foreach (var sm in toRemove)
                 {
-                    missiles.Remove(sm);
+                    railguns.Remove(sm);
+                    AquaExpansionSession.Insance.Log(true,
+                        "Remove RailGun " +
+                        (sm != null ? sm.EntityId.ToString() : "null") +
+                        " count " +
+                        railguns.Count);
                 }
             }
             // -----------------------------------------
             // Get registered Railgun component
             // -----------------------------------------
-            string registeredName =
-                AquaForbiddenComponentsDatabase.GetComponentByID(3);
-
+            string registeredName = AquaForbiddenComponentsDatabase.GetComponentByID(3);
             if (string.IsNullOrWhiteSpace(registeredName))
                 return;
             // -----------------------------------------
-            // Main scan
+            // Scan traced missiles
             // -----------------------------------------
-            foreach (var block in traced)
+            foreach (var sm in missiles)
             {
-                if (block == null ||
-                    block.Closed ||
-                    block.MarkedForClose)
-                    continue;
-                var sm = block as IMySmallMissileLauncher;
                 if (sm == null ||
                     sm.Closed ||
-                    sm.MarkedForClose)
-                    continue;
-                if (TrackedRailguns.Contains(sm))
+                    sm.MarkedForClose ||
+                    railguns.Contains(sm))
                     continue;
                 if (CombatUtils.WaterPlanet(sm.GetPosition()) == null)
                     continue;
-
                 if (!WaterModAPI.IsUnderwater(sm.GetPosition()))
                     continue;
-
                 foreach (var comp in sm.Components)
                 {
                     if (comp == null)
                         continue;
-
-                    if (!string.Equals(
-                            registeredName,
-                            comp.GetType().Name,
-                            StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(registeredName, comp.GetType().Name, StringComparison.OrdinalIgnoreCase))
                         continue;
+                    railguns.Add(sm);
+                    AquaExpansionSession.Insance.Log(true,
+                        "Added RailGun " +
+                        sm.EntityId +
+                        " count " +
+                        railguns.Count);
 
-                    TrackedRailguns.Add(sm);
-                    break;
                 }
             }
-        }
+        }*/
     }
 }

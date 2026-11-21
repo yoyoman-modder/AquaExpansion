@@ -106,6 +106,7 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
                     break;
                 case AquaWeaponBlockType.SmallMissileLauncher:
                     weapon = CombatUtils.LoadWeaponDefinition(missile);
+                    //AquaExpansionSession.Insance.Log(true, $"weapon def {weapon.Id.SubtypeId}");
                     break;
             }
             MuzzlePoint = GetWeaponMuzzleOffset();
@@ -137,6 +138,7 @@ namespace AquaExpansion.Core.Combat.WeaponBlocks
                     if (!AquaExpansionSession.Insance.HasBalistics)
                         return;
                     grid = missilereload.CubeGrid;
+                    //AquaExpansionSession.Insance.Log(true,$"railguntype {missilereload.BlockDefinition.SubtypeId}");
                     break;
                 default:
                     return;
