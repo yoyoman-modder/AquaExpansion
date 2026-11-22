@@ -1,11 +1,15 @@
-﻿using AquaNetwork.AquaPackets;
+﻿using AquaExpansion.Core;
+using AquaNetwork.AquaPackets;
 using Digi.NetworkLib;
 using Sandbox.ModAPI;
 using System;
+using System.Collections.Generic;
 using VRage.Game.Components;
+using VRage.Game.ModAPI;
 using VRage.Input;
 using VRage.Library.Utils;
 using VRage.Utils;
+using VRageMath;
 
 namespace AquaNetwork
 {
@@ -20,6 +24,8 @@ namespace AquaNetwork
         private PacketSimpleExample PacketExample;
         private AquaDiverState AquaDiverState;
         private int NetLogTestTick;
+        private AquaDiverInput diverInputPacket;
+        private readonly List<IMyPlayer> playersL = new List<IMyPlayer>();
         public override void LoadData()
         {
             // The ID in this must be unique between other mods.
@@ -39,11 +45,48 @@ namespace AquaNetwork
             // because this is a global event you should only hook it in global cases
             PacketSimpleExample.OnReceive += PacketSimpleExample_OnReceive;
             AquaDiverState.OnReceive += AquaDiverState_OnReceive;
+            diverInputPacket = new AquaDiverInput();
+            //AquaDiverInput.OnReceive += AquaDiverInput_OnReceive;
             // For packets that are for a specific entity you still should do the event hooking here in session comp,
             //   but you can still trigger code on the entity once you have its instance.
             //   Refer to the commented-out example at the end of this file.
         }
 
+        /*private void AquaDiverInput_OnReceive(AquaDiverInput packet, ref PacketInfo packetInfo, ulong senderSteamId)
+        {
+            if (!MyAPIGateway.Multiplayer.IsServer)
+                return;
+            playersL.Clear();
+            MyAPIGateway.Players.GetPlayers(
+                playersL,
+                p => p.SteamUserId == senderSteamId);
+            if (playersL.Count == 0)
+                return;
+            IMyPlayer player = playersL[0];
+            playersL.Clear();
+            if (player == null
+                || player.IsBot
+                || player.Character == null
+                || player.Character.IsDead
+                || player.Character.Closed
+                || player.Character.MarkedForClose)
+                return;
+            AquaExpansionSession.Insance.JetpackUnderWaterSystem.SetDiverInput(
+                player.IdentityId,
+                packet.MoveDirection,
+                packet.JumpPressed,
+                packet.CrouchPressed);
+        }*/
+        public void SendDiverInput(Vector3 moveDirection,bool jumpPressed,bool crouchPressed)
+        {
+            if (AquaNet == null || diverInputPacket == null)
+                return;
+            diverInputPacket.Setup(
+                moveDirection,
+                jumpPressed,
+                crouchPressed);
+            AquaNet.SendToServer(diverInputPacket);
+        }
         private void AquaDiverState_OnReceive(AquaDiverState packet, ref PacketInfo packetInfo, ulong senderSteamId)
         {
             MyLog.Default.WriteLineAndConsole(
@@ -90,6 +133,8 @@ namespace AquaNetwork
                 AquaDiverState.OnReceive -= AquaDiverState_OnReceive;
                 AquaDiverState = null;
             }
+            //AquaDiverInput.OnReceive -= AquaDiverInput_OnReceive;
+            diverInputPacket = null;
         }
         protected override void UnloadData()
         {

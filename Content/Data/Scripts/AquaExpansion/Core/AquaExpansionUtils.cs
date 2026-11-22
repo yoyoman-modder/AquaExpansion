@@ -5618,4 +5618,134 @@ namespace AquaExpansion.Core
             }
         }
     }
+    public sealed class AquaDiverGearDefinition
+    {
+        public int NumericId;
+        public MyStringHash ItemId;
+        public int Level;
+        public float GearmaxSpeed;
+        public float GearBoost;
+        public float GearO2MaxRefillDepth;
+        public float GearO2RefillRate;
+        public float GearSaltFilterLevel;
+        public double MaxSinkSpeed;
+        public float SinkBias;
+        public double HoverMinDepth;
+        public double HoverMaxDepth;
+        public double BuoyancyFactor;
+        public double SwimForce;
+        public double MaxseabedSpeed;
+    }
+    public static class AquaDiverGearDatabase
+    {
+        private static readonly Dictionary<int, AquaDiverGearDefinition> gearById = new Dictionary<int, AquaDiverGearDefinition>();
+        private static readonly Dictionary<string, AquaDiverGearDefinition> gearByItemId = new Dictionary<string, AquaDiverGearDefinition>();
+
+        public static void Init()
+        {
+            Register(new AquaDiverGearDefinition 
+            { 
+                NumericId = 0,
+                ItemId = MyStringHash.GetOrCompute("NoGear"),
+                Level = 0,
+                GearmaxSpeed = 2f,
+                GearBoost = 1f,
+                GearO2MaxRefillDepth = 0f,
+                GearO2RefillRate = 0f,
+                GearSaltFilterLevel = 0f,
+                HoverMinDepth = 0,
+                HoverMaxDepth = 2,
+                BuoyancyFactor = 0.02,
+                SwimForce = -0.9f,
+                MaxseabedSpeed = 2,
+                MaxSinkSpeed = 4,
+                SinkBias = 6f
+            });
+            Register(new AquaDiverGearDefinition
+            {
+                NumericId = 1,
+                ItemId = MyStringHash.GetOrCompute("AquaDiveGearT1"),
+                Level = 1,
+                GearmaxSpeed = 5f,
+                GearBoost = 1.1f,
+                GearO2MaxRefillDepth = 30f,
+                GearO2RefillRate = 0.5f,
+                GearSaltFilterLevel = 0.3f,
+                HoverMinDepth = 2,
+                HoverMaxDepth = 15,
+                BuoyancyFactor = 0.05,
+                SwimForce = -0.5f,
+                MaxseabedSpeed = 2,
+                MaxSinkSpeed = 3,
+                SinkBias = 3.5f
+            });
+            Register(new AquaDiverGearDefinition
+            {
+                NumericId = 2,
+                ItemId = MyStringHash.GetOrCompute("AquaDiveGearT2"),
+                Level = 2,
+                GearmaxSpeed = 8f,
+                GearBoost = 1.25f,
+                GearO2MaxRefillDepth = 60f,
+                GearO2RefillRate = 0.9f,
+                GearSaltFilterLevel = 0.5f,
+                HoverMinDepth = 2,
+                HoverMaxDepth = 40,
+                BuoyancyFactor = 0.08,
+                SwimForce = -0.25f,
+                MaxseabedSpeed = 2,
+                MaxSinkSpeed = 2.5,
+                SinkBias = 1.5f
+            });
+            Register(new AquaDiverGearDefinition
+            {
+                NumericId = 3,
+                ItemId = MyStringHash.GetOrCompute("AquaDiveGearT3"),
+                Level = 3,
+                GearmaxSpeed = 10f,
+                GearBoost = 1.50f,
+                GearO2MaxRefillDepth = 100f,
+                GearO2RefillRate = 1.2f,
+                GearSaltFilterLevel = 0.7f,
+                HoverMinDepth = 2,
+                HoverMaxDepth = 100,
+                BuoyancyFactor = 0.1,
+                SwimForce = -0.1f,
+                MaxseabedSpeed = 4,
+                MaxSinkSpeed = 1,
+                SinkBias = -0.5f
+            });
+        }
+        private static void Register(AquaDiverGearDefinition def)
+        {
+            gearById[def.NumericId] = def;
+            gearByItemId[def.ItemId.String] = def;
+        }
+        public static AquaDiverGearDefinition Get(int id)
+        {
+            AquaDiverGearDefinition def;
+            if (gearById.TryGetValue(id, out def))
+                return def;
+            //AquaExpansionSession.Insance.Log(true, $"DiverGear NOT FOUND (id): {id}");
+            return null;
+        }
+        public static AquaDiverGearDefinition Get(string id)
+        {
+            AquaDiverGearDefinition def;
+            if (gearByItemId.TryGetValue(id, out def))
+                return def;
+            //AquaExpansionSession.Insance.Log(true, $"DiverGear NOT FOUND (ItemId): {id}");
+            return null;
+        }
+        public static void Validate()
+        {
+            foreach (var p in gearById.Values)
+            {
+                if (p.NumericId < 0)
+                    throw new Exception($"Invalid NumericId for DiverGear: {p.NumericId}");
+                if(string.IsNullOrEmpty(p.ItemId.String))
+                    throw new Exception($"Empty/Null ItemId for DiverGear: {p.ItemId.String}");
+            }
+        }
+    }
 }

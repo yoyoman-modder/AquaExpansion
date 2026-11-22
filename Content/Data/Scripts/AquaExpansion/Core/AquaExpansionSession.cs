@@ -824,7 +824,7 @@ namespace AquaExpansion.Core
                 return;
             if (animal.GameLogic.GetAs<SeaCreatureBase>() != null)
             {
-                if (WaterModAPI.IsUnderwater(animal.GetPosition()))
+                if (IsCharacterUnderwater(animal))
                 {
                     info.Amount = 0f;
                 }
@@ -904,7 +904,13 @@ namespace AquaExpansion.Core
         {
             playersL.Clear();
             MyAPIGateway.Players.GetPlayers(playersL);
-            playersL.RemoveAll(p => p?.Character == null);
+            playersL.RemoveAll(p =>
+                p == null
+                || p.Character == null
+                || p.Character.IsDead
+                || p.Character.Closed
+                || p.Character.MarkedForClose);
+            //Log(true, $"Human players with characters: {playersL.Count}");
             return playersL;
         }
         //get waterData
@@ -958,9 +964,17 @@ namespace AquaExpansion.Core
             }
             return (float)depth;
         }
-        public float GetWaterDepthbyCharacter(IMyCharacter character)
+        public bool IsCharacterUnderwater(IMyCharacter character)
         {
             if (character == null || character.IsDead || character.Closed)
+                return false;
+            Vector3D position = character.GetPosition();
+            var planet = CombatUtils.WaterPlanet(position);
+            return planet != null && WaterModAPI.IsUnderwater(position, planet);
+        }
+        public float GetWaterDepthbyCharacter(IMyCharacter character)
+        {
+            /*if (character == null || character.IsDead || character.Closed)
                 return 0f;
             if (!WaterModAPI.IsUnderwater(character.GetPosition()))
                 return 0f;
@@ -970,7 +984,14 @@ namespace AquaExpansion.Core
             {
                 depth = WaterModAPI.Entity_FluidDepth((VRage.Game.Entity.MyEntity)e);
             }
-            return (float)depth;
+            return (float)depth;*/
+            if (character == null || character.IsDead || character.Closed)
+                return 0f;
+            MyPlanet planet = CombatUtils.WaterPlanet(character.GetPosition());
+            if (planet == null || !WaterModAPI.IsUnderwater(character.GetPosition(), planet))
+                return 0f;
+            float? depth = WaterModAPI.GetDepth(character.GetPosition(), planet);
+            return depth.HasValue ? depth.Value : 0f;
         }
         public float GetWaterDepthbyEntity(MyEntity entity)
         {
@@ -1025,7 +1046,7 @@ namespace AquaExpansion.Core
         {
             if (character == null || character.IsDead || character.Closed)
                 return 0f;
-            if (!WaterModAPI.IsUnderwater(character.GetPosition()))
+            if (!IsCharacterUnderwater(character))
                 return 0f;
             float depthNorm = MathHelper.Clamp(depth / -maxSaltDepth, 0f, 1f);
             depthNorm = (float)Math.Pow(depthNorm, 0.5f);
@@ -1060,9 +1081,9 @@ namespace AquaExpansion.Core
                 return 0f;
             double pressure = 0;
             var e = character as IMyEntity;
-            if (e != null && WaterModAPI.IsUnderwater(character.GetPosition()))
+            if (e != null && IsCharacterUnderwater(character))
             {
-                pressure = WaterModAPI.Entity_FluidPressure((VRage.Game.Entity.MyEntity)e);
+                pressure = WaterModAPI.Entity_FluidPressure((MyEntity)e);
             }
             return (float)pressure;
         }
@@ -1113,7 +1134,7 @@ namespace AquaExpansion.Core
         }
         public float GetUnderWaterPercent(IMyCharacter character)
         {
-            if (character == null || character.IsDead || character.Closed)
+            /*if (character == null || character.IsDead || character.Closed)
                 return 0f;
             if (!WaterModAPI.IsUnderwater(character.GetPosition()))
                 return 0f;
@@ -1121,13 +1142,20 @@ namespace AquaExpansion.Core
             var e = character as IMyEntity;
             if (e != null)
             {
-                percent = WaterModAPI.Entity_PercentUnderwater((VRage.Game.Entity.MyEntity)e);
+                percent = WaterModAPI.Entity_PercentUnderwater(e);
             }
+            return percent;*/
+            if (character == null || character.IsDead || character.Closed)
+                return 0f;
+            MyPlanet planet = CombatUtils.WaterPlanet(character.GetPosition());
+            if (planet == null ||
+                !WaterModAPI.IsUnderwater(character.GetPosition(), planet))
+                return 0f;
+            float percent = 0f;
+            var e = character as IMyEntity;
+            if (e != null)
+                percent = WaterModAPI.Entity_PercentUnderwater((MyEntity)e);
             return percent;
-        }
-        public bool CheckNodeinWater(Vector3D p)
-        {
-            return WaterModAPI.IsUnderwater(p);
         }
         //Log
         public void Log(bool inlogging, string message)
@@ -1181,15 +1209,6 @@ namespace AquaExpansion.Core
                     tick);
             }
         }
-        private void DiverState(IMyPlayer player)
-        {
-            int gearLevel;
-            bool oxygenRefillActive;
-            if (JetpackUnderWaterSystem.TryGetPlayerState(player.IdentityId, out gearLevel, out oxygenRefillActive))
-            {
-                Log(true,$"Playerstate {player.IdentityId} {gearLevel} {oxygenRefillActive}");
-            }
-        }
         private void ConstructHUD()
         {
             if (!Heartbeat)
@@ -1203,7 +1222,7 @@ namespace AquaExpansion.Core
             var character = player.Character;
             if (character == null ||
                 character.Closed ||
-                character.IsDead)
+                character.IsDead || character.IsBot)
             {
                 HideHUD();
                 return;
@@ -1215,7 +1234,7 @@ namespace AquaExpansion.Core
                 HideHUD();
                 return;
             }
-            bool isUnderwater = WaterModAPI.IsUnderwater(character.GetPosition());
+            bool isUnderwater = IsCharacterUnderwater(character);
             float fullUnderwater = GetUnderWaterPercent(character);
             var oxygenProvider = MyAPIGateway.Session.OxygenProviderSystem;
             if (oxygenProvider == null)
@@ -1355,7 +1374,7 @@ namespace AquaExpansion.Core
             var character = player?.Character;
             if (character == null || character.Closed || character.IsDead)
                 return;
-            var isUnderwater = WaterModAPI.IsUnderwater(character.GetPosition());
+            var isUnderwater = IsCharacterUnderwater(character);
             float Fullunderwater = GetUnderWaterPercent(character);
             if (!isUnderwater || isUnderwater && Fullunderwater < 1.0f)
             {
@@ -2159,6 +2178,8 @@ namespace AquaExpansion.Core
         }
         private void InitDatabases()
         {
+            AquaDiverGearDatabase.Init();
+            AquaDiverGearDatabase.Validate();
             AquaForbiddenComponentsDatabase.Init();
             AquaForbiddenComponentsDatabase.Validate();
             AquaHelpDatabase.Init();
@@ -2276,10 +2297,6 @@ namespace AquaExpansion.Core
             {
                 return !MyAPIGateway.Multiplayer.IsServer;
             }
-        }
-        private void AccessNetworkSession()
-        {
-            
         }
         protected override void UnloadData()
         {

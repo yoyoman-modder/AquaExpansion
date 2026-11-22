@@ -64,7 +64,6 @@ namespace AquaExpansion.Core.BT
         private float startSpeed;
         private float targetSpeed;
         private Vector3 direction;
-
         public Wander(float time,float depth,float minimumDepth,AnimalSensor animalSensor)
         {
             duration = time;
@@ -181,7 +180,7 @@ namespace AquaExpansion.Core.BT
                 target.MarkedForClose ||
                 target.IsDead)
                 return false;
-            if (!WaterModAPI.IsUnderwater(target.GetPosition()))
+            if (!AquaExpansionSession.Insance.IsCharacterUnderwater(target))
                 return false;
             if (AnimalUtils.isPlayerCovered(player))
                 return false;
@@ -481,7 +480,7 @@ namespace AquaExpansion.Core.BT
                 target.MarkedForClose ||
                 target.IsDead)
                 return false;
-            if (!WaterModAPI.IsUnderwater(target.GetPosition()))
+            if (!AquaExpansionSession.Insance.IsCharacterUnderwater(target))
                 return false;
             if (AnimalUtils.isPlayerCovered(player))
                 return false;
@@ -700,7 +699,8 @@ namespace AquaExpansion.Core.BT
             UpdateTargetDepth(character, target);
             if (distance >= minimumAttackDistance &&
                 distance <= maximumAttackDistance &&
-                !AnimalUtils.isCharacterOnSeabed(target,1))
+                !AnimalUtils.isCharacterOnSeabed(target,1) &&
+                !AnimalUtils.isCharacterOnGrid(target,2))
             {
                 return SetState(NodeState.Success);
             }
@@ -719,123 +719,6 @@ namespace AquaExpansion.Core.BT
     /// </summary>
     public sealed class DetectPlayer : BehaviorNode
     {
-        /* private readonly double range;
-         public DetectPlayer(double r)
-         {
-             range = r;
-         }
-         private bool GetNearbyPlayers(Vector3D position,double searchRange,out List<IMyPlayer> players)
-         {
-             List<IMyPlayer> tempP = new List<IMyPlayer>();
-             BoundingSphereD sphere = new BoundingSphereD(position,searchRange);
-             List<IMyEntity> tempE = MyAPIGateway.Entities.GetTopMostEntitiesInSphere(ref sphere);
-             foreach (IMyEntity ent in tempE)
-             {
-                 IMyCharacter ch = ent as IMyCharacter;
-                 if (ch == null ||
-                     ch.Closed ||
-                     ch.IsDead ||
-                     ch.IsBot)
-                     continue;
-                 if (!WaterModAPI.IsUnderwater(ch.GetPosition()))
-                     continue;
-                 if (AnimalUtils.isPlayersGridPressurated(ch))
-                     continue;
-                 IMyPlayer player = MyAPIGateway.Players.GetPlayerControllingEntity(ch);
-                 if (player == null ||
-                     player.IsBot)
-                     continue;
-                 if (AnimalUtils.isPlayerCovered(player))
-                     continue;
-                 tempP.Add(player);
-             }
-             players = tempP;
-             return tempP.Count > 0;
-         }
-         private void ClearTarget(IMyCharacter character)
-         {
-             if (character != null)
-             {
-                 SeaAnimalTargetCoordinator.ReleaseTarget(character.EntityId);
-             }
-             BB.Set<bool>("HasTarget",false);
-             BB.Clear("Target");
-             BB.Clear("TargetPlayer");
-             BB.Clear("TargetPosition");
-             BB.Clear("TargetDistance");
-         }
-         private bool SetRandomTarget(IMyCharacter character,List<IMyPlayer> players)
-         {
-             if (players == null ||
-                 players.Count == 0)
-                 return false;
-             int index = MyUtils.GetRandomInt(0,players.Count);
-             IMyPlayer player = players[index];
-             IMyPlayer player = SeaAnimalTargetCoordinator.SelectTarget(character.EntityId,players);
-             if (player == null ||
-                 player.Character == null ||
-                 player.Character.MarkedForClose ||
-                 player.Character.Closed ||
-                 player.Character.IsDead ||
-                 !WaterModAPI.IsUnderwater(player.Character.GetPosition()) ||
-                 AnimalUtils.isPlayersGridPressurated(player.Character) ||
-                 AnimalUtils.isPlayerCovered(player))
-                 return false;
-             IMyCharacter target = player.Character;
-             Vector3D targetPosition = target.GetPosition();
-             Vector3D difference = targetPosition - character.GetPosition();
-             BB.Set<IMyPlayer>("TargetPlayer",player);
-             BB.Set<IMyCharacter>("Target",target);
-             BB.Set<Vector3D>("TargetPosition",targetPosition);
-             BB.Set<double>("TargetDistance",difference.Length());
-             BB.Set<bool>("HasTarget",true);
-             return true;
-         }
-         public override void Start(IMyCharacter character)
-         {
-             State = NodeState.Running;
-         }
-         public override NodeState Tick(IMyCharacter character, float dt)
-         {
-             SetCurrentNode();
-             if (character == null ||
-                 character.MarkedForClose ||
-                 BB == null)
-                 return SetState(NodeState.Failure);
-             if (BB.Get<bool>("HasTarget"))
-             {
-                 IMyCharacter target = BB.Get<IMyCharacter>("Target");
-                 IMyPlayer player = BB.Get<IMyPlayer>("TargetPlayer");
-                 if (target != null &&
-                     player != null &&
-                     !target.MarkedForClose &&
-                     !target.IsDead &&
-                     !player.IsBot &&
-                     WaterModAPI.IsUnderwater(target.GetPosition()) &&
-                     !AnimalUtils.isPlayersGridPressurated(target) &&
-                     !AnimalUtils.isPlayerCovered(player))
-                 {
-                     return SetState(NodeState.Success);
-                 }
-                 ClearTarget(character);
-             }
-             List<IMyPlayer> players;
-             if (!GetNearbyPlayers(character.GetPosition(),range,out players))
-             {
-                 ClearTarget(character);
-                 return SetState(NodeState.Failure);
-             }
-             if (!SetRandomTarget(character, players))
-             {
-                 ClearTarget(character);
-                 return SetState(NodeState.Failure);
-             }
-             return SetState(NodeState.Success);
-         }
-         public override void End(IMyCharacter character)
-         {
-
-         }*/
         private readonly double range;
         private float retargetTimer;
         private const float RetargetInterval = 5f;
@@ -856,7 +739,7 @@ namespace AquaExpansion.Core.BT
                     ch.IsDead ||
                     ch.IsBot)
                     continue;
-                if (!WaterModAPI.IsUnderwater(ch.GetPosition()))
+                if (!AquaExpansionSession.Insance.IsCharacterUnderwater(ch))
                     continue;
                 if (AnimalUtils.isPlayersGridPressurated(ch))
                     continue;
@@ -930,7 +813,7 @@ namespace AquaExpansion.Core.BT
                     !target.Closed &&
                     !target.IsDead &&
                     !player.IsBot &&
-                    WaterModAPI.IsUnderwater(target.GetPosition()) &&
+                    AquaExpansionSession.Insance.IsCharacterUnderwater(target) &&
                     !AnimalUtils.isPlayersGridPressurated(target) &&
                     !AnimalUtils.isPlayerCovered(player))
                 {
@@ -1063,8 +946,7 @@ namespace AquaExpansion.Core.BT
             minDepth = depth;
             sensor = animalSensor;
         }
-        public override void Start(
-            IMyCharacter character)
+        public override void Start(IMyCharacter character)
         {
             State = NodeState.Running;
         }

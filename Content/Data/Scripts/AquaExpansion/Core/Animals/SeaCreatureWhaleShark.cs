@@ -1,5 +1,4 @@
 ﻿using AquaExpansion.Core.BT;
-using Jakaria.API;
 using VRage.Game;
 using VRage.Game.Components;
 using VRage.ObjectBuilders;
@@ -47,7 +46,7 @@ namespace AquaExpansion.Core.Animals
                 return;
             if (Character.Physics == null)
                 return;
-            if (!WaterModAPI.IsUnderwater(Character.GetPosition()))
+            if (!AquaExpansionSession.Insance.IsCharacterUnderwater(Character))
             {
                 Movement.IsMoving = false;
                 return;

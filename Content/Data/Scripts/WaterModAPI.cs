@@ -6,6 +6,7 @@ using VRage;
 using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.Entity;
+using VRage.ModAPI;
 using VRage.Utils;
 using VRageMath;
 

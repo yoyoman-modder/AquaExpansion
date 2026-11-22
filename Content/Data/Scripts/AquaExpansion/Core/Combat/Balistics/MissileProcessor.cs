@@ -14,7 +14,7 @@ namespace AquaExpansion.Core.Combat.Balistics
         private static readonly List<long> MissileUpdateIds = new List<long>();
         private static readonly List<long> PendingMissileAdds = new List<long>();
         private static readonly List<long> PendingMissileRemovals = new List<long>();
-        private static readonly Dictionary<long, MissileState> PendingMissileStates =new Dictionary<long, MissileState>();
+        private static readonly Dictionary<long, MissileState> PendingMissileStates = new Dictionary<long, MissileState>();
         private static bool UpdatingMissiles;
         public static void Process(IMyMissile missile, MissileState state)
         {

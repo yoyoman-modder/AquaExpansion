@@ -532,6 +532,23 @@ namespace AquaExpansion.Core.Animals
                 return false;
             return hitInfo.HitEntity is IMyVoxelBase;
         }
+        public static bool isCharacterOnGrid(IMyCharacter character, double checkdist = 0.5)
+        {
+            if (character == null ||
+                character.IsDead ||
+                character.Closed ||
+                character.MarkedForClose ||
+                character.Physics == null)
+                return false;
+            Vector3D start = character.GetPosition();
+            Vector3D end = start + Vector3D.Up * checkdist;
+            //DebugLine(start,end,Color.Red);
+            IHitInfo hitInfo = null;
+            MyAPIGateway.Physics.CastRay(start, end, out hitInfo);
+            if (hitInfo == null || hitInfo.HitEntity == null)
+                return false;
+            return hitInfo.HitEntity is IMyCubeGrid;
+        }
     }
     /// <summary>
     /// Animal Movement Data
@@ -550,7 +567,6 @@ namespace AquaExpansion.Core.Animals
         public float MaxBuoyancyForce;
         public float VerticalDamping;
         public float Acceleration;
-        //public float CurrentYaw;
         public float MaxSpeed;
     }
     /// <summary>
@@ -1067,24 +1083,6 @@ namespace AquaExpansion.Core.Animals
             UpdateSteering(character, movement, desiredDirection);
             UpdatePropulsion(character, movement, MyEngineConstants.UPDATE_STEP_SIZE_IN_SECONDS);
             UpdateDepth(character, movement);
-            /*if (!run ||
-           character == null ||
-           character.Physics == null ||
-           movement == null ||
-           !movement.IsMoving ||
-           dt <= 0f)
-                return;
-            Vector3D desiredDirection = movement.DesiredDirection;
-            bool voxelRecovery = UpdateObstacleAvoidance(
-                character,
-                movement,
-                sensor,
-                ref desiredDirection);
-            movement.UseDepthControl = !voxelRecovery;
-            movement.DesiredDirection = desiredDirection;
-            UpdateSteering(character, movement, desiredDirection);
-            UpdatePropulsion(character, movement, dt);
-            UpdateDepth(character, movement);*/
         }
         /// <summary>
         /// Update Obstacle Avoidance
@@ -1863,7 +1861,7 @@ namespace AquaExpansion.Core.Animals
             if (character == null ||
                 character.MarkedForClose)
                 return true;
-            if (!WaterModAPI.IsUnderwater(character.GetPosition()))
+            if (!AquaExpansionSession.Insance.IsCharacterUnderwater(character))
                 return true;
             float depth = Math.Abs(AquaExpansionSession.Insance.GetWaterDepthbyCharacter(character));
             if (depth > minDepth)
