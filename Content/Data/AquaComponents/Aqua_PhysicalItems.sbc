@@ -12,7 +12,7 @@
 			Refine into usable salt for energy and industrial processes.
 			</Description>
             <Icon>Textures\GUI\Icons\ore_H2O_ice.dds</Icon>
-			<IconSymbol>NACI</IconSymbol>
+			<IconSymbol>NACL</IconSymbol>
             <Size>
                 <X>0.07</X>
                 <Y>0.07</Y>
@@ -68,8 +68,8 @@
 				Refined salt material ready for industrial use.
 				Used in energy systems and advanced chemical components.
 			</Description>
-			<Icon>Textures\GUI\Icons\ingot\iron_ingot.dds</Icon>
-			<IconSymbol>NACI</IconSymbol>
+			<Icon>Textures\GUI\Icons\ingot\salt_ingot.dds</Icon>
+			<IconSymbol>NACL</IconSymbol>
 			<Size>
 				<X>0.072</X>
 				<Y>0.072</Y>
@@ -77,7 +77,7 @@
 			</Size>
 			<Mass>1</Mass>
 			<Volume>0.37</Volume>
-			<Model>Models\Ingots\iron_ingot.mwm</Model>
+			<Model>Models\Items\Salt_ingot.mwm</Model>
 			<PhysicalMaterial>Metal</PhysicalMaterial>
 			<CanPlayerOrder>true</CanPlayerOrder>
 		</PhysicalItem>

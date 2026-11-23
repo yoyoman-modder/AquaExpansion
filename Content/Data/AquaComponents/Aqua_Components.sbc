@@ -14,7 +14,7 @@
 				Used in crafting Salt Cells and energy systems.
 			</Description>
 			<Icon>Textures\GUI\Icons\Items\AquaSaltPowderR.dds</Icon>
-			<IconSymbol>NACI</IconSymbol>
+			<IconSymbol>NACL</IconSymbol>
 			<Size>
 				<X>0.2</X>
 				<Y>0.2</Y>
@@ -42,7 +42,7 @@
 				Used for power storage in Salt Battery systems.
 			</Description>
 			<Icon>Textures\GUI\Icons\component\BatteryComponent.dds</Icon>
-			<IconSymbol>NACI</IconSymbol>
+			<IconSymbol>NACL</IconSymbol>
 			<Size>
 				<X>0.5</X>
 				<Y>0.3</Y>
