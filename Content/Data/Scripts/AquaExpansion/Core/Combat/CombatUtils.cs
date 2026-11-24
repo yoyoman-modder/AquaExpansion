@@ -916,7 +916,7 @@ namespace AquaExpansion.Core.Combat
                 MassDmg={10}
                 HealthDmg={11}
                 Trail={12}
-                Torpedo{13}",
+                Torpedo={13}",
                 p.SubtypeId,
                 p.Mass,
                 p.DragCoefficient,
@@ -947,6 +947,7 @@ namespace AquaExpansion.Core.Combat
                 /hammo log
                 /hammo list
                 /hammo vis
+                /hammo burstlist
 
                 PROFILE
                 /hammo <SubtypeId> show
@@ -1003,6 +1004,33 @@ namespace AquaExpansion.Core.Combat
                 text.AppendLine("No registered Hydro Ammo profiles.");
             MyAPIGateway.Utilities.ShowMissionScreen(
                 "Registered Hydro Ammo profiles",
+                "",
+                "",
+                text.ToString(),
+                null,
+                "Close");
+        }
+        public static void ListAllBursts()
+        {
+            StringBuilder text = new StringBuilder();
+
+            IReadOnlyDictionary<string, string> bursts = UnderwaterWeaponBurstDatabase.GetAllBursts();
+            int maxKeyLength = 0;
+            foreach (string key in bursts.Keys)
+            {
+                if (key != null && key.Length > maxKeyLength)
+                    maxKeyLength = key.Length;
+            }
+            maxKeyLength += 3;
+            foreach (KeyValuePair<string, string> entry in bursts)
+            {
+                text.Append(entry.Key.PadRight(maxKeyLength));
+                text.AppendLine(entry.Value);
+            }
+            if (text.Length == 0)
+                text.AppendLine("No registered Burst Effects.");
+            MyAPIGateway.Utilities.ShowMissionScreen(
+                "Registered Burst Effects",
                 "",
                 "",
                 text.ToString(),
@@ -2583,6 +2611,10 @@ namespace AquaExpansion.Core.Combat
         private static string Default()
         {
             return "AquaHandWeaponBubbles";
+        }
+        public static IReadOnlyDictionary<string, string> GetAllBursts()
+        {
+            return muzzleburstbySubtype;
         }
     }
     /// <summary>

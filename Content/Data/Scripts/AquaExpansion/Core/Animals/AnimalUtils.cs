@@ -542,11 +542,11 @@ namespace AquaExpansion.Core.Animals
                 return false;
             Vector3D start = character.GetPosition();
             Vector3D end = start + Vector3D.Up * checkdist;
-            //DebugLine(start,end,Color.Red);
+            DebugLine(start,end,Color.Red);
             IHitInfo hitInfo = null;
             MyAPIGateway.Physics.CastRay(start, end, out hitInfo);
             if (hitInfo == null || hitInfo.HitEntity == null)
-                return false;
+             return false; 
             return hitInfo.HitEntity is IMyCubeGrid;
         }
     }

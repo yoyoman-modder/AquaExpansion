@@ -132,6 +132,9 @@ namespace AquaExpansion.Core.Combat.Balistics
                     MyAPIGateway.Utilities.ShowMessage(session.AquaAPI,
                     AquaModdingNamesDatabase.GetModCommandByID(session.RenderEnabled ? 24 : 25));
                     return;
+                case "burstlist":
+                    CombatUtils.ListAllBursts();
+                    return;
             }
             // Ammo-specific commands
             if (args.Length < 3)

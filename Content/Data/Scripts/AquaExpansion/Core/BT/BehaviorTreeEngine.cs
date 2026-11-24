@@ -700,7 +700,7 @@ namespace AquaExpansion.Core.BT
             if (distance >= minimumAttackDistance &&
                 distance <= maximumAttackDistance &&
                 !AnimalUtils.isCharacterOnSeabed(target,1) &&
-                !AnimalUtils.isCharacterOnGrid(target,2))
+                !AnimalUtils.isCharacterOnGrid(target,1))
             {
                 return SetState(NodeState.Success);
             }
